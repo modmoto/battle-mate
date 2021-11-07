@@ -22,8 +22,7 @@ namespace battle_mate
 
             for (int i = 1; i <= sides; i++)
             {
-                var countBiggerEquals = results.Count(r => r >= i);
-                var resultGroup = new DiceResultGroup(i, countBiggerEquals);
+                var resultGroup = new DiceResultGroup(i, results);
                 resultGroups.Add(resultGroup);
             }
 

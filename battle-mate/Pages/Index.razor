@@ -1,20 +1,18 @@
 ﻿@page "/"
 
-<div class="container">
-    <div class="container mb-3">
-        <button class="btn btn-secondary" @onclick="() => SetAndRollDice(1)">1</button>
-        <button class="btn btn-secondary" @onclick="() => SetAndRollDice(2)">2</button>
-        <button class="btn btn-secondary" @onclick="() => SetAndRollDice(3)">3</button>
-        <button class="@GetDiceClass(3)" @onclick="() => SelectDice(3)">d3</button>
-        <button class="@GetDiceClass(6)" @onclick="() => SelectDice(6)">d6</button>
-        <button class="@GetDiceClass(8)" @onclick="() => SelectDice(8)">d8</button>
+<div class="container mb-3">
+    <button class="btn btn-secondary" @onclick="() => SetAndRollDice(1)">1</button>
+    <button class="btn btn-secondary" @onclick="() => SetAndRollDice(2)">2</button>
+    <button class="btn btn-secondary" @onclick="() => SetAndRollDice(3)">3</button>
+    <button class="@GetDiceClass(3)" @onclick="() => SelectDice(3)">d3</button>
+    <button class="@GetDiceClass(6)" @onclick="() => SelectDice(6)">d6</button>
+    <button class="@GetDiceClass(8)" @onclick="() => SelectDice(8)">d8</button>
+</div>
+<div class="container mb-3">
+    <div class="input-group mb-3">
+      <input type="number" class="form-control" placeholder="Dice" aria-label="Dice" @bind="_diceAmount">
     </div>
-    <div class="container mb-3">
-        <div class="container input-group mb-3">
-          <input type="number" class="form-control" placeholder="Dice" aria-label="Dice" @bind="_diceAmount">
-        </div>
-        <button class="btn btn-primary" @onclick="RollDice">Roll Dice</button>
-    </div>
+    <button class="btn btn-primary" @onclick="RollDice">Roll Dice</button>
 </div>
 <div class="container">
     @foreach (var message in _messages)
@@ -41,8 +39,21 @@
                             Reroll @(string.Join(", ", Enumerable.Range(1, rollResult.val.DiceBorder))) (@string.Join(", ", rollResult.val.RerollResults))
                         </div>
                     }
+                    @if (rollResult.val.RollType == RollType.ContinueRollBiggerThan)
+                    {
+                        <div>
+                            Continue with @(rollResult.val.DiceBorder)+
+                        </div>
+                    }
+                    @if (rollResult.val.RollType == RollType.ContinueRollSmallerThan)
+                    {
+                        <div>
+                            Continue with @(string.Join(", ", Enumerable.Range(1, rollResult.val.DiceBorder)))
+                        </div>
+                    }
                     <div class="container">
-                        @string.Join(", ", rollResult.val.RawResults)
+                        <b>@(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides)</b>: <span>@string.Join(", ", rollResult.val.RawResults)
+                        </span>
                         @if (rollResult.val.RawResults.Count > 1)
                         {
                             <span> (@rollResult.val.RawResults.Sum())</span>
@@ -56,28 +67,27 @@
                                 <b>@res.Min+</b><span class="me-2">: @res.BiggerThanAmount</span>
                                 @if (rollResult.index + 1== message.Results.Count)
                                 {
-                                    <div>
-                                        <button class="btn btn-outline-primary" @onclick="() => ContinueRollSmallerThanDice(res.Min)">
-                                            &lt;
+                                    <div class="mb-1">
+                                        <button class="@GetClassSmallerThanAmount(res.SmallerThanAmount)" @onclick="() => ContinueRollSmallerThanDice(res.Min)">
+                                            <span class="oi oi-chevron-left" style="width: 1em" aria-hidden="true"></span>
                                         </button>
-                                        <button class="btn btn-outline-primary" @onclick="() => ContinueRollBiggerThanDice(res.Min)">
-                                            &gt;
+                                        <button class="@GetClassContinueRollBiggerThanDice(res.BiggerThanAmount)" @onclick="() => ContinueRollBiggerThanDice(res.Min)">
+                                            <span class="oi oi-chevron-right" style="width: 1em" aria-hidden="true"></span>
                                         </button>
                                     </div>
                                     <div>
-                                        <button class="btn btn-outline-primary" @onclick="() => RerollSmallerThanDice(res.Min)">
-                                            &lt;
+                                        <button class="@GetClassSmallerThanAmount(res.SmallerThanAmount)" @onclick="() => RerollSmallerThanDice(res.Min)">
+                                            <span class="oi oi-action-undo" style="width: 1em" aria-hidden="true"></span>
                                         </button>
-                                        <button class="btn btn-outline-primary" @onclick="() => RerollBiggerThanDice(res.Min)">
-                                            &gt;
+                                        <button class="@GetClassContinueRollBiggerThanDice(res.BiggerThanAmount)" @onclick="() => RerollBiggerThanDice(res.Min)">
+                                            <span class="oi oi-action-redo" style="width: 1em" aria-hidden="true"></span>
                                         </button>
                                     </div>
                                 }
                             </div>
                         }
 
-                            <div class="col">
-                                <b>.</b>
+                            <div class="col align-self-end">
                                 @if (rollResult.index + 1 == message.Results.Count)
                                 {
                                     <button class="btn btn-outline-danger" @onclick="DeleteLastRoll">
@@ -125,6 +135,13 @@
         return dice == _selectedDice ? "btn btn-outline-primary" : "btn btn-outline-secondary";
     }
 
+    private object GetClassSmallerThanAmount(int smallerThanAmount)
+    {
+        return smallerThanAmount == 0
+            ? "btn btn-outline-primary disabled"
+            : "btn btn-outline-primary";
+    }
+
     private void RerollSmallerThanDice(int resMin)
     {
         var newRoll = _dice.RerRollSmallerThan(resMin, CurrentDiceMessage.Results.LastOrDefault());
@@ -159,6 +176,13 @@
     {
         var newRoll = _dice.ContinueRollBiggerThan(resMin, CurrentDiceMessage.Results.LastOrDefault());
         CurrentDiceMessage.Results.Add(newRoll);
+    }
+
+    private object GetClassContinueRollBiggerThanDice(int biggerThanAmount)
+    {
+        return biggerThanAmount == 0
+            ? "btn btn-outline-primary disabled"
+            : "btn btn-outline-primary";
     }
 
 }

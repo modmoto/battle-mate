@@ -15,10 +15,10 @@ namespace battle_mate
 
         public RollResult Roll(int count, int sides)
         {
-            return InternalRoll(count, sides, RollType.Start);
+            return InternalRoll(count, sides, RollType.Start, 0);
         }
 
-        private RollResult InternalRoll(int count, int sides, RollType rollType)
+        private RollResult InternalRoll(int count, int sides, RollType rollType, int border)
         {
             var rolls = new List<int>();
             for (int i = 0; i < count; i++)
@@ -26,7 +26,7 @@ namespace battle_mate
                 rolls.Add(_random.Next(1, sides + 1));
             }
 
-            return new RollResult(rolls, new List<int>(), sides, rollType, 0);
+            return new RollResult(rolls, new List<int>(), sides, rollType, border);
         }
 
         public RollResult RerRollSmallerThan(int border, RollResult oldRolls)
@@ -54,13 +54,13 @@ namespace battle_mate
         public RollResult ContinueRollSmallerThan(int border, RollResult oldRolls)
         {
             var count = oldRolls.RawResults.Count(d => d <= border);
-            return InternalRoll(count, oldRolls.DiceSides, RollType.ContinueRollSmallerThan);
+            return InternalRoll(count, oldRolls.DiceSides, RollType.ContinueRollSmallerThan, border);
         }
 
         public RollResult ContinueRollBiggerThan(int border, RollResult oldRolls)
         {
             var count = oldRolls.RawResults.Count(d => d >= border);
-            return InternalRoll(count, oldRolls.DiceSides, RollType.ContinueRollBiggerThan);
+            return InternalRoll(count, oldRolls.DiceSides, RollType.ContinueRollBiggerThan, border);
         }
     }
 }
