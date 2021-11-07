@@ -1,6 +1,6 @@
 ﻿version: '3.9'
 services:
-  fading-flame:
+  battle-mate:
     image: modmoto/battle-mate:${TAG}
     container_name: battle-mate-${CONTAINER_SUFFIX}
     restart: unless-stopped
