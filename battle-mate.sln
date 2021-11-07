@@ -9,6 +9,7 @@ ProjectSection(SolutionItems) = preProject
 	azure-pipelines.yml = azure-pipelines.yml
 	docker-compose.token.yml = docker-compose.token.yml
 	LICENSE = LICENSE
+	Dockerfile = Dockerfile
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "battle-mate.Tests", "battle-mate.Tests\battle-mate.Tests.csproj", "{4DF263F1-7008-45B3-86B6-D2D94150B3FD}"
