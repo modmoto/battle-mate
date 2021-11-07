@@ -19,63 +19,73 @@
 <div class="container">
     @foreach (var message in _messages)
     {
-        <div class="card">
+        <div class="card mb-3">
+            @if (message.Results.First().RollType == RollType.Start)
+            {
+                <div class="card-header">
+                    @(message.Results.First().RawResults.Count)D@(message.Results.First().DiceSides)
+                </div>
+            }
             <div class="card-body">
                 @foreach (var rollResult in message.Results.Select((val, index) => new { val, index}))
                 {
-                    @if (rollResult.val.RollType == RollType.Start)
-                    {
-                        <div class="card-header">
-                            @(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides)
-                        </div>
-                    }
                     @if (rollResult.val.RollType == RollType.RerollBiggerThan)
                     {
                         <div>
-                            Reroll @(rollResult.val.DiceBorder)+
+                            Reroll @(rollResult.val.DiceBorder)+ (@string.Join(", ", rollResult.val.RerollResults))
                         </div>
                     }
                     @if (rollResult.val.RollType == RollType.RerollSmallerThan)
                     {
                         <div>
-                            Reroll @(string.Join(", ", Enumerable.Range(1, rollResult.val.DiceBorder)))
+                            Reroll @(string.Join(", ", Enumerable.Range(1, rollResult.val.DiceBorder))) (@string.Join(", ", rollResult.val.RerollResults))
                         </div>
                     }
                     <div class="container">
                         @string.Join(", ", rollResult.val.RawResults)
-                        @if (!(rollResult.val.RawResults.Count > 5) && rollResult.val.RawResults.Count > 1)
+                        @if (rollResult.val.RawResults.Count > 1)
                         {
                             <span> (@rollResult.val.RawResults.Sum())</span>
                         }
                     </div>
                     <div class="container">
-                        @if (rollResult.val.RawResults.Count > 5)
+                        <div  class="row align-items-start">
+                        @foreach (var res in rollResult.val.GroupedResults)
                         {
-                            <div  class="row align-items-start">
-                            @foreach (var res in rollResult.val.GroupedResults)
-                            {
-                                <div class="col">
-                                    <b>@res.Min+</b><span class="me-2">: @res.Amount</span>
-                                    @if (rollResult.index + 1== message.Results.Count)
-                                    {
-                                        <div>
-                                            <button class="btn btn-outline-primary" @onclick="() => RerollSmallerThanDice(res.Min)">
-                                                &lt;
-                                            </button>
-                                            <button class="btn btn-outline-primary" @onclick="() => RerollBiggerThanDice(res.Min)">
-                                                &gt;
-                                            </button>
-                                        </div>
-                                    }
-                                </div>
-                            }
-                                <div class="col">
-                                    <button class="btn btn-outline-danger" @onclick="() => DeleteLastRoll()">
-                                        X
-                                    </button>
-                                </div>
+                            <div class="col">
+                                <b>@res.Min+</b><span class="me-2">: @res.BiggerThanAmount</span>
+                                @if (rollResult.index + 1== message.Results.Count)
+                                {
+                                    <div>
+                                        <button class="btn btn-outline-primary" @onclick="() => ContinueRollSmallerThanDice(res.Min)">
+                                            &lt;
+                                        </button>
+                                        <button class="btn btn-outline-primary" @onclick="() => ContinueRollBiggerThanDice(res.Min)">
+                                            &gt;
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-outline-primary" @onclick="() => RerollSmallerThanDice(res.Min)">
+                                            &lt;
+                                        </button>
+                                        <button class="btn btn-outline-primary" @onclick="() => RerollBiggerThanDice(res.Min)">
+                                            &gt;
+                                        </button>
+                                    </div>
+                                }
                             </div>
                         }
+
+                            <div class="col">
+                                <b>.</b>
+                                @if (rollResult.index + 1 == message.Results.Count)
+                                {
+                                    <button class="btn btn-outline-danger" @onclick="DeleteLastRoll">
+                                        X
+                                    </button>
+                                }
+                            </div>
+                        </div>
                     </div>
                 }
             </div>
@@ -129,7 +139,26 @@
 
     private void DeleteLastRoll()
     {
-        CurrentDiceMessage.Results.RemoveAt(CurrentDiceMessage.Results.Count - 1);
+        if (CurrentDiceMessage.Results.Count == 1)
+        {
+            _messages.RemoveAt(0);
+        }
+        else
+        {
+            CurrentDiceMessage.Results.RemoveAt(CurrentDiceMessage.Results.Count - 1);
+        }
+    }
+
+    private void ContinueRollSmallerThanDice(int resMax)
+    {
+        var newRoll = _dice.ContinueRollSmallerThan(resMax, CurrentDiceMessage.Results.LastOrDefault());
+        CurrentDiceMessage.Results.Add(newRoll);
+    }
+
+    private void ContinueRollBiggerThanDice(int resMin)
+    {
+        var newRoll = _dice.ContinueRollBiggerThan(resMin, CurrentDiceMessage.Results.LastOrDefault());
+        CurrentDiceMessage.Results.Add(newRoll);
     }
 
 }

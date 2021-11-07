@@ -6,9 +6,10 @@ namespace battle_mate
 {
     public class RollResult
     {
-        public RollResult(List<int> rawResults, int sides, RollType type, int diceBorder)
+        public RollResult(List<int> rawResults, List<int> rerollResults, int sides, RollType type, int diceBorder)
         {
             RawResults = rawResults.OrderBy(r => r).ToList();
+            RerollResults = rerollResults.OrderBy(r => r).ToList();
             DiceSides = sides;
             DiceBorder = diceBorder;
             RollType = type;
@@ -22,7 +23,9 @@ namespace battle_mate
             for (int i = 1; i <= sides; i++)
             {
                 var count = results.Count(r => r == i);
-                var resultGroup = new DiceResultGroup(i, count);
+                var countBiggerEquals = results.Count(r => r >= i);
+                var countSmaller = results.Count(r => r < i);
+                var resultGroup = new DiceResultGroup(i, count, countBiggerEquals, countSmaller);
                 resultGroups.Add(resultGroup);
             }
 
@@ -30,6 +33,7 @@ namespace battle_mate
         }
 
         public List<int> RawResults { get; }
+        public List<int> RerollResults { get; }
         public int DiceSides { get; }
         public int DiceBorder { get; }
         public List<DiceResultGroup> GroupedResults { get; }
