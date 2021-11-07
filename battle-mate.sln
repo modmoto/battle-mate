@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "battle-mate", "battle-mate\battle-mate.csproj", "{691C2447-CFEE-4D41-BEAC-0C7FDEB05832}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{04870559-50FA-41BF-BA19-0E2E29EB649E}"
+ProjectSection(SolutionItems) = preProject
+	.dockerignore = .dockerignore
+	.gitignore = .gitignore
+	azure-pipelines.yml = azure-pipelines.yml
+	docker-compose.token.yml = docker-compose.token.yml
+	LICENSE = LICENSE
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "battle-mate.Tests", "battle-mate.Tests\battle-mate.Tests.csproj", "{4DF263F1-7008-45B3-86B6-D2D94150B3FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{691C2447-CFEE-4D41-BEAC-0C7FDEB05832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{691C2447-CFEE-4D41-BEAC-0C7FDEB05832}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{691C2447-CFEE-4D41-BEAC-0C7FDEB05832}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{691C2447-CFEE-4D41-BEAC-0C7FDEB05832}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF263F1-7008-45B3-86B6-D2D94150B3FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF263F1-7008-45B3-86B6-D2D94150B3FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF263F1-7008-45B3-86B6-D2D94150B3FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF263F1-7008-45B3-86B6-D2D94150B3FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

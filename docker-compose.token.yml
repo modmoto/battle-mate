@@ -1,0 +1,13 @@
+﻿version: '3.9'
+services:
+  fading-flame:
+    image: modmoto/battle-mate:${TAG}
+    container_name: battle-mate-${CONTAINER_SUFFIX}
+    restart: unless-stopped
+    expose:
+      - 80
+
+networks:
+  default:
+    external:
+      name: caddy

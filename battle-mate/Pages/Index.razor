@@ -1,0 +1,23 @@
+﻿@page "/"
+
+<button class="btn btn-primary" @onclick="RollDice">Roll Dice</button>
+<div class="container">
+@foreach (var result in _results)
+{
+    <span>@result ,</span>    
+}    
+</div>
+
+
+@inject Dice _dice
+
+@code {
+    private List<int> _results = new();
+
+    private void RollDice()
+    {
+        _results = _dice.Roll(5, 6);
+        StateHasChanged();
+    }
+}
+
