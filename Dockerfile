@@ -1,12 +1,10 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY battle-mate.csproj .
-RUN dotnet restore "battle-mate.csproj"
+COPY ["battle-mate/battle-mate.csproj", "battle-mate/"]
+RUN dotnet restore "battle-mate/battle-mate.csproj"
 COPY . .
+WORKDIR "/src/battle-mate"
 RUN dotnet build "battle-mate.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "battle-mate.csproj" -c Release -o /app/publish
 
 FROM build AS publish
 RUN dotnet publish "battle-mate.csproj" -c Release -o /app/publish
