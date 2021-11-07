@@ -59,7 +59,7 @@ namespace battle_mate
 
         public RollResult ContinueRollBiggerThan(int border, RollResult oldRolls)
         {
-            var count = oldRolls.RawResults.Count(d => d <= border);
+            var count = oldRolls.RawResults.Count(d => d >= border);
             return InternalRoll(count, oldRolls.DiceSides, RollType.ContinueRollBiggerThan);
         }
     }
