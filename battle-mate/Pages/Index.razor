@@ -118,7 +118,35 @@
                     }
                 </div>
                 <div>
-                    @(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides): @string.Join(", ", rollResult.val.RawResults)
+                    @(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides): 
+                    @if (rollResult.val.DiceGoal == 0)
+                    {
+                        @string.Join(", ", rollResult.val.RawResults)
+                    }
+                    else
+                    {
+                        @foreach (var res in rollResult.val.RawResults.Select((value, index) => new { value, index}))
+                        {
+                            if (rollResult.val.DiceGoal > res.value && rollResult.val.DiceGoal != 0)
+                            {
+                                <span class="red">@(res.value)
+                                    @if (res.index + 1 != rollResult.val.RawResults.Count)
+                                    {
+                                        <span>, </span>
+                                    }
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="green">@(res.value)
+                                    @if (res.index + 1 != rollResult.val.RawResults.Count)
+                                    {
+                                        <span>, </span>
+                                    }
+                                </span>
+                            }
+                        }
+                    }                                           
                     @if (rollResult.val.RawResults.Count > 1)
                     {
                         <span> (@rollResult.val.RawResults.Sum())</span>

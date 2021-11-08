@@ -8,6 +8,14 @@ a, .btn-link {
     color: #0366d6;
 }
 
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
