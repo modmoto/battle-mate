@@ -118,7 +118,9 @@
                                 @res.Min+ : @res.BiggerThanAmount
                             </div>
                         }
-                        @if (rollResult.index + 1 == message.Results.Count && _currentRoleState != RollType.WardSave)
+                        @if (rollResult.index + 1 == message.Results.Count
+                             && _currentRoleState != RollType.WardSave
+                             && _currentRoleState != RollType.None)
                         {
                             <div class="row align-items-center mt-2">
                                 <div class="col">
@@ -157,7 +159,8 @@
                             </div>
                         }
                     </div>
-                    @if (rollResult.index + 1 == message.Results.Count)
+                    @if (rollResult.index + 1 == message.Results.Count
+                         && _currentRoleState != RollType.None)
                     {
                         <div class="row m-1">
                             <button class="btn btn-outline-danger" @onclick="DeleteLastRoll">
