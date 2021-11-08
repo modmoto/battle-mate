@@ -14,17 +14,17 @@
     </div>
     <div class="row align-items-center mt-2">
         <div class="col">
-            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => ContinueDices(2)">
+            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => StartDicing(2)">
                 2+
             </button>
         </div>
         <div class="col">
-            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => ContinueDices(3)">
+            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => StartDicing(3)">
                 3+
             </button>
         </div>
         <div class="col">
-            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => ContinueDices(4)">
+            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => StartDicing(4)">
                 4+
             </button>
         </div>
@@ -32,12 +32,12 @@
 
     <div class="row align-items-center">
         <div class="col">
-            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => ContinueDices(5)">
+            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => StartDicing(5)">
                 5+
             </button>
         </div>
         <div class="col">
-            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => ContinueDices(6)">
+            <button class="btn btn-outline-primary py-3 px-6" @onclick="() => StartDicing(6)">
                 6+
             </button>
         </div>
@@ -227,9 +227,7 @@
         {
             if (_currentRoleState == RollType.None)
             {
-                var result = DoRoll(_diceAmount.Value, toHit, null);
-                _messages.Insert(0, new DiceMessage(result));
-                _currentRoleState = result.RollState;
+                StartDicing(toHit);
             }
             else
             {
@@ -238,6 +236,16 @@
                 _currentRoleState = result.RollState;
 
             }
+        }
+    }
+
+    private void StartDicing(int toHit)
+    {
+        if (_diceAmount != null)
+        {
+            var result = DoRoll(_diceAmount.Value, toHit, null);
+            _messages.Insert(0, new DiceMessage(result));
+            _currentRoleState = result.RollState;
         }
     }
 
