@@ -13,9 +13,9 @@ namespace battle_mate
             _random = seed == default ? new Random() : new Random(seed);
         }
 
-        public RollResult Roll(int count, int sides)
+        public RollResult ToHit(int count, int sides, int border)
         {
-            return InternalRoll(count, sides, RollType.Start, 0);
+            return InternalRoll(count, sides, RollType.ToHit, border);
         }
 
         private RollResult InternalRoll(int count, int sides, RollType rollType, int border)
@@ -45,22 +45,30 @@ namespace battle_mate
 
         private RollResult ReRoll(int count, List<int> resulstThatStay, int sides, RollType rollType, int border)
         {
-            var newRoll = Roll(count, sides).RawResults;
+            var newRoll = InternalRoll(count, sides, rollType, border).RawResults;
             resulstThatStay.AddRange(newRoll);
             resulstThatStay.Sort();
             return new RollResult(resulstThatStay, newRoll, sides, rollType, border);
         }
 
-        public RollResult ContinueRollSmallerThan(int border, RollResult oldRolls)
+        public RollResult ToWound(int border, RollResult oldRolls)
         {
-            var count = oldRolls.RawResults.Count(d => d <= border);
-            return InternalRoll(count, oldRolls.DiceSides, RollType.ContinueRollSmallerThan, border);
+            return InternalRoll(oldRolls.SucessfullRolls, oldRolls.DiceSides, RollType.ToWound, border);
         }
 
-        public RollResult ContinueRollBiggerThan(int border, RollResult oldRolls)
+        public RollResult ArmorSave(int border, RollResult oldRolls)
         {
-            var count = oldRolls.RawResults.Count(d => d >= border);
-            return InternalRoll(count, oldRolls.DiceSides, RollType.ContinueRollBiggerThan, border);
+            return InternalRoll(oldRolls.SucessfullRolls, oldRolls.DiceSides, RollType.ArmorSave, border);
+        }
+
+        public RollResult WardSave(int border, RollResult oldRolls)
+        {
+            return InternalRoll(oldRolls.FailedRolls, oldRolls.DiceSides, RollType.WardSave, border);
+        }
+
+        public RollResult JustRoll(int diceAmount, int selectedDice)
+        {
+            return InternalRoll(diceAmount, selectedDice, RollType.None, 0);
         }
     }
 }

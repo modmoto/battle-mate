@@ -8,27 +8,23 @@ namespace battle_mate.Tests
         public void TestRandom()
         {
             var dice = new Dice(123);
-            var rest = dice.Roll(12, 6);
+            var rest = dice.ToHit(12, 6, 4);
             var roll = rest.RawResults;
             Assert.AreEqual(12, roll.Count);
         }
 
         [Test]
-        public void TestContinueRollBigger()
+        public void TestToWound()
         {
             var dice = new Dice(123);
-            var rest = dice.Roll(12, 6);
-            var rollBiggerThan = dice.ContinueRollBiggerThan(3, rest);
-            Assert.AreEqual(8, rollBiggerThan.RawResults.Count);
-        }
+            var rest = dice.ToHit(12, 6, 4);
 
-        [Test]
-        public void TestContinueRollSmaller()
-        {
-            var dice = new Dice(123);
-            var rest = dice.Roll(12, 6);
-            var rollBiggerThan = dice.ContinueRollSmallerThan(3, rest);
-            Assert.AreEqual(5, rollBiggerThan.RawResults.Count);
+            var toWOund = dice.ToWound(3, rest);
+
+            Assert.AreEqual(3, toWOund.DiceGoal);
+            Assert.AreEqual(3, toWOund.SucessfullRolls);
+            Assert.AreEqual(4, toWOund.FailedRolls);
+            Assert.AreEqual(7, toWOund.RawResults.Count);
         }
     }
 }
