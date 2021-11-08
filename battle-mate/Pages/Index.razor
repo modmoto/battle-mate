@@ -202,9 +202,10 @@
             }
             else
             {
-                var lastResult = CurrentDiceMessage.Results.Last();
+                var rollResults = CurrentDiceMessage.Results;
+                var lastResult = rollResults.First();
                 var result = DoRoll(0, toHit, lastResult);
-                CurrentDiceMessage.Results.Insert(0, result);
+                rollResults.Insert(0, result);
                 _currentRoleState = result.RollState;
             }
         }
