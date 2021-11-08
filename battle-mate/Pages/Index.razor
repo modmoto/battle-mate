@@ -213,6 +213,7 @@
         if (CurrentDiceMessage.Results.Count == 1)
         {
             _messages.RemoveAt(0);
+            _currentRoleState = RollType.None;
         }
         else
         {
