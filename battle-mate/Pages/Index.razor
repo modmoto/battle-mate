@@ -118,9 +118,7 @@
                                 @res.Min+ : @res.BiggerThanAmount
                             </div>
                         }
-                        @if (_currentRoleState == RollType.ToHit
-                             || _currentRoleState == RollType.ToWound
-                             || _currentRoleState == RollType.ArmorSave)
+                        @if (rollResult.index + 1 == message.Results.Count && _currentRoleState != RollType.WardSave)
                         {
                             <div class="row align-items-center mt-2">
                                 <div class="col">
