@@ -27,7 +27,7 @@ namespace battle_mate.Tests
             Assert.AreEqual(4, toWOund.FailedRolls);
             Assert.AreEqual(7, toWOund.RawResults.Count);
         }
-        
+
         [Test]
         public void TestArmorSave()
         {
@@ -43,7 +43,7 @@ namespace battle_mate.Tests
             Assert.AreEqual(2, armorSave.FailedRolls);
             Assert.AreEqual(3, armorSave.RawResults.Count);
         }
-        
+
         [Test]
         public void TestWardSave()
         {

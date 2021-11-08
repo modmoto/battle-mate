@@ -18,19 +18,6 @@ namespace battle_mate
             GroupedResults = GroupDice(rawResults, sides);
         }
 
-        private List<DiceResultGroup> GroupDice(List<int> results, int sides)
-        {
-            var resultGroups = new List<DiceResultGroup>();
-
-            for (int i = 1; i <= sides; i++)
-            {
-                var resultGroup = new DiceResultGroup(i, results);
-                resultGroups.Add(resultGroup);
-            }
-
-            return resultGroups;
-        }
-
         public List<int> RawResults { get; }
         public List<int> RerollResults { get; }
         public int DiceSides { get; }
@@ -39,5 +26,18 @@ namespace battle_mate
         public int FailedRolls { get; }
         public List<DiceResultGroup> GroupedResults { get; }
         public RollType RollState { get; }
+
+        private List<DiceResultGroup> GroupDice(List<int> results, int sides)
+        {
+            var resultGroups = new List<DiceResultGroup>();
+
+            for (var i = 1; i <= sides; i++)
+            {
+                var resultGroup = new DiceResultGroup(i, results);
+                resultGroups.Add(resultGroup);
+            }
+
+            return resultGroups;
+        }
     }
 }

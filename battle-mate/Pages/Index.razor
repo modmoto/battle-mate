@@ -1,262 +1,285 @@
 ﻿@page "/"
 
 <div class="mb-3">
-    <button class="btn btn-secondary" @onclick="() => SetAndRollDice(1)">1</button>
-    <button class="btn btn-secondary" @onclick="() => SetAndRollDice(2)">2</button>
-    <button class="btn btn-secondary" @onclick="() => SetAndRollDice(3)">3</button>
-    <button class="btn btn-secondary" @onclick="() => SetAndRollDice(4)">4</button>
-    <button class="@GetDiceClass(3)" @onclick="() => SelectDice(3)">d3</button>
-    <button class="@GetDiceClass(6)" @onclick="() => SelectDice(6)">d6</button>
-    <button class="@GetDiceClass(8)" @onclick="() => SetAndRollDice(1, 8)">d8</button>
+  <button class="btn btn-secondary" @onclick="() => SetAndRollDice(1)">1</button>
+  <button class="btn btn-secondary" @onclick="() => SetAndRollDice(2)">2</button>
+  <button class="btn btn-secondary" @onclick="() => SetAndRollDice(3)">3</button>
+  <button class="btn btn-secondary" @onclick="() => SetAndRollDice(4)">4</button>
+  <button class="@GetDiceClass(3)" @onclick="() => SelectDice(3)">d3</button>
+  <button class="@GetDiceClass(6)" @onclick="() => SelectDice(6)">d6</button>
+  <button class="@GetDiceClass(8)" @onclick="() => SetAndRollDice(1, 8)">d8</button>
 </div>
 <div class="mb-3">
-    <div class="input-group mb-3">
-      <input inputmode="numeric" pattern="[0-9]*" type="text" class="form-control" @onfocus="PrepareForRoll" placeholder="Dice" aria-label="Dice" @bind="_diceAmount">
+  <div class="input-group mb-3">
+    <input inputmode="numeric" pattern="[0-9]*" type="text" class="form-control" @onfocus="PrepareForRoll" placeholder="Dice" aria-label="Dice" @bind="_diceAmount">
+  </div>
+  <div class="row align-items-center mt-2">
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(2)">
+        2+
+      </button>
     </div>
-    <div class="row align-items-center mt-2">
-        <div class="col">
-            <button class="btn btn-outline-primary w-100 my-2"  @onclick="() => ClickDice(2)">
-                2+
-            </button>
-        </div>
-        <div class="col">
-            <button class="btn btn-outline-primary w-100 my-2"  @onclick="() => ClickDice(3)">
-                3+
-            </button>
-        </div>
-        <div class="col">
-            <button class="btn btn-outline-primary w-100 my-2"  @onclick="() => ClickDice(4)">
-                4+
-            </button>
-        </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(3)">
+        3+
+      </button>
     </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(4)">
+        4+
+      </button>
+    </div>
+  </div>
 
-    <div class="row align-items-center">
-        <div class="col">
-            <button class="btn btn-outline-primary w-100 my-2"  @onclick="() => ClickDice(5)">
-                5+
-            </button>
-        </div>
-        <div class="col">
-            <button class="btn btn-outline-primary w-100 my-2"  @onclick="() => ClickDice(6)">
-                6+
-            </button>
-        </div>
-        <div class="col">
-            <button class="btn btn-outline-primary w-100 my-2"  @onclick="RollDice">
-                <span class="oi oi-menu" aria-hidden="true"></span>
-            </button>
-        </div>
+  <div class="row align-items-center">
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(5)">
+        5+
+      </button>
     </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(6)">
+        6+
+      </button>
+    </div>
+    <div class="col">
+      <div class="modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="RollDice">
+        <span class="oi oi-menu" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
 </div>
 <div>
-    @foreach (var message in _messages.Select((value, index) => new { value, index }))
-    {
-        <div class="card mb-3">
-        @if (message.value.Results.First().RollState == RollType.None)
+  @foreach (var message in _messages.Select((value, index) => new {value, index}))
+  {
+    <div class="card mb-3">
+      @if (message.value.Results.First().RollState == RollType.None)
+      {
+        <div class="card-header">
+          @(message.value.Results.First().RawResults.Count)D@(message.value.Results.First().DiceSides)
+        </div>
+      }
+      @if (message.value.Results.Last().RollState == RollType.ToHit)
+      {
+        <div class="card-header">
+          @(message.value.Results.First().RawResults.Count) attacks hitting on @(message.value.Results.First().DiceGoal)+
+        </div>
+      }
+      <div class="card-body m-0">
+        @foreach (var rollResult in message.value.Results.Select((val, index) => new {val, index}))
         {
-            <div class="card-header">
-                @(message.value.Results.First().RawResults.Count)D@(message.value.Results.First().DiceSides)
-            </div>
-        }
-        @if (message.value.Results.Last().RollState == RollType.ToHit)
-        {
-            <div class="card-header">
-                @(message.value.Results.First().RawResults.Count) attacks hitting on @(message.value.Results.First().DiceGoal)+
-            </div>
-        }
-        <div class="card-body m-0">
-            @foreach (var rollResult in message.value.Results.Select((val, index) => new { val, index}))
+          <div>
+            @if (rollResult.val.RollState == RollType.RerollBiggerThan)
             {
-                <div>
-                    @if (rollResult.val.RollState == RollType.RerollBiggerThan)
-                    {
-                        <div>
-                            Reroll @(rollResult.val.DiceGoal)+ (@string.Join(", ", rollResult.val.RerollResults))
-                        </div>
-                    }
-                    @if (rollResult.val.RollState == RollType.RerollSmallerThan)
-                    {
-                        <div>
-                            Reroll @(string.Join(", ", Enumerable.Range(1, rollResult.val.DiceGoal))) (@string.Join(", ", rollResult.val.RerollResults))
-                        </div>
-                    }
-                    @if (rollResult.val.RollState == RollType.ToHit)
-                    {
-                        <div>
-                            <b>@(rollResult.val.SucessfullRolls) hitting</b> on @(rollResult.val.DiceGoal)+
-                        </div>
-                    }
-                    @if (rollResult.val.RollState == RollType.ToWound)
-                    {
-                        <div>
-                            <b>@(rollResult.val.SucessfullRolls) wounding</b> on @(rollResult.val.DiceGoal)+
-                        </div>
-                    }
-                    @if (rollResult.val.RollState == RollType.ArmorSave)
-                    {
-                        <div>
-                            <b>@(rollResult.val.FailedRolls) armor saves failed</b> on @(rollResult.val.DiceGoal)+
-                        </div>
-                    }
-                    @if (rollResult.val.RollState == RollType.WardSave)
-                    {
-                        <div>
-                            <b>@(rollResult.val.FailedRolls) ward saves failed</b> on @(rollResult.val.DiceGoal)+
-                        </div>
-                    }                                    
-
-                    @if (rollResult.index == 0 && message.index == 0)
-                    {
-                        <button class="btn btn-outline-danger float-end" @onclick="DeleteLastRoll">
-                            X
-                        </button>
-                    }
-                    else
-                    {
-                        <div class="float-end"></div>
-                    }
-                </div>
-                <div>
-                    @(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides): 
-                    @if (rollResult.val.DiceGoal == 0)
-                    {
-                        @string.Join(", ", rollResult.val.RawResults)
-                    }
-                    else
-                    {
-                        @foreach (var res in rollResult.val.RawResults.Select((value, index) => new { value, index}))
-                        {
-                            if (rollResult.val.DiceGoal > res.value && rollResult.val.DiceGoal != 0)
-                            {
-                                <span class="red">@(res.value)
-                                    @if (res.index + 1 != rollResult.val.RawResults.Count)
-                                    {
-                                        <span>, </span>
-                                    }
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="green">@(res.value)
-                                    @if (res.index + 1 != rollResult.val.RawResults.Count)
-                                    {
-                                        <span>, </span>
-                                    }
-                                </span>
-                            }
-                        }
-                    }                                           
-                    @if (rollResult.val.RawResults.Count > 1)
-                    {
-                        <span> (@rollResult.val.RawResults.Sum())</span>
-                    }
-                </div>
-                <div>
-                    <div class="row justify-content-between mb-3">
-                        @foreach (var res in rollResult.val.GroupedResults)
-                        {
-                            <div class="col">
-                                @res.Min+ : @res.BiggerThanAmount
-                            </div>
-                        }
-                    </div>
-                </div>
+              <div>
+                Reroll @(rollResult.val.DiceGoal)+ (@string.Join(", ", rollResult.val.RerollResults))
+              </div>
             }
-        </div>
-        </div>
-    }
+            @if (rollResult.val.RollState == RollType.RerollSmallerThan)
+            {
+              <div>
+                Reroll @(string.Join(", ", Enumerable.Range(1, rollResult.val.DiceGoal))) (@string.Join(", ", rollResult.val.RerollResults))
+              </div>
+            }
+            @if (rollResult.val.RollState == RollType.ToHit)
+            {
+              <div>
+                <b>@(rollResult.val.SucessfullRolls) hitting</b> on @(rollResult.val.DiceGoal)+
+              </div>
+            }
+            @if (rollResult.val.RollState == RollType.ToWound)
+            {
+              <div>
+                <b>@(rollResult.val.SucessfullRolls) wounding</b> on @(rollResult.val.DiceGoal)+
+              </div>
+            }
+            @if (rollResult.val.RollState == RollType.ArmorSave)
+            {
+              <div>
+                <b>@(rollResult.val.FailedRolls) armor saves failed</b> on @(rollResult.val.DiceGoal)+
+              </div>
+            }
+            @if (rollResult.val.RollState == RollType.WardSave)
+            {
+              <div>
+                <b>@(rollResult.val.FailedRolls) ward saves failed</b> on @(rollResult.val.DiceGoal)+
+              </div>
+            }
+
+            @if (rollResult.index == 0 && message.index == 0)
+            {
+              <button class="btn btn-outline-danger float-end" @onclick="DeleteLastRoll">
+                X
+              </button>
+            }
+            else
+            {
+              <div class="float-end"></div>
+            }
+          </div>
+          <div>
+            @(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides):
+            @if (rollResult.val.DiceGoal == 0)
+            {
+              @string.Join(", ", rollResult.val.RawResults)
+            }
+            else
+            {
+              @foreach (var res in rollResult.val.RawResults.Select((value, index) => new {value, index}))
+              {
+                if (rollResult.val.DiceGoal > res.value && rollResult.val.DiceGoal != 0)
+                {
+                  <span class="red">
+                    @(res.value)
+                    @if (res.index + 1 != rollResult.val.RawResults.Count)
+                    {
+                      <span>, </span>
+                    }
+                  </span>
+                }
+                else
+                {
+                  <span class="green">
+                    @(res.value)
+                    @if (res.index + 1 != rollResult.val.RawResults.Count)
+                    {
+                      <span>, </span>
+                    }
+                  </span>
+                }
+              }
+            }
+            @if (rollResult.val.RawResults.Count > 1)
+            {
+              <span> (@rollResult.val.RawResults.Sum())</span>
+            }
+          </div>
+          <div>
+            <div class="row justify-content-between mb-3">
+              @foreach (var res in rollResult.val.GroupedResults)
+              {
+                <div class="col">
+                  @res.Min+ : @res.BiggerThanAmount
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
 </div>
 
 
 @inject Dice _dice
 
 @code {
-    private int? _diceAmount;
-    private int _selectedDice = 6;
-    private List<DiceMessage> _messages = new();
-    private RollType _currentRoleState = RollType.None;
-    private DiceMessage CurrentDiceMessage => _messages.FirstOrDefault();
+  private int? _diceAmount;
+  private int _selectedDice = 6;
+  private readonly List<DiceMessage> _messages = new();
+  private RollType _currentRoleState = RollType.None;
+  private DiceMessage CurrentDiceMessage => _messages.FirstOrDefault();
 
-    private void SetAndRollDice(int amount)
+  private void SetAndRollDice(int amount)
+  {
+    _diceAmount = amount;
+    RollDice();
+  }
+
+  private void RollDice()
+  {
+    if (_diceAmount != null)
     {
-        _diceAmount = amount;
-        RollDice();
+      var rollResult = _dice.JustRoll(_diceAmount.Value, _selectedDice);
+      var diceMessage = new DiceMessage(rollResult);
+      _messages.Insert(0, diceMessage);
     }
+  }
 
-    private void RollDice()
+  private void SelectDice(int diceSide)
+  {
+    _selectedDice = diceSide;
+  }
+
+  private object GetDiceClass(int dice)
+  {
+    return dice == _selectedDice ? "btn btn-outline-primary" : "btn btn-outline-secondary";
+  }
+
+  private void DeleteLastRoll()
+  {
+    if (CurrentDiceMessage.Results.Count == 1)
     {
-        if (_diceAmount != null)
-        {
-            var rollResult = _dice.JustRoll(_diceAmount.Value, _selectedDice);
-            var diceMessage = new DiceMessage(rollResult);
-            _messages.Insert(0, diceMessage);
-        }
+      _messages.RemoveAt(0);
+      _currentRoleState = RollType.None;
     }
-
-    private void SelectDice(int diceSide)
+    else
     {
-        _selectedDice = diceSide;
+      CurrentDiceMessage.Results.RemoveAt(0);
+      _currentRoleState = CurrentDiceMessage.Results.Last().RollState;
     }
+  }
 
-    private object GetDiceClass(int dice)
+  private void ClickDice(int toHit)
+  {
+    if (_diceAmount != null)
     {
-        return dice == _selectedDice ? "btn btn-outline-primary" : "btn btn-outline-secondary";
+      if (_currentRoleState == RollType.None || _currentRoleState == RollType.WardSave)
+      {
+        var result = DoRoll(_diceAmount.Value, toHit, null);
+        _messages.Insert(0, new DiceMessage(result));
+        _currentRoleState = result.RollState;
+      }
+      else
+      {
+        var rollResults = CurrentDiceMessage.Results;
+        var lastResult = rollResults.First();
+        var result = DoRoll(0, toHit, lastResult);
+        rollResults.Insert(0, result);
+        _currentRoleState = result.RollState;
+      }
     }
+  }
 
-    private void DeleteLastRoll()
+  private RollResult DoRoll(int diceAmount, int toHit, RollResult oldResult)
+  {
+    return _currentRoleState switch
     {
-        if (CurrentDiceMessage.Results.Count == 1)
-        {
-            _messages.RemoveAt(0);
-            _currentRoleState = RollType.None;
-        }
-        else
-        {
-            CurrentDiceMessage.Results.RemoveAt(0);
-            _currentRoleState = CurrentDiceMessage.Results.Last().RollState;
-        }
-    }
+      RollType.None => _dice.ToHit(diceAmount, _selectedDice, toHit),
+      RollType.ToHit => _dice.ToWound(toHit, oldResult),
+      RollType.ToWound => _dice.ArmorSave(toHit, oldResult),
+      RollType.ArmorSave => _dice.WardSave(toHit, oldResult),
+      _ => _dice.ToHit(diceAmount, _selectedDice, toHit)
+      };
+  }
 
-    private void ClickDice(int toHit)
-    {
-        if (_diceAmount != null)
-        {
-            if (_currentRoleState == RollType.None || _currentRoleState == RollType.WardSave)
-            {
-                var result = DoRoll(_diceAmount.Value, toHit, null);
-                _messages.Insert(0, new DiceMessage(result));
-                _currentRoleState = result.RollState;
-            }
-            else
-            {
-                var rollResults = CurrentDiceMessage.Results;
-                var lastResult = rollResults.First();
-                var result = DoRoll(0, toHit, lastResult);
-                rollResults.Insert(0, result);
-                _currentRoleState = result.RollState;
-            }
-        }
-    }
+  private void SetAndRollDice(int amount, int sides)
+  {
+    _selectedDice = sides;
+    SetAndRollDice(amount);
+  }
 
-    private RollResult DoRoll(int diceAmount, int toHit, RollResult oldResult) => _currentRoleState switch
-    {
-        RollType.None => _dice.ToHit(diceAmount, _selectedDice, toHit),
-        RollType.ToHit => _dice.ToWound(toHit, oldResult),
-        RollType.ToWound => _dice.ArmorSave(toHit, oldResult),
-        RollType.ArmorSave => _dice.WardSave(toHit, oldResult),
-        _ => _dice.ToHit(diceAmount, _selectedDice, toHit)
-    };
+  private void PrepareForRoll()
+  {
+    _diceAmount = null;
+    _selectedDice = 6;
+  }
 
-    private void SetAndRollDice(int amount, int sides)
-    {
-        _selectedDice = sides;
-        SetAndRollDice(amount);
-    }
-
-    private void PrepareForRoll()
-    {
-        _diceAmount = null;
-        _selectedDice = 6;
-    }
 }

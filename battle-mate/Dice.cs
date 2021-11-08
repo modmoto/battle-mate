@@ -6,7 +6,7 @@ namespace battle_mate
 {
     public class Dice
     {
-        private Random _random;
+        private readonly Random _random;
 
         public Dice(int seed = 0)
         {
@@ -21,10 +21,7 @@ namespace battle_mate
         private RollResult InternalRoll(int count, int sides, RollType rollType, int border)
         {
             var rolls = new List<int>();
-            for (int i = 0; i < count; i++)
-            {
-                rolls.Add(_random.Next(1, sides + 1));
-            }
+            for (var i = 0; i < count; i++) rolls.Add(_random.Next(1, sides + 1));
 
             return new RollResult(rolls, new List<int>(), sides, rollType, border);
         }
