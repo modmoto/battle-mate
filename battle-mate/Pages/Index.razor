@@ -104,8 +104,7 @@
                     </div>
                 }
                 <div>
-                    @(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides): <span>@string.Join(", ", rollResult.val.RawResults)
-                    </span>
+                    @(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides): @string.Join(", ", rollResult.val.RawResults)
                     @if (rollResult.val.RawResults.Count > 1)
                     {
                         <span> (@rollResult.val.RawResults.Sum())</span>
@@ -119,7 +118,9 @@
                                 @res.Min+ : @res.BiggerThanAmount
                             </div>
                         }
-                        @if (rollResult.index + 1 == message.Results.Count)
+                        @if (_currentRoleState == RollType.ToHit
+                             || _currentRoleState == RollType.ToWound
+                             || _currentRoleState == RollType.ArmorSave)
                         {
                             <div class="row align-items-center mt-2">
                                 <div class="col">
@@ -169,7 +170,7 @@
                 </div>
             }
         </div>
-    </div>
+        </div>
     }
 </div>
 
@@ -218,6 +219,7 @@
         else
         {
             CurrentDiceMessage.Results.RemoveAt(CurrentDiceMessage.Results.Count - 1);
+            _currentRoleState = CurrentDiceMessage.Results.Last().RollState;
         }
     }
 
@@ -247,8 +249,6 @@
         RollType.ToHit => _dice.ToWound(toHit, oldResult),
         RollType.ToWound => _dice.ArmorSave(toHit, oldResult),
         RollType.ArmorSave => _dice.WardSave(toHit, oldResult),
-        _ => _dice.ToHit(diceAmount, _selectedDice, toHit),
-        };
-    }
+        _ => _dice.ToHit(diceAmount, _selectedDice, toHit)
+    };
 }
-
