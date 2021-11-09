@@ -59,11 +59,11 @@
                 </div>
                 <div class="col">
                   <button type="button" class="btn btn-outline-primary w-100 my-2" data-bs-dismiss="modal" disabled="@(!EnabledNoSave)" @onclick="RollWithNoSaves">
-                    @if (CurrentDiceMessage?.Results?.First()?.RollState is RollType.ToWound)
+                    @if (CurrentRoleState is RollState.ToWound)
                     {
                       <span>No armor saves</span>
                     } 
-                    else if (CurrentDiceMessage?.Results?.First()?.RollState is RollType.ArmorSave)
+                    else if (CurrentRoleState is RollState.ArmorSave)
                     {
                       <span>No ward saves</span>
                     }
@@ -74,17 +74,26 @@
                   </button>
                 </div>
               </div>
+              <div class="row">
+                <div class="col">
+                </div>
+                <div class="col">
+                  <button type="button" class="btn btn-outline-primary w-100 my-2" data-bs-dismiss="modal" disabled="@(!IsFirstRoll)" @onclick="RollAutoHits">
+                    Automatic hits
+                  </button>
+                </div>
+              </div>
               <div class="modal-header">
                 <h5 class="modal-title">Options</h5>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="option-battlefocus" checked="@battlefocusChecked">
+              <div class="form-check p-3">
+                <input class="form-check-input" type="checkbox" value="" id="option-battlefocus" checked="@_battlefocusChecked">
                 <label class="form-check-label" for="option-battlefocus">
                   Battlefocus
                 </label>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="option-poison" checked="@poisonChecked">
+              <div class="form-check p-3">
+                <input class="form-check-input" type="checkbox" value="" id="option-poison" checked="@_poisonChecked">
                 <label class="form-check-label" for="option-poison">
                   Poison
                 </label>
@@ -105,47 +114,59 @@
   @foreach (var message in _messages.Select((value, index) => new {value, index}))
   {
     <div class="card mb-3">
-      @if (message.value.Results.First().RollState == RollType.None)
+      @if (message.value.Results.First().RollState == RollState.None)
       {
         <div class="card-header">
           @(message.value.Results.First().RawResults.Count)D@(message.value.Results.First().DiceSides)
         </div>
       }
-      @if (message.value.Results.Last().RollState == RollType.ToHit)
+      @if (message.value.Results.Last().RollState == RollState.AutomaticHit)
       {
         <div class="card-header">
-          @(message.value.Results.First().RawResults.Count) attacks hitting on @(message.value.Results.First().DiceGoal)+
+          @(message.value.Results.Last().RawResults.Count) automatic hits
+        </div>
+      }
+      @if (message.value.Results.Last().RollState == RollState.ToHit)
+      {
+        <div class="card-header">
+          @(message.value.Results.Last().RawResults.Count) attacks hitting on @(message.value.Results.First().DiceGoal)+
         </div>
       }
       <div class="card-body m-0">
         @foreach (var rollResult in message.value.Results.Select((val, index) => new {val, index}))
         {
           <div>
-            @if (rollResult.val.RollState == RollType.RerollBiggerThan)
+            @if (rollResult.val.RollState == RollState.RerollBiggerThan)
             {
               <div>
                 Reroll @(rollResult.val.DiceGoal)+ (@string.Join(", ", rollResult.val.RerollResults))
               </div>
             }
-            @if (rollResult.val.RollState == RollType.RerollSmallerThan)
+            @if (rollResult.val.RollState == RollState.RerollSmallerThan)
             {
               <div>
                 Reroll @(string.Join(", ", Enumerable.Range(1, rollResult.val.DiceGoal))) (@string.Join(", ", rollResult.val.RerollResults))
               </div>
             }
-            @if (rollResult.val.RollState == RollType.ToHit)
+            @if (rollResult.val.RollState == RollState.ToHit)
             {
               <div>
                 <b>@(rollResult.val.SucessfullRolls) hitting</b> on @(rollResult.val.DiceGoal)+
               </div>
             }
-            @if (rollResult.val.RollState == RollType.ToWound)
+            @if (rollResult.val.RollState == RollState.ToWound)
             {
               <div>
                 <b>@(rollResult.val.SucessfullRolls) wounding</b> on @(rollResult.val.DiceGoal)+
               </div>
             }
-            @if (rollResult.val.RollState == RollType.ArmorSave)
+            @if (rollResult.val.RollState == RollState.AutomaticHit)
+            {
+              <div>
+                <b>@(rollResult.val.SucessfullRolls) automatic hits</b>
+              </div>
+            }
+            @if (rollResult.val.RollState == RollState.ArmorSave)
             {
               @if (rollResult.val.DiceGoal == _defaultNoRoll)
               {
@@ -160,7 +181,7 @@
                 </div>
               }
             }
-            @if (rollResult.val.RollState == RollType.WardSave)
+            @if (rollResult.val.RollState == RollState.WardSave)
             {
               @if (rollResult.val.DiceGoal == _defaultNoRoll)
               {
@@ -191,10 +212,10 @@
               }
             </div>
           </div>
-          @if (rollResult.val.DiceGoal != _defaultNoRoll)
+          @if (rollResult.val.DiceGoal != _defaultNoRoll && rollResult.val.RollState != RollState.AutomaticHit)
           {
             <div>
-              <span>@(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides):</span>
+              <span>@(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides): </span>
               @if (rollResult.val.DiceGoal == 0)
               {
                 @string.Join(", ", rollResult.val.RawResults)
@@ -253,11 +274,12 @@
   private int? _diceAmount;
   private int _selectedDice = 6;
   private int _defaultNoRoll = 7;
-  private bool poisonChecked = false;
-  private bool battlefocusChecked = false;
-  private bool EnabledNoSave => CurrentDiceMessage?.Results?.First()?.RollState is RollType.ToWound or RollType.ArmorSave;
+  private bool _poisonChecked = false;
+  private bool _battlefocusChecked = false;
+  private bool EnabledNoSave => CurrentDiceMessage?.Results?.First()?.RollState is RollState.ToWound or RollState.ArmorSave;
+  private bool IsFirstRoll => CurrentRoleState is RollState.WardSave or RollState.None;
   private readonly List<DiceMessage> _messages = new();
-  private RollType _currentRoleState = RollType.None;
+  private RollState CurrentRoleState => CurrentDiceMessage?.Results?.First().RollState ?? RollState.None;
   private DiceMessage CurrentDiceMessage => _messages.FirstOrDefault();
 
   private void SetAndRollDice(int amount)
@@ -292,12 +314,10 @@
     if (rollResults.Count == 1)
     {
       _messages.RemoveAt(0);
-      _currentRoleState = RollType.None;
     }
     else
     {
       rollResults.RemoveAt(0);
-      _currentRoleState = rollResults.First().RollState;
     }
   }
 
@@ -305,32 +325,31 @@
   {
     if (_diceAmount != null)
     {
-      if (_currentRoleState == RollType.None || _currentRoleState == RollType.WardSave)
+      if (IsFirstRoll)
       {
-        var result = DoRoll(_diceAmount.Value, toHit, null);
+        var result = DoRoll(_diceAmount.Value, toHit, null, false);
         _messages.Insert(0, new DiceMessage(result));
-        _currentRoleState = result.RollState;
       }
       else
       {
         var rollResults = CurrentDiceMessage.Results;
         var lastResult = rollResults.First();
-        var result = DoRoll(0, toHit, lastResult);
+        var result = DoRoll(0, toHit, lastResult, false);
         rollResults.Insert(0, result);
-        _currentRoleState = result.RollState;
       }
     }
   }
 
-  private RollResult DoRoll(int diceAmount, int toHit, RollResult oldResult)
+  private RollResult DoRoll(int diceAmount, int toHit, RollResult oldResult, bool automaticHits)
   {
-    return _currentRoleState switch
+    return CurrentRoleState switch
     {
-      RollType.None => _dice.ToHit(diceAmount, _selectedDice, toHit),
-      RollType.ToHit => _dice.ToWound(toHit, oldResult),
-      RollType.ToWound => _dice.ArmorSave(toHit, oldResult),
-      RollType.ArmorSave => _dice.WardSave(toHit, oldResult),
-      _ => _dice.ToHit(diceAmount, _selectedDice, toHit)
+      RollState.None => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits),
+      RollState.AutomaticHit => _dice.ToWound(toHit, oldResult),
+      RollState.ToHit => _dice.ToWound(toHit, oldResult),
+      RollState.ToWound => _dice.ArmorSave(toHit, oldResult),
+      RollState.ArmorSave => _dice.WardSave(toHit, oldResult),
+      _ => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits)
       };
   }
 
@@ -348,21 +367,28 @@
 
   private void RollWithNoSaves()
   {
-    if (CurrentDiceMessage?.Results?.First()?.RollState == RollType.ToWound)
+    if (CurrentDiceMessage?.Results?.First()?.RollState == RollState.ToWound)
     {
       var rollResults = CurrentDiceMessage.Results;
       var lastResult = rollResults.First();
-      var result = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollType.ArmorSave, _defaultNoRoll);
+      var result = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollState.ArmorSave, _defaultNoRoll);
       rollResults.Insert(0, result);
-      _currentRoleState = result.RollState;
     }
-    else if (CurrentDiceMessage?.Results?.First()?.RollState == RollType.ArmorSave)
+    else if (CurrentDiceMessage?.Results?.First()?.RollState == RollState.ArmorSave)
     {
       var rollResults = CurrentDiceMessage.Results;
       var lastResult = rollResults.First();
-      var result = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollType.WardSave, _defaultNoRoll);
+      var result = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollState.WardSave, _defaultNoRoll);
       rollResults.Insert(0, result);
-      _currentRoleState = result.RollState;
+    }
+  }
+
+  private void RollAutoHits()
+  {
+    if (IsFirstRoll && _diceAmount != null)
+    {
+      var result = DoRoll(_diceAmount.Value, 0, null, true);
+      _messages.Insert(0, new DiceMessage(result));
     }
   }
 }

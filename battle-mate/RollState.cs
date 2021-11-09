@@ -1,6 +1,6 @@
 namespace battle_mate
 {
-    public enum RollType
+    public enum RollState
     {
         None,
         ToHit,
@@ -8,6 +8,7 @@ namespace battle_mate
         ArmorSave,
         WardSave,
         RerollBiggerThan,
-        RerollSmallerThan
+        RerollSmallerThan,
+        AutomaticHit
     }
 }

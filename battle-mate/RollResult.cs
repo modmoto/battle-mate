@@ -6,7 +6,7 @@ namespace battle_mate
 {
     public class RollResult
     {
-        public RollResult(List<int> rawResults, List<int> rerollResults, int sides, RollType state, int diceGoal)
+        public RollResult(List<int> rawResults, List<int> rerollResults, int sides, RollState state, int diceGoal)
         {
             RawResults = rawResults.OrderBy(r => r).ToList();
             RerollResults = rerollResults.OrderBy(r => r).ToList();
@@ -25,7 +25,7 @@ namespace battle_mate
         public int SucessfullRolls { get; }
         public int FailedRolls { get; }
         public List<DiceResultGroup> GroupedResults { get; }
-        public RollType RollState { get; }
+        public RollState RollState { get; }
 
         private List<DiceResultGroup> GroupDice(List<int> results, int sides)
         {
