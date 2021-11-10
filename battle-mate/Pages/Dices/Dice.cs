@@ -13,28 +13,28 @@ namespace battle_mate
             _random = seed == default ? new Random() : new Random(seed);
         }
 
-        public RollResult ToHit(int count, int sides, int border, bool automaticHits, bool battleFocus, bool poison)
+        public RollResult ToHit(int count, int sides, int border, bool automaticHits, bool battleFocus, bool poison, bool lethalStrike)
         {
             if (automaticHits)
             {
                 return InternalRoll(count, sides, RollState.AutomaticHit, 0);
             }
             
-            return InternalRoll(count, sides, RollState.ToHit, border, true, false, battleFocus, poison, 0);
+            return InternalRoll(count, sides, RollState.ToHit, border, true, battleFocus, false, poison, 0, false, lethalStrike, 0);
         }
 
-        private RollResult InternalRoll(int count, int sides, RollState rollState, int border, bool forHit, bool forWound, bool battleFocus, bool poison, int poisonHits)
+        private RollResult InternalRoll(int count, int sides, RollState rollState, int border, bool forHit, bool battleFocus, bool forWound, bool poison, int poisonHits, bool forArmorSave, bool lethalStrike, int lethalStrikeHits)
         {
             var rolls = GetRandomRolls(count, sides);
 
-            return new RollResult(rolls, new List<int>(), sides, rollState, border, forHit, forWound, battleFocus, poison, poisonHits);
+            return new RollResult(rolls, new List<int>(), sides, rollState, border, forHit, battleFocus, forWound, poison, poisonHits, forArmorSave, lethalStrike, lethalStrikeHits);
         }
 
         private RollResult InternalRoll(int count, int sides, RollState rollState, int border)
         {
             var rolls = GetRandomRolls(count, sides);
 
-            return new RollResult(rolls, new List<int>(), sides, rollState, border, false, false, false, false, 0);
+            return new RollResult(rolls, new List<int>(), sides, rollState, border, false, false, false, false, 0, false, false, 0);
         }
 
         private List<int> GetRandomRolls(int count, int sides)
@@ -52,32 +52,32 @@ namespace battle_mate
         {
             var count = oldRolls.RawResults.Count(d => d <= border);
             var resulstThatStay = oldRolls.RawResults.Where(d => d > border).ToList();
-            return ReRoll(count, resulstThatStay, oldRolls.DiceSides, RollState.RerollSmallerThan, border, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits);
+            return ReRoll(count, resulstThatStay, oldRolls.DiceSides, RollState.RerollSmallerThan, border, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits, oldRolls.LethalStrike, oldRolls.LethalStrikeHits);
         }
 
         public RollResult RerRollBiggerThan(int border, RollResult oldRolls)
         {
             var count = oldRolls.RawResults.Count(d => d >= border);
             var resulstThatStay = oldRolls.RawResults.Where(d => d < border).ToList();
-            return ReRoll(count, resulstThatStay, oldRolls.DiceSides, RollState.RerollBiggerThan, border, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits);
+            return ReRoll(count, resulstThatStay, oldRolls.DiceSides, RollState.RerollBiggerThan, border, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits, oldRolls.LethalStrike, oldRolls.LethalStrikeHits);
         }
 
-        private RollResult ReRoll(int count, List<int> resulstThatStay, int sides, RollState rollState, int border, bool battleFocus, bool poison, int poisonHits)
+        private RollResult ReRoll(int count, List<int> resulstThatStay, int sides, RollState rollState, int border, bool battleFocus, bool poison, int poisonHits, bool lethalStrike, int lethalStrikeHits)
         {
             var newRoll = InternalRoll(count, sides, rollState, border).RawResults;
             resulstThatStay.AddRange(newRoll);
             resulstThatStay.Sort();
-            return new RollResult(resulstThatStay, newRoll, sides, rollState, border, rollState == RollState.ToHit, rollState == RollState.ToWound, battleFocus, poison, poisonHits);
+            return new RollResult(resulstThatStay, newRoll, sides, rollState, border, rollState == RollState.ToHit, battleFocus, rollState == RollState.ToWound, poison, poisonHits, rollState == RollState.ArmorSave, lethalStrike, lethalStrikeHits);
         }
 
         public RollResult ToWound(int border, RollResult oldRolls)
         {
-            return InternalRoll(oldRolls.SucessfullRolls - oldRolls.PoisonHits, oldRolls.DiceSides, RollState.ToWound, border, false, true, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits);
+            return InternalRoll(oldRolls.SucessfullRolls - oldRolls.PoisonHits, oldRolls.DiceSides, RollState.ToWound, border, false, oldRolls.BattleFocus, true, oldRolls.Poison, oldRolls.PoisonHits, false, oldRolls.LethalStrike, oldRolls.LethalStrikeHits);
         }
 
         public RollResult ArmorSave(int border, RollResult oldRolls)
         {
-            return InternalRoll(oldRolls.SucessfullRolls, oldRolls.DiceSides, RollState.ArmorSave, border);
+            return InternalRoll(oldRolls.SucessfullRolls - oldRolls.LethalStrikeHits, oldRolls.DiceSides, RollState.ArmorSave, border, false, oldRolls.BattleFocus, false, oldRolls.Poison, oldRolls.PoisonHits, true, oldRolls.LethalStrike, oldRolls.LethalStrikeHits);
         }
 
         public RollResult WardSave(int border, RollResult oldRolls)

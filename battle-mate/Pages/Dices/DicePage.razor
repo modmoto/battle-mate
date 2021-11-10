@@ -87,7 +87,7 @@
                 <h5 class="modal-title">Options</h5>
               </div>
               <div class="form-check p-3">
-                <input class="form-check-input" type="checkbox" value="" id="option-battlefocus" @bind="_battlefocusChecked">
+                <input class="form-check-input" type="checkbox" value="" id="option-battlefocus" @bind="_battleFocusChecked">
                 <label class="form-check-label" for="option-battlefocus">
                   Battlefocus
                 </label>
@@ -96,6 +96,12 @@
                 <input class="form-check-input" type="checkbox" value="" id="option-poison" @bind="_poisonChecked">
                 <label class="form-check-label" for="option-poison">
                   Poison
+                </label>
+              </div>
+              <div class="form-check p-3">
+                <input class="form-check-input" type="checkbox" value="" id="option-lethal-strike" @bind="_lethalStrikeChecked">
+                <label class="form-check-label" for="option-lethal-strike">
+                  Lethal Strike
                 </label>
               </div>
             </div>
@@ -186,7 +192,13 @@
               else
               {
                 <div>
-                  <b>@(rollResult.val.FailedRolls) armor saves failed</b> on @(rollResult.val.DiceGoal)+
+                  <b>@(rollResult.val.FailedRolls) armor saves failed</b>
+                  @if (rollResult.val.LethalStrike)
+                  {
+                    <span> (+@rollResult.val.LethalStrikeHits with AP10 from Lethal Strike)</span>  
+                  }
+                  
+                  <span> on @(rollResult.val.DiceGoal)+</span>
                 </div>
               }
             }
@@ -283,8 +295,9 @@
   private int? _diceAmount;
   private int _selectedDice = 6;
   private int _defaultNoRoll = 7;
-  private bool _poisonChecked = false;
-  private bool _battlefocusChecked = false;
+  private bool _poisonChecked;
+  private bool _lethalStrikeChecked;
+  private bool _battleFocusChecked;
   private bool EnabledNoSave => CurrentDiceMessage?.Results?.First()?.RollState is RollState.ToWound or RollState.ArmorSave;
   private bool IsFirstRoll => FirstRoleState is RollState.WardSave or RollState.None;
   private readonly List<DiceMessage> _messages = new();
@@ -353,14 +366,14 @@
   {
     var rollResult = FirstRoleState switch
     {
-      RollState.None => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battlefocusChecked, _poisonChecked),
+      RollState.None => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _lethalStrikeChecked),
       RollState.AutomaticHit => _dice.ToWound(toHit, oldResult),
       RollState.ToHit => _dice.ToWound(toHit, oldResult),
       RollState.ToWound => _dice.ArmorSave(toHit, oldResult),
       RollState.ArmorSave => _dice.WardSave(toHit, oldResult),
-      _ => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battlefocusChecked, _poisonChecked)
+      _ => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _lethalStrikeChecked)
       };
-    _battlefocusChecked = false;
+    _battleFocusChecked = false;
     _poisonChecked = false;
     return rollResult;
   }
@@ -383,14 +396,14 @@
     {
       var rollResults = CurrentDiceMessage.Results;
       var lastResult = rollResults.First();
-      var result = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollState.ArmorSave, _defaultNoRoll, false, false, lastResult.BattleFocus, lastResult.Poison, lastResult.PoisonHits);
+      var result = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollState.ArmorSave, _defaultNoRoll, false, lastResult.BattleFocus, false, lastResult.Poison, lastResult.PoisonHits, false, lastResult.LethalStrike, lastResult.LethalStrikeHits);
       rollResults.Insert(0, result);
     }
     else if (CurrentDiceMessage?.Results?.First()?.RollState == RollState.ArmorSave)
     {
       var rollResults = CurrentDiceMessage.Results;
       var lastResult = rollResults.First();
-      var result = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollState.WardSave, _defaultNoRoll, false, false, lastResult.BattleFocus, lastResult.Poison, lastResult.PoisonHits);
+      var result = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollState.WardSave, _defaultNoRoll, false, lastResult.BattleFocus, false, lastResult.Poison, lastResult.PoisonHits, false, lastResult.LethalStrike, lastResult.LethalStrikeHits);
       rollResults.Insert(0, result);
     }
   }

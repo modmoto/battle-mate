@@ -6,14 +6,28 @@ namespace battle_mate
 {
     public class RollResult
     {
-        public RollResult(List<int> rawResults, List<int> rerollResults, int sides, RollState state, int diceGoal, bool forHit, bool forWound, bool battleFocus, bool poison, int poisonHits)
+        public RollResult(List<int> rawResults,
+            List<int> rerollResults,
+            int sides,
+            RollState state,
+            int diceGoal,
+            bool forHit,
+            bool battleFocus,
+            bool forWound,
+            bool poison,
+            int poisonHits,
+            bool forArmorSave,
+            bool lethalStrike,
+            int lethalStrikeHits)
         {
             RawResults = rawResults.OrderBy(r => r).ToList();
             RerollResults = rerollResults.OrderBy(r => r).ToList();
             SucessfullRolls = rawResults.Count(r => r >= diceGoal);
             FailedRolls = rawResults.Count(r => r < diceGoal);
             Poison = poison;
-            PoisonHits = forHit && poison ? poison ? rawResults.Count(r => r == 6) : 0 : poisonHits;
+            PoisonHits = forHit && poison ? rawResults.Count(r => r == 6) : poisonHits;
+            LethalStrike = lethalStrike;
+            LethalStrikeHits = forWound && lethalStrike ? rawResults.Count(r => r == 6) : lethalStrikeHits;
             BattleFocus = battleFocus;
             BattleFocusHits = battleFocus ? rawResults.Count(r => r == 6) : 0;
             DiceSides = sides;
@@ -24,6 +38,11 @@ namespace battle_mate
             if (forWound && poison)
             {
                 SucessfullRolls += poisonHits;
+            }
+            
+            if (forArmorSave && lethalStrike)
+            {
+                FailedRolls += lethalStrikeHits;
             }
             
             if (forHit && battleFocus)
@@ -40,6 +59,8 @@ namespace battle_mate
         public int FailedRolls { get; }
         public bool Poison { get; }
         public int PoisonHits { get; }
+        public bool LethalStrike { get; }
+        public int LethalStrikeHits { get; }
         public bool BattleFocus { get; }
         public int BattleFocusHits { get; }
         public List<DiceResultGroup> GroupedResults { get; }
