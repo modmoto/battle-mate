@@ -10,6 +10,7 @@ namespace battle_mate
             List<int> rerollResults,
             int sides,
             RollState state,
+            RerollState rerollState,
             int diceGoal,
             bool forHit,
             bool battleFocus,
@@ -33,6 +34,7 @@ namespace battle_mate
             DiceSides = sides;
             DiceGoal = diceGoal;
             RollState = state;
+            RerollState = rerollState;
             GroupedResults = GroupDice(rawResults, sides);
 
             if (forWound && poison)
@@ -65,6 +67,7 @@ namespace battle_mate
         public int BattleFocusHits { get; }
         public List<DiceResultGroup> GroupedResults { get; }
         public RollState RollState { get; }
+        public RerollState RerollState { get; }
 
         private List<DiceResultGroup> GroupDice(List<int> results, int sides)
         {

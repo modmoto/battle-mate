@@ -27,14 +27,14 @@ namespace battle_mate
         {
             var rolls = GetRandomRolls(count, sides);
 
-            return new RollResult(rolls, new List<int>(), sides, rollState, border, forHit, battleFocus, forWound, poison, poisonHits, forArmorSave, lethalStrike, lethalStrikeHits);
+            return new RollResult(rolls, new List<int>(), sides, rollState, RerollState.NoReroll, border, forHit, battleFocus, forWound, poison, poisonHits, forArmorSave, lethalStrike, lethalStrikeHits);
         }
 
         private RollResult InternalRoll(int count, int sides, RollState rollState, int border)
         {
             var rolls = GetRandomRolls(count, sides);
 
-            return new RollResult(rolls, new List<int>(), sides, rollState, border, false, false, false, false, 0, false, false, 0);
+            return new RollResult(rolls, new List<int>(), sides, rollState, RerollState.NoReroll, border, false, false, false, false, 0, false, false, 0);
         }
 
         private List<int> GetRandomRolls(int count, int sides)
@@ -52,22 +52,22 @@ namespace battle_mate
         {
             var count = oldRolls.RawResults.Count(d => d <= border);
             var resulstThatStay = oldRolls.RawResults.Where(d => d > border).ToList();
-            return ReRoll(count, resulstThatStay, oldRolls.DiceSides, RollState.RerollSmallerThan, border, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits, oldRolls.LethalStrike, oldRolls.LethalStrikeHits);
+            return ReRoll(count, resulstThatStay, oldRolls.DiceSides, oldRolls.RollState, RerollState.RerollSmallerThan, oldRolls.DiceGoal, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits, oldRolls.LethalStrike, oldRolls.LethalStrikeHits);
         }
 
         public RollResult RerRollBiggerThan(int border, RollResult oldRolls)
         {
             var count = oldRolls.RawResults.Count(d => d >= border);
             var resulstThatStay = oldRolls.RawResults.Where(d => d < border).ToList();
-            return ReRoll(count, resulstThatStay, oldRolls.DiceSides, RollState.RerollBiggerThan, border, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits, oldRolls.LethalStrike, oldRolls.LethalStrikeHits);
+            return ReRoll(count, resulstThatStay, oldRolls.DiceSides, oldRolls.RollState, RerollState.RerollBiggerThan, oldRolls.DiceGoal, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits, oldRolls.LethalStrike, oldRolls.LethalStrikeHits);
         }
 
-        private RollResult ReRoll(int count, List<int> resulstThatStay, int sides, RollState rollState, int border, bool battleFocus, bool poison, int poisonHits, bool lethalStrike, int lethalStrikeHits)
+        private RollResult ReRoll(int count, List<int> resulstThatStay, int sides, RollState rollState, RerollState rerollState, int border, bool battleFocus, bool poison, int poisonHits, bool lethalStrike, int lethalStrikeHits)
         {
             var newRoll = InternalRoll(count, sides, rollState, border).RawResults;
             resulstThatStay.AddRange(newRoll);
             resulstThatStay.Sort();
-            return new RollResult(resulstThatStay, newRoll, sides, rollState, border, rollState == RollState.ToHit, battleFocus, rollState == RollState.ToWound, poison, poisonHits, rollState == RollState.ArmorSave, lethalStrike, lethalStrikeHits);
+            return new RollResult(resulstThatStay, newRoll, sides, rollState, rerollState, border, rollState == RollState.ToHit, battleFocus, rollState == RollState.ToWound, poison, poisonHits, rollState == RollState.ArmorSave, lethalStrike, lethalStrikeHits);
         }
 
         public RollResult ToWound(int border, RollResult oldRolls)
@@ -88,6 +88,13 @@ namespace battle_mate
         public RollResult JustRoll(int diceAmount, int selectedDice)
         {
             return InternalRoll(diceAmount, selectedDice, RollState.None, 0);
+        }
+
+        public RollResult RerRollOnes(RollResult oldRolls)
+        {
+            var count = oldRolls.RawResults.Count(d => d == 1);
+            var resulstThatStay = oldRolls.RawResults.Where(d => d > 1).ToList();
+            return ReRoll(count, resulstThatStay, oldRolls.DiceSides, oldRolls.RollState, RerollState.Reroll1s, oldRolls.DiceGoal, oldRolls.BattleFocus, oldRolls.Poison, oldRolls.PoisonHits, oldRolls.LethalStrike, oldRolls.LethalStrikeHits);
         }
     }
 }

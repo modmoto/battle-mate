@@ -1,0 +1,30 @@
+﻿@foreach (var res in Rolls.Select((value, index) => new {value, index}))
+{
+  if (DiceGoal > res.value && DiceGoal != 0)
+  {
+    <span class="red">
+      @(res.value)
+      @if (res.index + 1 != Rolls.Count)
+      {
+        <span>, </span>
+      }
+    </span>
+  }
+  else
+  {
+    <span class="green">
+      @(res.value)
+      @if (res.index + 1 != Rolls.Count)
+      {
+        <span>, </span>
+      }
+    </span>
+  }
+}
+
+@code {
+  [Parameter]
+  public List<int> Rolls { get; set; }
+  [Parameter]
+  public int DiceGoal { get; set; }
+}
