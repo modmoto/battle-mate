@@ -6,16 +6,30 @@ namespace battle_mate
 {
     public class RollResult
     {
-        public RollResult(List<int> rawResults, List<int> rerollResults, int sides, RollState state, int diceGoal)
+        public RollResult(List<int> rawResults, List<int> rerollResults, int sides, RollState state, int diceGoal, bool forHit, bool forWound, bool battleFocus, bool poison, int poisonHits)
         {
             RawResults = rawResults.OrderBy(r => r).ToList();
             RerollResults = rerollResults.OrderBy(r => r).ToList();
             SucessfullRolls = rawResults.Count(r => r >= diceGoal);
             FailedRolls = rawResults.Count(r => r < diceGoal);
+            Poison = poison;
+            PoisonHits = forHit && poison ? poison ? rawResults.Count(r => r == 6) : 0 : poisonHits;
+            BattleFocus = battleFocus;
+            BattleFocusHits = battleFocus ? rawResults.Count(r => r == 6) : 0;
             DiceSides = sides;
             DiceGoal = diceGoal;
             RollState = state;
             GroupedResults = GroupDice(rawResults, sides);
+
+            if (forWound && poison)
+            {
+                SucessfullRolls += poisonHits;
+            }
+            
+            if (forHit && battleFocus)
+            {
+                SucessfullRolls += BattleFocusHits;
+            }
         }
 
         public List<int> RawResults { get; }
@@ -24,6 +38,10 @@ namespace battle_mate
         public int DiceGoal { get; }
         public int SucessfullRolls { get; }
         public int FailedRolls { get; }
+        public bool Poison { get; }
+        public int PoisonHits { get; }
+        public bool BattleFocus { get; }
+        public int BattleFocusHits { get; }
         public List<DiceResultGroup> GroupedResults { get; }
         public RollState RollState { get; }
 
