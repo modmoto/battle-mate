@@ -195,7 +195,7 @@
                   <b>@(rollResult.val.FailedRolls) armor saves failed</b>
                   @if (rollResult.val.LethalStrike)
                   {
-                    <span> (+@rollResult.val.LethalStrikeHits with AP10 from Lethal Strike)</span>  
+                    <span> (+@rollResult.val.LethalStrikeHits from Lethal Strike)</span>  
                   }
                   
                   <span> on @(rollResult.val.DiceGoal)+</span>
@@ -375,6 +375,7 @@
       };
     _battleFocusChecked = false;
     _poisonChecked = false;
+    _lethalStrikeChecked = false;
     return rollResult;
   }
 
