@@ -162,6 +162,10 @@
                   <span> (+@rollResult.val.BattleFocusHits hits from Battlefocus)</span>  
                 }
                 <span> on @(rollResult.val.DiceGoal)+</span>
+                @if (rollResult.val.Poison)
+                {
+                  <span>, Poison: @rollResult.val.PoisonHits</span>  
+                }
               </div>
             }
             @if (rollResult.val.RollState == RollState.ToWound)
@@ -172,7 +176,11 @@
                   {
                     <span> (+@rollResult.val.PoisonHits wounds from Poison)</span>  
                   }
-                <span> on @(rollResult.val.DiceGoal)+</span>
+                 <span> on @(rollResult.val.DiceGoal)+</span>
+                 @if (rollResult.val.LethalStrike)
+                 {
+                   <span>, Lethal Strike: @rollResult.val.LethalStrikeHits</span>  
+                 }
               </div>
             }
             @if (rollResult.val.RollState == RollState.AutomaticHit)
