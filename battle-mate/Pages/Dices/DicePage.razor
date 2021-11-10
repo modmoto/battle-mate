@@ -280,7 +280,8 @@
                 <span> (@rollResult.val.RawResults.Sum())</span>
               }
             </div>
-            <div>
+            @if (rollResult.val.DiceGoal != 0)
+            {
               <div class="row justify-content-between mb-3">
                 @foreach (var res in rollResult.val.GroupedResults)
                 {
@@ -288,8 +289,8 @@
                     @res.Min+ : @res.BiggerThanAmount
                   </div>
                 }
-              </div>
-            </div>
+              </div>  
+            }
           }
         }
       </div>
@@ -315,17 +316,9 @@
   private void SetAndRollDice(int amount)
   {
     _diceAmount = amount;
-    RollDice();
-  }
-
-  private void RollDice()
-  {
-    if (_diceAmount != null)
-    {
-      var rollResult = _dice.JustRoll(_diceAmount.Value, _selectedDice);
-      var diceMessage = new DiceMessage(rollResult);
-      _messages.Insert(0, diceMessage);
-    }
+    var rollResult = _dice.JustRoll(_diceAmount.Value, _selectedDice);
+    var diceMessage = new DiceMessage(rollResult);
+    _messages.Insert(0, diceMessage);
   }
 
   private void SelectDice(int diceSide)
