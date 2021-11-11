@@ -1,7 +1,7 @@
 ﻿@page "/result"
 
 <div class="row">
-  <div class="col">
+  <div class="col p-0 pe-2">
     <ResultOverview AllPoints="PointsLeft"
                     PointsDifference="PointsDifferenceLeft"
                     InvokeWounds="val => WoundsLeft = val"
@@ -17,7 +17,7 @@
                     Wounds="WoundsLeft">
     </ResultOverview>
   </div>
-  <div class="col">
+  <div class="col p-0 ps-2">
     <ResultOverview Right
                     AllPoints="PointsRight"
                     PointsDifference="PointsDifferenceRight"
@@ -35,9 +35,9 @@
     </ResultOverview>
   </div>
 </div>
-<div class="row">
+<div class="row ">
   <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="ResetStats">
-    Reset results
+    Reset combat result
   </button>
 </div>
 
