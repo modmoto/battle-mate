@@ -7,13 +7,13 @@
   {
     <div class="col text-end">@Topic @Input</div>
   }
-  <div class="col">
-    <button class="btn btn-outline-success" @onclick="async () => await InvokeChange.InvokeAsync(++Input)">
+  <div class="@($"col w-25 {(Right ? "pe-2" : "ps-2")}")">
+    <button class="btn btn-outline-success w-100" @onclick="async () => await InvokeChange.InvokeAsync(++Input)">
       +
     </button>
   </div>
-  <div class="col">
-    <button class="btn btn-outline-danger" @onclick="async () => await InvokeChange.InvokeAsync(--Input)">
+  <div class="col w-25">
+    <button class="btn btn-outline-danger w-100" @onclick="async () => await InvokeChange.InvokeAsync(--Input)">
       -
     </button>
   </div>
