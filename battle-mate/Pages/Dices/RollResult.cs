@@ -16,6 +16,7 @@ namespace battle_mate
             bool battleFocus,
             bool forWound,
             bool poison,
+            bool poison5Up,
             int poisonHits,
             bool forArmorSave,
             bool lethalStrike,
@@ -26,7 +27,19 @@ namespace battle_mate
             SucessfullRolls = rawResults.Count(r => r >= diceGoal);
             FailedRolls = rawResults.Count(r => r < diceGoal);
             Poison = poison;
-            PoisonHits = forHit && poison ? rawResults.Count(r => r == 6) : poisonHits;
+            Poison5Up = poison5Up;
+            if (forHit && poison5Up)
+            {
+                PoisonHits = rawResults.Count(r => r >= 5);
+            }
+            else if (forHit && poison)
+            {
+                PoisonHits = rawResults.Count(r => r == 6);
+            }
+            else
+            {
+                PoisonHits = poisonHits;
+            }
             LethalStrike = lethalStrike;
             LethalStrikeHits = forWound && lethalStrike ? rawResults.Count(r => r == 6) : lethalStrikeHits;
             BattleFocus = battleFocus;
@@ -37,7 +50,7 @@ namespace battle_mate
             RerollState = rerollState;
             GroupedResults = GroupDice(rawResults, sides);
 
-            if (forWound && poison)
+            if (forWound && (poison || poison5Up))
             {
                 SucessfullRolls += poisonHits;
             }
@@ -60,6 +73,7 @@ namespace battle_mate
         public int SucessfullRolls { get; }
         public int FailedRolls { get; }
         public bool Poison { get; }
+        public bool Poison5Up { get; }
         public int PoisonHits { get; }
         public bool LethalStrike { get; }
         public int LethalStrikeHits { get; }

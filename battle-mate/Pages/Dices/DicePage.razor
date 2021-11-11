@@ -71,38 +71,37 @@
                   </button>
                 </div>
               </div>
+
               <div class="modal-header">
-                <h5 class="modal-title">Options for next roll</h5>
+                <h5 class="modal-title">Options for <b>next</b> roll</h5>
               </div>
-              <div class="form-check p-3">
-                <input class="form-check-input" type="checkbox" value="" id="option-battlefocus" @bind="_battleFocusChecked">
-                <label class="form-check-label" for="option-battlefocus">
-                  Battlefocus
-                </label>
+              <div class="row">
+                <div class="col">
+                  <button type="button" class="@($"btn btn-outline-{(_battleFocusChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _battleFocusChecked = !_battleFocusChecked">Battlefocus</button>
+                </div>
+                <div class="col">
+                  <button type="button" class="@($"btn btn-outline-{(_poisonChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _poisonChecked = !_poisonChecked">Poison</button>
+                </div>
               </div>
-              <div class="form-check p-3">
-                <input class="form-check-input" type="checkbox" value="" id="option-poison" @bind="_poisonChecked">
-                <label class="form-check-label" for="option-poison">
-                  Poison
-                </label>
+              <div class="row">
+                <div class="col">
+                  <button type="button" class="@($"btn btn-outline-{(_lethalStrikeChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _lethalStrikeChecked = !_lethalStrikeChecked">Lethal Strike</button>
+                </div>
+                <div class="col">
+                  <button type="button" class="@($"btn btn-outline-{(_poison5Checked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _poison5Checked = !_poison5Checked">Poison 5+</button>
+                </div>
               </div>
-              <div class="form-check p-3">
-                <input class="form-check-input" type="checkbox" value="" id="option-lethal-strike" @bind="_lethalStrikeChecked">
-                <label class="form-check-label" for="option-lethal-strike">
-                  Lethal Strike
-                </label>
+
+              <div class="modal-header">
+                <h5 class="modal-title">Options for <b>all</b> rolls</h5>
               </div>
-              <div class="form-check p-3">
-                <input class="form-check-input" type="checkbox" value="" id="option-no-armor" @bind="_noArmorChecked">
-                <label class="form-check-label" for="option-no-armor">
-                  No armor saves
-                </label>
-              </div>
-              <div class="form-check p-3">
-                <input class="form-check-input" type="checkbox" value="" id="option-no-ward" @bind="_noWardChecked">
-                <label class="form-check-label" for="option-no-ward">
-                  No ward saves
-                </label>
+              <div class="row">
+                <div class="col">
+                  <button type="button" class="@($"btn btn-outline-{(_noWardChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _noWardChecked = !_noWardChecked">No ward saves</button>
+                </div>
+                <div class="col">
+                  <button type="button" class="@($"btn btn-outline-{(_noArmorChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _noArmorChecked = !_noArmorChecked">No armor saves</button>
+                </div>
               </div>
             </div>
             <div class="modal-footer">
@@ -168,7 +167,7 @@
                   <span> (+@rollResult.val.BattleFocusHits hits from Battlefocus)</span>  
                 }
                 <span> on @(rollResult.val.DiceGoal)+</span>
-                @if (rollResult.val.Poison)
+                @if (rollResult.val.Poison || rollResult.val.Poison5Up)
                 {
                   <span>, Poison: @rollResult.val.PoisonHits</span>  
                 }
@@ -178,7 +177,7 @@
             {
               <div>
                 <b>@(rollResult.val.SucessfullRolls) wounding</b>
-                 @if (rollResult.val.Poison)
+                 @if (rollResult.val.Poison || rollResult.val.Poison5Up)
                   {
                     <span> (+@rollResult.val.PoisonHits wounds from Poison)</span>  
                   }
@@ -289,6 +288,7 @@
   private int _selectedDice = 6;
   private int _defaultNoRoll = 7;
   private bool _poisonChecked;
+  private bool _poison5Checked;
   private bool _lethalStrikeChecked;
   private bool _battleFocusChecked;
   private bool _noArmorChecked;
@@ -354,15 +354,16 @@
   {
     var rollResult = CurrentRoleState switch
     {
-      RollState.None => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _lethalStrikeChecked),
+      RollState.None => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _poison5Checked, _lethalStrikeChecked),
       RollState.AutomaticHit => _dice.ToWound(toHit, oldResult),
       RollState.ToHit => RollToWound(toHit, oldResult),
       RollState.ToWound => RollArmorSave(toHit, oldResult),
       RollState.ArmorSave => RollWardSave(toHit, oldResult),
-      _ => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _lethalStrikeChecked)
+      _ => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _poison5Checked, _lethalStrikeChecked)
       };
     _battleFocusChecked = false;
     _poisonChecked = false;
+    _poison5Checked = false;
     _lethalStrikeChecked = false;
     return rollResult;
   }
@@ -389,7 +390,7 @@
     rollResults.Insert(0, result);
     var lastResult = rollResults.First();
     return new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollState.WardSave,
-      lastResult.RerollState, _defaultNoRoll, false, lastResult.BattleFocus, false, lastResult.Poison,
+      lastResult.RerollState, _defaultNoRoll, false, lastResult.BattleFocus, false, lastResult.Poison, lastResult.Poison5Up,
       lastResult.PoisonHits, false, lastResult.LethalStrike, lastResult.LethalStrikeHits);
   }
 
@@ -413,7 +414,7 @@
     var lastResult = rollResults.First();
     var armorResult = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides,
       RollState.ArmorSave, lastResult.RerollState, _defaultNoRoll, false, lastResult.BattleFocus, false,
-      lastResult.Poison, lastResult.PoisonHits, false, lastResult.LethalStrike, lastResult.LethalStrikeHits);
+      lastResult.Poison, lastResult.Poison5Up, lastResult.PoisonHits, false, lastResult.LethalStrike, lastResult.LethalStrikeHits);
     return armorResult;
   }
 
