@@ -10,22 +10,15 @@
                     InvokeAdditionalPoints="val => AdditionalPointsLeft = val"
                     InvokeCharging="val => IsChargingLeft = val"
                     InvokeFlank="val => HasFlankLeft = val"
-                    InvokeGreatFlank="val => HasGreatFlankLeft = val"
                     InvokeRear="val => HasRearLeft = val"
-                    InvokeGreatRear="val => HasGreatRearLeft = val"
                     Ranks="RanksLeft"
                     Banners="BannersLeft"
                     AdditionalPoints="AdditionalPointsLeft"
-                    IsCharging="IsChargingLeft"
-                    HasFlank="HasFlankLeft"
-                    HasGreatFlank="HasGreatFlankLeft"
-                    HasRear="HasRearLeft"
-                    HasGreatRear="HasGreatRearLeft"
                     Wounds="WoundsLeft">
     </ResultOverview>
   </div>
   <div class="col">
-    <ResultOverview Right 
+    <ResultOverview Right
                     AllPoints="PointsRight"
                     PointsDifference="PointsDifferenceRight"
                     InvokeWounds="val => WoundsRight = val"
@@ -34,17 +27,10 @@
                     InvokeAdditionalPoints="val => AdditionalPointsRight = val"
                     InvokeCharging="val => IsChargingRight = val"
                     InvokeFlank="val => HasFlankRight = val"
-                    InvokeGreatFlank="val => HasGreatFlankRight = val"
                     InvokeRear="val => HasRearRight = val"
-                    InvokeGreatRear="val => HasGreatRearRight = val"
                     Ranks="RanksRight"
                     Banners="BannersRight"
                     AdditionalPoints="AdditionalPointsRight"
-                    IsCharging="IsChargingRight"
-                    HasFlank="HasFlankRight"
-                    HasGreatFlank="HasGreatFlankRight"
-                    HasRear="HasRearRight"
-                    HasGreatRear="HasGreatRearRight"
                     Wounds="WoundsRight">
     </ResultOverview>
   </div>
@@ -57,6 +43,11 @@
 
 @code {
 
+  protected override void OnInitialized()
+  {
+    ResetStats();
+  }
+
   private void ResetStats()
   {
     WoundsLeft = 0;
@@ -67,22 +58,18 @@
     BannersRight = 0;
     AdditionalPointsLeft = 0;
     AdditionalPointsRight = 0;
-    IsChargingLeft = false;
-    HasFlankLeft = false;
-    HasGreatFlankLeft  = false;
-    HasRearLeft  = false;
-    HasGreatRearLeft  = false;
-    IsChargingRight  = false; 
-    HasFlankRight  = false;
-    HasGreatFlankRight = false;
-    HasRearRight  = false;
-    HasGreatRearRight  = false;
+    IsChargingLeft = new PointStrings(0, "");
+    HasFlankLeft = new PointStrings(0, "");
+    HasRearLeft = new PointStrings(0, "");
+    IsChargingRight = new PointStrings(0, "");
+    HasFlankRight = new PointStrings(0, "");
+    HasRearRight = new PointStrings(0, "");
   }
 
-  public int PointsLeft => WoundsLeft + RanksLeft + BannersLeft + AdditionalPointsLeft; 
+  public int PointsLeft => WoundsLeft + RanksLeft + BannersLeft + AdditionalPointsLeft + IsChargingLeft.Points + HasFlankLeft.Points + HasRearLeft.Points;
   public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
 
-  public int PointsRight => WoundsRight + RanksRight + BannersRight + AdditionalPointsRight; 
+  public int PointsRight => WoundsRight + RanksRight + BannersRight + AdditionalPointsRight + IsChargingRight .Points + HasFlankRight .Points + HasRearRight.Points;
   public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
 
   public int WoundsLeft { get; set; }
@@ -93,15 +80,11 @@
   public int BannersRight { get; set; }
   public int AdditionalPointsLeft { get; set; }
   public int AdditionalPointsRight { get; set; }
-  
-  public bool IsChargingLeft { get; set; }
-  public bool HasFlankLeft { get; set; }
-  public bool HasGreatFlankLeft { get; set; }
-  public bool HasRearLeft { get; set; }
-  public bool HasGreatRearLeft { get; set; }
-  public bool IsChargingRight { get; set; }
-  public bool HasFlankRight { get; set; }
-  public bool HasGreatFlankRight { get; set; }
-  public bool HasRearRight { get; set; }
-  public bool HasGreatRearRight { get; set; }
+
+  public PointStrings IsChargingLeft { get; set; }
+  public PointStrings HasFlankLeft { get; set; }
+  public PointStrings HasRearLeft { get; set; }
+  public PointStrings IsChargingRight { get; set; }
+  public PointStrings HasFlankRight { get; set; }
+  public PointStrings HasRearRight { get; set; }
 }

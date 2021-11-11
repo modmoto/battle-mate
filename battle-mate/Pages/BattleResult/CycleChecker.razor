@@ -1,0 +1,31 @@
+﻿<div class="mb-2">
+  @if (_index != 0)
+  {
+    <button type="button" class="btn btn-success w-100" @onclick="() => InvokeChange.InvokeAsync(Next())">
+      @Values[_index].Text
+    </button>
+  }
+  else
+  {
+    <button type="button" class="btn btn-outline-secondary w-100" @onclick="() => InvokeChange.InvokeAsync(Next())">
+      @Values[_index].Text
+    </button>  
+  }
+</div>
+
+@code {
+  private int _index;
+  [Parameter]
+  public bool Right { get; set; }
+  [Parameter]
+  public List<PointStrings> Values { get; set; }
+  [Parameter]
+  public EventCallback<PointStrings> InvokeChange { get; set; }
+
+  private PointStrings Next()
+  {
+    var nextCycle = (_index + 1) % Values.Count;
+    _index = nextCycle;
+    return Values[nextCycle];
+  }
+}
