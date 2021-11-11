@@ -8,9 +8,19 @@
                     InvokeRanks="val => RanksLeft = val"
                     InvokeBanners="val => BannersLeft = val"
                     InvokeAdditionalPoints="val => AdditionalPointsLeft = val"
+                    InvokeCharging="val => IsChargingLeft = val"
+                    InvokeFlank="val => HasFlankLeft = val"
+                    InvokeGreatFlank="val => HasGreatFlankLeft = val"
+                    InvokeRear="val => HasRearLeft = val"
+                    InvokeGreatRear="val => HasGreatRearLeft = val"
                     Ranks="RanksLeft"
                     Banners="BannersLeft"
                     AdditionalPoints="AdditionalPointsLeft"
+                    IsCharging="IsChargingLeft"
+                    HasFlank="HasFlankLeft"
+                    HasGreatFlank="HasGreatFlankLeft"
+                    HasRear="HasRearLeft"
+                    HasGreatRear="HasGreatRearLeft"
                     Wounds="WoundsLeft">
     </ResultOverview>
   </div>
@@ -22,15 +32,25 @@
                     InvokeRanks="val => RanksRight = val"
                     InvokeBanners="val => BannersRight = val"
                     InvokeAdditionalPoints="val => AdditionalPointsRight = val"
+                    InvokeCharging="val => IsChargingRight = val"
+                    InvokeFlank="val => HasFlankRight = val"
+                    InvokeGreatFlank="val => HasGreatFlankRight = val"
+                    InvokeRear="val => HasRearRight = val"
+                    InvokeGreatRear="val => HasGreatRearRight = val"
                     Ranks="RanksRight"
                     Banners="BannersRight"
                     AdditionalPoints="AdditionalPointsRight"
+                    IsCharging="IsChargingRight"
+                    HasFlank="HasFlankRight"
+                    HasGreatFlank="HasGreatFlankRight"
+                    HasRear="HasRearRight"
+                    HasGreatRear="HasGreatRearRight"
                     Wounds="WoundsRight">
     </ResultOverview>
   </div>
 </div>
 <div class="row">
-  <button type="button" class="btn btn-outline-danger w-100 my-2" data-bs-dismiss="modal" @onclick="ResetStats">
+  <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="ResetStats">
     Reset results
   </button>
 </div>
@@ -47,6 +67,16 @@
     BannersRight = 0;
     AdditionalPointsLeft = 0;
     AdditionalPointsRight = 0;
+    IsChargingLeft = false;
+    HasFlankLeft = false;
+    HasGreatFlankLeft  = false;
+    HasRearLeft  = false;
+    HasGreatRearLeft  = false;
+    IsChargingRight  = false; 
+    HasFlankRight  = false;
+    HasGreatFlankRight = false;
+    HasRearRight  = false;
+    HasGreatRearRight  = false;
   }
 
   public int PointsLeft => WoundsLeft + RanksLeft + BannersLeft + AdditionalPointsLeft; 
@@ -63,4 +93,15 @@
   public int BannersRight { get; set; }
   public int AdditionalPointsLeft { get; set; }
   public int AdditionalPointsRight { get; set; }
+  
+  public bool IsChargingLeft { get; set; }
+  public bool HasFlankLeft { get; set; }
+  public bool HasGreatFlankLeft { get; set; }
+  public bool HasRearLeft { get; set; }
+  public bool HasGreatRearLeft { get; set; }
+  public bool IsChargingRight { get; set; }
+  public bool HasFlankRight { get; set; }
+  public bool HasGreatFlankRight { get; set; }
+  public bool HasRearRight { get; set; }
+  public bool HasGreatRearRight { get; set; }
 }

@@ -8,6 +8,11 @@
 <UpAndDownComp Right="Right" Topic="R" Input="Ranks" InvokeChange="InvokeRanks"></UpAndDownComp>
 <UpAndDownComp Right="Right" Topic="B" Input="Banners" InvokeChange="InvokeBanners"></UpAndDownComp>
 <UpAndDownComp Right="Right" Topic="A" Input="AdditionalPoints" InvokeChange="InvokeAdditionalPoints"></UpAndDownComp>
+<Checker Right="Right" Selected="IsCharging" InvokeChange="InvokeCharging" TrueString="Is charging" FalseString="Not charging"></Checker>
+<Checker Right="Right" Selected="HasFlank" InvokeChange="InvokeFlank" TrueString="flanking" FalseString="No flank"></Checker>
+<Checker Right="Right" Selected="HasGreatFlank" InvokeChange="InvokeGreatFlank" TrueString="Great flank" FalseString="No great flank"></Checker>
+<Checker Right="Right" Selected="HasRear" InvokeChange="InvokeRear" TrueString="Has rear" FalseString="No rear"></Checker>
+<Checker Right="Right" Selected="HasGreatRear" InvokeChange="InvokeGreatRear" TrueString="Great rear" FalseString="No great rear"></Checker>
 
 @code {
   [Parameter]
@@ -24,6 +29,16 @@
   public int Banners { get; set; }
   [Parameter]
   public int AdditionalPoints { get; set; }
+  [Parameter]
+  public bool IsCharging { get; set; }
+  [Parameter]
+  public bool HasFlank { get; set; }
+  [Parameter]
+  public bool HasGreatFlank { get; set; }
+  [Parameter]
+  public bool HasRear { get; set; }
+  [Parameter]
+  public bool HasGreatRear { get; set; }
   
   [Parameter]
   public EventCallback<int> InvokeWounds { get; set; }
@@ -33,4 +48,15 @@
   public EventCallback<int> InvokeBanners { get; set; }
   [Parameter]
   public EventCallback<int> InvokeAdditionalPoints { get; set; }
+  
+  [Parameter]
+  public EventCallback<bool> InvokeRear { get; set; }
+  [Parameter]
+  public EventCallback<bool> InvokeGreatRear { get; set; }
+  [Parameter]
+  public EventCallback<bool> InvokeFlank { get; set; }
+  [Parameter]
+  public EventCallback<bool> InvokeGreatFlank { get; set; }
+  [Parameter]
+  public EventCallback<bool> InvokeCharging { get; set; }
 }
