@@ -8,7 +8,7 @@ namespace battle_mate.Tests
         public void TestRandom()
         {
             var dice = new Dice(123);
-            var rest = dice.ToHit(12, 6, 4, false, false, false, false);
+            var rest = dice.ToHit(12, 6, 4, false, false, false, false, false);
             var roll = rest.RawResults;
             Assert.AreEqual(12, roll.Count);
         }
@@ -17,7 +17,7 @@ namespace battle_mate.Tests
         public void TestToHitPoison()
         {
             var dice = new Dice(123);
-            var rest = dice.ToHit(12, 6, 4, false, false, true, false);
+            var rest = dice.ToHit(12, 6, 4, false, false, true, false, false);
 
             var toWOund = dice.ToWound(3, rest);
 
@@ -28,12 +28,28 @@ namespace battle_mate.Tests
             Assert.AreEqual(2, toWOund.FailedRolls);
             Assert.AreEqual(4, toWOund.RawResults.Count);
         }
+
+        [Test]
+        public void TestToHitPoison5()
+        {
+            var dice = new Dice(123);
+            var rest = dice.ToHit(12, 6, 4, false, false, true, true, false);
+
+            var toWOund = dice.ToWound(3, rest);
+
+            Assert.AreEqual(6, rest.PoisonHits);
+            Assert.AreEqual(7, rest.SucessfullRolls);
+            Assert.AreEqual(RollState.ToWound, toWOund.RollState);
+            Assert.AreEqual(6, toWOund.SucessfullRolls);
+            Assert.AreEqual(1, toWOund.FailedRolls);
+            Assert.AreEqual(1, toWOund.RawResults.Count);
+        }
         
         [Test]
         public void TestToHitBattleFocus()
         {
             var dice = new Dice(123);
-            var rest = dice.ToHit(12, 6, 4, false, true, false, false);
+            var rest = dice.ToHit(12, 6, 4, false, true, false, false, false);
 
             var toWOund = dice.ToWound(3, rest);
 
@@ -49,7 +65,7 @@ namespace battle_mate.Tests
         public void TestToWound()
         {
             var dice = new Dice(123);
-            var rest = dice.ToHit(12, 6, 4, false, false, false, false);
+            var rest = dice.ToHit(12, 6, 4, false, false, false, false, false);
 
             var toWOund = dice.ToWound(3, rest);
 
@@ -64,7 +80,7 @@ namespace battle_mate.Tests
         public void TestAutoHit()
         {
             var dice = new Dice(123);
-            var rest = dice.ToHit(12, 6, 4, true, false, false, false);
+            var rest = dice.ToHit(12, 6, 4, true, false, false, false, false);
 
             Assert.AreEqual(12, rest.SucessfullRolls);
             Assert.AreEqual(12, rest.RawResults.Count);
@@ -83,7 +99,7 @@ namespace battle_mate.Tests
         public void TestArmorSave()
         {
             var dice = new Dice(123);
-            var rest = dice.ToHit(12, 6, 4, false, false, false, false);
+            var rest = dice.ToHit(12, 6, 4, false, false, false, false, false);
 
             var toWOund = dice.ToWound(3, rest);
             var armorSave = dice.ArmorSave(3, toWOund);
@@ -99,7 +115,7 @@ namespace battle_mate.Tests
         public void TestArmorSaveLethalStrike()
         {
             var dice = new Dice(123);
-            var rest = dice.ToHit(24, 6, 4, false, false, false, true);
+            var rest = dice.ToHit(24, 6, 4, false, false, false, false, true);
 
             var toWOund = dice.ToWound(3, rest);
             var armorSave = dice.ArmorSave(3, toWOund);
@@ -116,7 +132,7 @@ namespace battle_mate.Tests
         public void TestWardSave()
         {
             var dice = new Dice(123);
-            var rest = dice.ToHit(12, 6, 4, false, false, false, false);
+            var rest = dice.ToHit(12, 6, 4, false, false, false, false, false);
 
             var toWOund = dice.ToWound(3, rest);
             var armorSave = dice.ArmorSave(3, toWOund);
