@@ -55,10 +55,46 @@
               </div>
               <div class="row">
                 <div class="col">
-                  <button type="button" class="btn btn-outline-primary w-100 my-2" data-bs-dismiss="modal" @onclick="RerollFailed" disabled="@RerollWasDone">Reroll failed</button>
+                  <button type="button" class="btn btn-outline-primary w-100 my-2" data-bs-dismiss="modal" @onclick="RerollFailed" disabled="@RerollWasDone">
+                    <span>Reroll </span>
+                    @if (CurrentRoleState is RollState.ToHit)
+                    {
+                      <span>misses</span>
+                    }
+                    @if (CurrentRoleState is RollState.ToWound)
+                    {
+                      <span>failed wounds</span>
+                    }
+                    @if (CurrentRoleState is RollState.ArmorSave)
+                    {
+                      <span>failed armor saves</span>
+                    }
+                    @if (CurrentRoleState is RollState.WardSave)
+                    {
+                      <span>failed ward saves</span>
+                    }
+                  </button>
                 </div>
                 <div class="col">
-                  <button type="button" class="btn btn-outline-primary w-100 my-2" data-bs-dismiss="modal" @onclick="RerollSuceeded" disabled="@RerollWasDone">Reroll suceeded</button>
+                  <button type="button" class="btn btn-outline-primary w-100 my-2" data-bs-dismiss="modal" @onclick="RerollSuceeded" disabled="@RerollWasDone">
+                    <span>Reroll </span>
+                    @if (CurrentRoleState is RollState.ToHit)
+                    {
+                      <span>hits</span>
+                    }
+                    @if (CurrentRoleState is RollState.ToWound)
+                    {
+                      <span>wounds</span>
+                    }
+                    @if (CurrentRoleState is RollState.ArmorSave)
+                    {
+                      <span>armor saves</span>
+                    }
+                    @if (CurrentRoleState is RollState.WardSave)
+                    {
+                      <span>ward saves</span>
+                    }
+                  </button>
                 </div>
               </div>
               <div class="row">
