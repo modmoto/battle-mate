@@ -60,6 +60,40 @@ namespace battle_mate.Tests
             Assert.AreEqual(6, toWOund.FailedRolls);
             Assert.AreEqual(10, toWOund.RawResults.Count);
         }
+        
+        [Test]
+        public void TestToHitBattleFocusAndPoison5()
+        {
+            var dice = new Dice(123);
+            var rest = dice.ToHit(12, 6, 4, false, true, false, true, false);
+
+            var toWOund = dice.ToWound(3, rest);
+
+            Assert.AreEqual(3, rest.BattleFocusHits);
+            Assert.AreEqual(6, rest.PoisonHits);
+            Assert.AreEqual(10, rest.SucessfullRolls);
+            Assert.AreEqual(RollState.ToWound, toWOund.RollState);
+            Assert.AreEqual(8, toWOund.SucessfullRolls);
+            Assert.AreEqual(2, toWOund.FailedRolls);
+            Assert.AreEqual(4, toWOund.RawResults.Count);
+        }
+        
+        [Test]
+        public void TestToHitBattleFocusAndPoison()
+        {
+            var dice = new Dice(123);
+            var rest = dice.ToHit(12, 6, 4, false, true, true, false, false);
+
+            var toWOund = dice.ToWound(3, rest);
+
+            Assert.AreEqual(3, rest.BattleFocusHits);
+            Assert.AreEqual(3, rest.PoisonHits);
+            Assert.AreEqual(10, rest.SucessfullRolls);
+            Assert.AreEqual(RollState.ToWound, toWOund.RollState);
+            Assert.AreEqual(6, toWOund.SucessfullRolls);
+            Assert.AreEqual(4, toWOund.FailedRolls);
+            Assert.AreEqual(7, toWOund.RawResults.Count);
+        }
 
         [Test]
         public void TestToWound()
