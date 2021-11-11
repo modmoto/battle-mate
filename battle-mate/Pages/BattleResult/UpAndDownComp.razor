@@ -1,0 +1,31 @@
+﻿<div class="@($"d-flex mb-2 {(Right ? "flex-row" : "flex-row-reverse")}")">
+  @if (Right)
+  {
+    <div class="col text-start">@Input @Topic</div>
+  }
+  else
+  {
+    <div class="col text-end">@Topic @Input</div>
+  }
+  <div class="col">
+    <button class="btn btn-outline-success" @onclick="async () => await InvokeChange.InvokeAsync(++Input)">
+      +
+    </button>
+  </div>
+  <div class="col">
+    <button class="btn btn-outline-danger" @onclick="async () => await InvokeChange.InvokeAsync(--Input)">
+      -
+    </button>
+  </div>
+</div>
+
+@code {
+  [Parameter]
+  public bool Right { get; set; }
+  [Parameter]
+  public string Topic { get; set; }
+  [Parameter]
+  public int Input { get; set; }
+  [Parameter]
+  public EventCallback<int> InvokeChange { get; set; }
+}

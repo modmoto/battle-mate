@@ -1,0 +1,66 @@
+﻿@page "/result"
+
+<div class="row">
+  <div class="col">
+    <ResultOverview AllPoints="PointsLeft"
+                    PointsDifference="PointsDifferenceLeft"
+                    InvokeWounds="val => WoundsLeft = val"
+                    InvokeRanks="val => RanksLeft = val"
+                    InvokeBanners="val => BannersLeft = val"
+                    InvokeAdditionalPoints="val => AdditionalPointsLeft = val"
+                    Ranks="RanksLeft"
+                    Banners="BannersLeft"
+                    AdditionalPoints="AdditionalPointsLeft"
+                    Wounds="WoundsLeft">
+    </ResultOverview>
+  </div>
+  <div class="col">
+    <ResultOverview Right 
+                    AllPoints="PointsRight"
+                    PointsDifference="PointsDifferenceRight"
+                    InvokeWounds="val => WoundsRight = val"
+                    InvokeRanks="val => RanksRight = val"
+                    InvokeBanners="val => BannersRight = val"
+                    InvokeAdditionalPoints="val => AdditionalPointsRight = val"
+                    Ranks="RanksRight"
+                    Banners="BannersRight"
+                    AdditionalPoints="AdditionalPointsRight"
+                    Wounds="WoundsRight">
+    </ResultOverview>
+  </div>
+</div>
+<div class="row">
+  <button type="button" class="btn btn-outline-danger w-100 my-2" data-bs-dismiss="modal" @onclick="ResetStats">
+    Reset results
+  </button>
+</div>
+
+@code {
+
+  private void ResetStats()
+  {
+    WoundsLeft = 0;
+    WoundsRight = 0;
+    RanksLeft = 0;
+    RanksRight = 0;
+    BannersLeft = 0;
+    BannersRight = 0;
+    AdditionalPointsLeft = 0;
+    AdditionalPointsRight = 0;
+  }
+
+  public int PointsLeft => WoundsLeft + RanksLeft + BannersLeft + AdditionalPointsLeft; 
+  public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
+
+  public int PointsRight => WoundsRight + RanksRight + BannersRight + AdditionalPointsRight; 
+  public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
+
+  public int WoundsLeft { get; set; }
+  public int WoundsRight { get; set; }
+  public int RanksLeft { get; set; }
+  public int RanksRight { get; set; }
+  public int BannersLeft { get; set; }
+  public int BannersRight { get; set; }
+  public int AdditionalPointsLeft { get; set; }
+  public int AdditionalPointsRight { get; set; }
+}

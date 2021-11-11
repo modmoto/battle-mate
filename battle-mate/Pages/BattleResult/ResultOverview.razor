@@ -1,0 +1,36 @@
+﻿<h2 class="@((Right ? "text-start" : "text-end") + (PointsDifference < 0 ? " red" : " green"))">
+  @PointsDifference
+</h2>
+<div class="@(Right ? "text-start" : "text-end")">
+  @AllPoints
+</div>
+<UpAndDownComp Right="Right" Topic="W" Input="Wounds" InvokeChange="InvokeWounds" ></UpAndDownComp>
+<UpAndDownComp Right="Right" Topic="R" Input="Ranks" InvokeChange="InvokeRanks"></UpAndDownComp>
+<UpAndDownComp Right="Right" Topic="B" Input="Banners" InvokeChange="InvokeBanners"></UpAndDownComp>
+<UpAndDownComp Right="Right" Topic="A" Input="AdditionalPoints" InvokeChange="InvokeAdditionalPoints"></UpAndDownComp>
+
+@code {
+  [Parameter]
+  public bool Right { get; set; }
+  [Parameter]
+  public int PointsDifference { get; set; }
+  [Parameter]
+  public int AllPoints { get; set; }
+  [Parameter]
+  public int Wounds { get; set; }
+  [Parameter]
+  public int Ranks { get; set; }
+  [Parameter]
+  public int Banners { get; set; }
+  [Parameter]
+  public int AdditionalPoints { get; set; }
+  
+  [Parameter]
+  public EventCallback<int> InvokeWounds { get; set; }
+  [Parameter]
+  public EventCallback<int> InvokeRanks { get; set; }
+  [Parameter]
+  public EventCallback<int> InvokeBanners { get; set; }
+  [Parameter]
+  public EventCallback<int> InvokeAdditionalPoints { get; set; }
+}
