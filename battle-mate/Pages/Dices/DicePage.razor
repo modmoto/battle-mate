@@ -154,19 +154,19 @@
   @foreach (var message in _messages.Select((value, index) => new {value, index}))
   {
     <div class="card mb-3">
-      @if (CurrentRoleState == RollState.None)
+      @if (FirstRoleState == RollState.None)
       {
         <div class="card-header">
           @(message.value.Results.First().RawResults.Count)D@(message.value.Results.First().DiceSides)
         </div>
       }
-      @if (CurrentRoleState == RollState.AutomaticHit)
+      @if (FirstRoleState == RollState.AutomaticHit)
       {
         <div class="card-header">
           @(message.value.Results.Last().RawResults.Count) automatic hits
         </div>
       }
-      @if (CurrentRoleState == RollState.ToHit)
+      @if (FirstRoleState == RollState.ToHit)
       {
         <div class="card-header">
           @(message.value.Results.Last().RawResults.Count) attacks hitting on @(message.value.Results.First().DiceGoal)+ 
@@ -175,6 +175,13 @@
       <div class="card-body m-0">
         @foreach (var rollResult in message.value.Results.Select((val, index) => new {val, index}))
         {
+          @if (rollResult.index == 0 && message.index == 0)
+          {
+            <button class="btn btn-outline-secondary float-end ms-2" @onclick="DeleteLastRoll">
+              <span class="oi oi-action-undo"></span>
+            </button>  
+          }
+          
           <div>
             @if (rollResult.val.RerollState is RerollState.RerollBiggerThan)
             {
@@ -241,15 +248,15 @@
             {
               <div>
                 <b>@(rollResult.val.SucessfullRolls) wounding</b>
-                 @if (rollResult.val.Poison || rollResult.val.Poison5Up)
-                  {
-                    <span> (+@rollResult.val.PoisonHits wounds from Poison)</span>  
-                  }
-                 <span> on @(rollResult.val.DiceGoal)+</span>
-                 @if (rollResult.val.LethalStrike)
-                 {
-                   <span>, Lethal Strike: @rollResult.val.LethalStrikeHits</span>  
-                 }
+                @if (rollResult.val.Poison || rollResult.val.Poison5Up)
+                {
+                  <span> (+@rollResult.val.PoisonHits wounds from Poison)</span>  
+                }
+                <span> on @(rollResult.val.DiceGoal)+</span>
+                @if (rollResult.val.LethalStrike)
+                {
+                  <span>, Lethal Strike: @rollResult.val.LethalStrikeHits</span>  
+                }
               </div>
             }
             @if (rollResult.val.RollState == RollState.AutomaticHit)
@@ -294,22 +301,8 @@
                 </div>
               }
             }
-
-            <div>
-              @if (rollResult.index == 0 && message.index == 0)
-              {
-                <button class="btn btn-outline-danger float-end" @onclick="DeleteLastRoll">
-                  X
-                </button>  
-              }
-              else
-              {
-                <button class="btn btn-outline-danger float-end" style="visibility: collapse">
-                  X
-                </button>  
-              }
-            </div>
           </div>
+          
           @if (rollResult.val.DiceGoal != _defaultNoRoll && rollResult.val.RollState != RollState.AutomaticHit)
           {
             <div>
@@ -362,6 +355,7 @@
   private RollResult CurrentRole => CurrentDiceMessage?.Results?.First();
   private bool RerollWasDone => CurrentRole?.RerollState != RerollState.NoReroll;
   private RollState CurrentRoleState => CurrentDiceMessage?.Results?.First().RollState ?? RollState.None;
+  private RollState FirstRoleState => CurrentDiceMessage?.Results?.Last().RollState ?? RollState.None;
   private DiceMessage CurrentDiceMessage => _messages.FirstOrDefault();
 
   private void SetAndRollDice(int amount)
