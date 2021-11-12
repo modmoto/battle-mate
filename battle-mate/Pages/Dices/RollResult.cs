@@ -6,8 +6,10 @@ namespace battle_mate
 {
     public class RollResult
     {
-        public RollResult(List<int> rawResults,
+        public RollResult(
+            List<int> rawResults,
             List<int> rerollResults,
+            List<int> oldResults,
             int sides,
             RollState state,
             RerollState rerollState,
@@ -23,7 +25,10 @@ namespace battle_mate
             int lethalStrikeHits)
         {
             RawResults = rawResults.OrderBy(r => r).ToList();
+            OldResults = oldResults.OrderBy(r => r).ToList();
             RerollResults = rerollResults.OrderBy(r => r).ToList();
+            FailedRerolls = rerollResults.Count(r => r < diceGoal);
+            SucessfullRerolls = rerollResults.Count(r => r >= diceGoal);
             SucessfullRolls = rawResults.Count(r => r >= diceGoal);
             FailedRolls = rawResults.Count(r => r < diceGoal);
             Poison = poison;
@@ -67,10 +72,13 @@ namespace battle_mate
         }
 
         public List<int> RawResults { get; }
+        public List<int> OldResults { get; }
         public List<int> RerollResults { get; }
         public int DiceSides { get; }
         public int DiceGoal { get; }
         public int SucessfullRolls { get; }
+        public int FailedRerolls { get; }
+        public int SucessfullRerolls { get; }
         public int FailedRolls { get; }
         public bool Poison { get; }
         public bool Poison5Up { get; }
@@ -83,6 +91,18 @@ namespace battle_mate
         public RollState RollState { get; }
         public RerollState RerollState { get; }
 
+        public RollResult UndoReroll()
+        {
+            if (RerollState != RerollState.NoReroll)
+            {
+                return new RollResult(OldResults, new List<int>(), new List<int>(), DiceSides, RollState,
+                    RerollState.NoReroll, DiceGoal, false, BattleFocus, false, Poison, Poison5Up, PoisonHits, false,
+                    LethalStrike, LethalStrikeHits);
+            }
+
+            return this;
+        }
+        
         private List<DiceResultGroup> GroupDice(List<int> results, int sides)
         {
             var resultGroups = new List<DiceResultGroup>();

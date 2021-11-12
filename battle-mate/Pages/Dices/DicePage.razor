@@ -178,21 +178,49 @@
           <div>
             @if (rollResult.val.RerollState is RerollState.RerollBiggerThan)
             {
-              <div>
-                Reroll @(rollResult.val.DiceGoal)+ (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
-              </div>
+              @if (rollResult.val.RollState is RollState.ArmorSave or RollState.WardSave)
+              {
+                <div>
+                  <b>+@rollResult.val.FailedRerolls from rerolling</b> @(rollResult.val.DiceGoal)+ (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                </div>
+              }
+              else
+              {
+                <div>
+                  <b>-@rollResult.val.FailedRerolls from rerolling</b> @(rollResult.val.DiceGoal)+ (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                </div>
+              }
             }
             @if (rollResult.val.RerollState is RerollState.RerollSmallerThan)
             {
-              <div>
-                Reroll up to @(rollResult.val.DiceGoal) (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
-              </div>
+              if (rollResult.val.RollState is RollState.ToHit or RollState.ToWound)
+              {
+                <div>
+                  <b>+@rollResult.val.SucessfullRerolls from rerolling</b> up to @(rollResult.val.DiceGoal - 1) (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                </div>
+              }
+              else
+              {
+                <div>
+                  <b>-@rollResult.val.SucessfullRerolls from rerolling</b> up to @(rollResult.val.DiceGoal - 1) (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                </div>
+              }
             }
             @if (rollResult.val.RerollState is RerollState.Reroll1s)
             {
-              <div>
-                Reroll 1s (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
-              </div>
+              if (rollResult.val.RollState is RollState.ToHit or RollState.ToWound)
+              {
+                <div>
+                  <b>+@rollResult.val.SucessfullRerolls from rerolling</b> 1s (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                </div>
+              }
+              else
+              {
+                <div>
+                  <b>-@rollResult.val.SucessfullRerolls from rerolling</b> 1s (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                </div>
+              }
+              
             }
             @if (rollResult.val.RollState == RollState.ToHit)
             {
@@ -357,7 +385,11 @@
   private void DeleteLastRoll()
   {
     var rollResults = CurrentDiceMessage.Results;
-    if (rollResults.Count == 1)
+    if (rollResults[0].RerollState != RerollState.NoReroll)
+    {
+      rollResults[0] = rollResults[0].UndoReroll();
+    }
+    else if (rollResults.Count == 1)
     {
       _messages.RemoveAt(0);
     }
@@ -425,7 +457,7 @@
     var rollResults = CurrentDiceMessage.Results;
     rollResults.Insert(0, result);
     var lastResult = rollResults.First();
-    return new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides, RollState.WardSave,
+    return new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.OldResults, lastResult.DiceSides, RollState.WardSave,
       lastResult.RerollState, _defaultNoRoll, false, lastResult.BattleFocus, false, lastResult.Poison, lastResult.Poison5Up,
       lastResult.PoisonHits, false, lastResult.LethalStrike, lastResult.LethalStrikeHits);
   }
@@ -448,7 +480,7 @@
     var rollResults = CurrentDiceMessage.Results;
     rollResults.Insert(0, result);
     var lastResult = rollResults.First();
-    var armorResult = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.DiceSides,
+    var armorResult = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.OldResults, lastResult.DiceSides,
       RollState.ArmorSave, lastResult.RerollState, _defaultNoRoll, false, lastResult.BattleFocus, false,
       lastResult.Poison, lastResult.Poison5Up, lastResult.PoisonHits, false, lastResult.LethalStrike, lastResult.LethalStrikeHits);
     return armorResult;
@@ -499,7 +531,7 @@
   {
     if (CurrentRole != null)
     {
-      var reroll = _dice.RerRollBiggerThan(CurrentRole.DiceGoal + 1, CurrentRole);
+      var reroll = _dice.RerRollBiggerThan(CurrentRole.DiceGoal, CurrentRole);
       CurrentDiceMessage.Results.RemoveAt(0);
       CurrentDiceMessage.Results.Insert(0, reroll);
     }
