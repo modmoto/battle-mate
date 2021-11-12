@@ -164,12 +164,20 @@
       {
         <div class="card-header">
           @(message.value.Results.Last().RawResults.Count) automatic hits
+          @if (SpecialRules.Count > 0)
+          {
+            <span> with @(string.Join(", ", SpecialRules))</span>
+          }
         </div>
       }
       @if (FirstRoleState == RollState.ToHit)
       {
         <div class="card-header">
-          @(message.value.Results.Last().RawResults.Count) attacks hitting on @(message.value.Results.First().DiceGoal)+ 
+          @(message.value.Results.Last().RawResults.Count) attacks hitting on @(message.value.Results.First().DiceGoal)+
+          @if (SpecialRules.Count > 0)
+          {
+            <span> with @(string.Join(", ", SpecialRules))</span>
+          }
         </div>
       }
       <div class="card-body m-0">
@@ -357,6 +365,19 @@
   private RollState CurrentRoleState => CurrentDiceMessage?.Results?.First().RollState ?? RollState.None;
   private RollState FirstRoleState => CurrentDiceMessage?.Results?.Last().RollState ?? RollState.None;
   private DiceMessage CurrentDiceMessage => _messages.FirstOrDefault();
+
+  public List<string> SpecialRules
+  {
+    get
+    {
+      var list = new List<string>();
+      if (CurrentRole?.Poison == true && CurrentRole?.Poison5Up != true) list.Add("Poison"); 
+      if (CurrentRole?.BattleFocus == true) list.Add("Battlefocus"); 
+      if (CurrentRole?.LethalStrike == true) list.Add("Lethal strike"); 
+      if (CurrentRole?.Poison5Up == true) list.Add("Poison 5+"); 
+      return list;
+    }
+  }
 
   private void SetAndRollDice(int amount)
   {
