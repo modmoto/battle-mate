@@ -1,6 +1,6 @@
 {
-  "name": "Battle-Mate",
-  "short_name": "Battle-Mate",
+  "name": "Battle Mate",
+  "short_name": "Battle Mate",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
