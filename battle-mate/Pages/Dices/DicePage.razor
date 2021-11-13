@@ -43,10 +43,10 @@
       </button>
     </div>
     <div class="col">
-      <button type="button" class="btn btn-outline-secondary w-100 my-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <button type="button" class="btn btn-outline-secondary w-100 my-2" data-bs-toggle="modal" data-bs-target="#optionsModal">
         <span class="oi oi-menu" aria-hidden="true"></span>
       </button>
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-body">
@@ -113,18 +113,18 @@
               </div>
               <div class="row">
                 <div class="col">
-                  <button type="button" class="@($"btn btn-outline-{(_battleFocusChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _battleFocusChecked = !_battleFocusChecked">Battlefocus</button>
+                  <button type="button" disabled="@NextRollIsNotToHit" class="@($"btn btn-outline-{(_battleFocusChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _battleFocusChecked = !_battleFocusChecked">Battlefocus</button>
                 </div>
                 <div class="col">
-                  <button type="button" class="@($"btn btn-outline-{(_poisonChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _poisonChecked = !_poisonChecked">Poison</button>
+                  <button type="button" disabled="@NextRollIsNotToHit" class="@($"btn btn-outline-{(_poisonChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _poisonChecked = !_poisonChecked">Poison</button>
                 </div>
               </div>
               <div class="row">
                 <div class="col">
-                  <button type="button" class="@($"btn btn-outline-{(_lethalStrikeChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _lethalStrikeChecked = !_lethalStrikeChecked">Lethal Strike</button>
+                  <button type="button" disabled="@NextRollIsNotToHit" class="@($"btn btn-outline-{(_lethalStrikeChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _lethalStrikeChecked = !_lethalStrikeChecked">Lethal Strike</button>
                 </div>
                 <div class="col">
-                  <button type="button" class="@($"btn btn-outline-{(_poison5Checked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _poison5Checked = !_poison5Checked">Poison 5+</button>
+                  <button type="button" disabled="@NextRollIsNotToHit" class="@($"btn btn-outline-{(_poison5Checked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _poison5Checked = !_poison5Checked">Poison 5+</button>
                 </div>
               </div>
 
@@ -364,6 +364,7 @@
   private bool RerollWasDone => CurrentRole?.RerollState != RerollState.NoReroll;
   private RollState CurrentRoleState => CurrentDiceMessage?.Results?.First().RollState ?? RollState.None;
   private RollState FirstRoleState => CurrentDiceMessage?.Results?.Last().RollState ?? RollState.None;
+  public bool NextRollIsNotToHit => !(CurrentRoleState is RollState.None or RollState.WardSave);
   private DiceMessage CurrentDiceMessage => _messages.FirstOrDefault();
 
   public List<string> SpecialRules
@@ -371,10 +372,10 @@
     get
     {
       var list = new List<string>();
-      if (CurrentRole?.Poison == true && CurrentRole?.Poison5Up != true) list.Add("Poison"); 
+      if (CurrentRole?.Poison == true && CurrentRole?.Poison5Up != true) list.Add("Poison");
+      if (CurrentRole?.Poison5Up == true) list.Add("Poison 5+"); 
       if (CurrentRole?.BattleFocus == true) list.Add("Battlefocus"); 
       if (CurrentRole?.LethalStrike == true) list.Add("Lethal strike"); 
-      if (CurrentRole?.Poison5Up == true) list.Add("Poison 5+"); 
       return list;
     }
   }
