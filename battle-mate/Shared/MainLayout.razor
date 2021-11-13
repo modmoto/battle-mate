@@ -2,8 +2,27 @@
 
 <div class="page">
   <div class="main">
+    <div class="top-row px-4">
+      <NavLink class="nav-link px-1" href="/" Match="NavLinkMatch.All">
+        <button class="btn btn-outline-primary">
+          Combat result
+        </button>
+      </NavLink>
+
+      <NavLink class="nav-link px-1" href="/dice" Match="NavLinkMatch.All">
+        <button class="btn btn-outline-primary">
+            Roll dice
+        </button>
+      </NavLink>
+    </div>
+
     <div class="content px-4">
       @Body
     </div>
   </div>
 </div>
+
+@inject NavigationManager _navigationManager
+@code {
+
+}
