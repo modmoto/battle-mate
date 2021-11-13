@@ -141,7 +141,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="LazySavesCorrection">Close</button>
             </div>
           </div>
         </div>
@@ -455,27 +455,31 @@
   private RollResult RollWardSave(int toHit, RollResult oldResult)
   {
     return _noWardChecked
-      ? NoWardSaveResult(oldResult)
+      ? GetAndInserNoWardSaveResult(oldResult)
       : _dice.WardSave(toHit, oldResult);
   }
 
   private RollResult RollArmorSave(int toHit, RollResult oldResult)
   {
     var result = _noArmorChecked
-      ? NoArmorSaveResult(oldResult)
+      ? GetAndInsertNoArmorSaveResult(oldResult)
       : _dice.ArmorSave(toHit, oldResult);
 
-    return _noWardChecked ? NoWardSaveResult(result) : result;
+    return _noWardChecked ? GetAndInserNoWardSaveResult(result) : result;
   }
 
-  private RollResult NoWardSaveResult(RollResult result)
+  private RollResult GetAndInserNoWardSaveResult(RollResult result)
   {
     var rollResults = CurrentDiceMessage.Results;
     rollResults.Insert(0, result);
-    var lastResult = rollResults.First();
-    return new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.OldResults, lastResult.DiceSides, RollState.WardSave,
-      lastResult.RerollState, _defaultNoRoll, false, lastResult.BattleFocus, false, lastResult.Poison, lastResult.Poison5Up,
-      lastResult.PoisonHits, false, lastResult.LethalStrike, lastResult.LethalStrikeHits);
+    return NoWardSaveResultFromCurrent();
+  }
+
+  private RollResult NoWardSaveResultFromCurrent()
+  {
+    return new RollResult(CurrentRole.RawResults, CurrentRole.RerollResults, CurrentRole.OldResults, CurrentRole.DiceSides, RollState.WardSave,
+      CurrentRole.RerollState, _defaultNoRoll, false, CurrentRole.BattleFocus, false, CurrentRole.Poison, CurrentRole.Poison5Up,
+      CurrentRole.PoisonHits, false, CurrentRole.LethalStrike, CurrentRole.LethalStrikeHits);
   }
 
   private RollResult RollToWound(int toHit, RollResult oldResult)
@@ -484,22 +488,26 @@
 
     if (_noArmorChecked && _noWardChecked)
     {
-      var armorResult = NoArmorSaveResult(result);
-      return NoWardSaveResult(armorResult);
+      var armorResult = GetAndInsertNoArmorSaveResult(result);
+      return GetAndInserNoWardSaveResult(armorResult);
     }
 
-    return _noArmorChecked ? NoArmorSaveResult(result) : result;
+    return _noArmorChecked ? GetAndInsertNoArmorSaveResult(result) : result;
   }
 
-  private RollResult NoArmorSaveResult(RollResult result)
+  private RollResult GetAndInsertNoArmorSaveResult(RollResult result)
   {
     var rollResults = CurrentDiceMessage.Results;
     rollResults.Insert(0, result);
-    var lastResult = rollResults.First();
-    var armorResult = new RollResult(lastResult.RawResults, lastResult.RerollResults, lastResult.OldResults, lastResult.DiceSides,
-      RollState.ArmorSave, lastResult.RerollState, _defaultNoRoll, false, lastResult.BattleFocus, false,
-      lastResult.Poison, lastResult.Poison5Up, lastResult.PoisonHits, false, lastResult.LethalStrike, lastResult.LethalStrikeHits);
+    var armorResult = NoArmorSaveResultFromCurrent();
     return armorResult;
+  }
+
+  private RollResult NoArmorSaveResultFromCurrent()
+  {
+    return new RollResult(CurrentRole.RawResults, CurrentRole.RerollResults, CurrentRole.OldResults, CurrentRole.DiceSides,
+      RollState.ArmorSave, CurrentRole.RerollState, _defaultNoRoll, false, CurrentRole.BattleFocus, false,
+      CurrentRole.Poison, CurrentRole.Poison5Up, CurrentRole.PoisonHits, false, CurrentRole.LethalStrike, CurrentRole.LethalStrikeHits);
   }
 
   private void SetAndRollDice(int amount, int sides)
@@ -550,6 +558,27 @@
       var reroll = _dice.RerRollBiggerThan(CurrentRole.DiceGoal, CurrentRole);
       CurrentDiceMessage.Results.RemoveAt(0);
       CurrentDiceMessage.Results.Insert(0, reroll);
+    }
+  }
+
+  private void LazySavesCorrection()
+  {
+    if (_noArmorChecked && CurrentRoleState == RollState.ToWound && !_noWardChecked)
+    {
+      var armorResult = NoArmorSaveResultFromCurrent();
+      CurrentDiceMessage.Results.Insert(0, armorResult);
+    }
+    else if (_noWardChecked && CurrentRoleState == RollState.ArmorSave)
+    {
+      var wardResult = NoWardSaveResultFromCurrent();
+      CurrentDiceMessage.Results.Insert(0, wardResult);
+    }
+    else if (_noArmorChecked && _noWardChecked && CurrentRoleState == RollState.ToWound)
+    {
+      var armorResult = NoArmorSaveResultFromCurrent();
+      CurrentDiceMessage.Results.Insert(0, armorResult);
+      var wardResult = NoWardSaveResultFromCurrent();
+      CurrentDiceMessage.Results.Insert(0, wardResult);
     }
   }
 }
