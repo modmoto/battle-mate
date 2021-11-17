@@ -4,10 +4,11 @@
 <div class="@(Right ? "text-start" : "text-end")">
   @AllPoints
 </div>
-<UpAndDownComp Right="Right" Topic="W" Input="Wounds" InvokeChange="InvokeWounds" ></UpAndDownComp>
-<UpAndDownComp Right="Right" Topic="R" Input="Ranks" InvokeChange="InvokeRanks"></UpAndDownComp>
-<UpAndDownComp Right="Right" Topic="B" Input="Banners" InvokeChange="InvokeBanners"></UpAndDownComp>
-<UpAndDownComp Right="Right" Topic="A" Input="AdditionalPoints" InvokeChange="InvokeAdditionalPoints"></UpAndDownComp>
+<UpAndDownComp Right="Right" Topic="Wounds" Input="Wounds" InvokeChange="InvokeWounds" ></UpAndDownComp>
+<UpAndDownComp Right="Right" Topic="Ranks" Input="Ranks" InvokeChange="InvokeRanks"></UpAndDownComp>
+<UpAndDownComp Right="Right" Topic="Banners" Input="Banners" InvokeChange="InvokeBanners"></UpAndDownComp>
+<UpAndDownComp Right="Right" Topic="Overkill" Input="Overkill" InvokeChange="InvokeOverkill"></UpAndDownComp>
+<UpAndDownComp Right="Right" Topic="Additional" Input="AdditionalPoints" InvokeChange="InvokeAdditionalPoints"></UpAndDownComp>
 <CycleChecker Right="Right" InvokeChange="InvokeCharging" Values="ChargeValues"></CycleChecker>
 <CycleChecker Right="Right" InvokeChange="InvokeFlank" Values="FlankValues"></CycleChecker>
 <CycleChecker Right="Right" InvokeChange="InvokeRear" Values="RearValues"></CycleChecker>
@@ -26,6 +27,8 @@
   [Parameter]
   public int Banners { get; set; }
   [Parameter]
+  public int Overkill { get; set; }
+  [Parameter]
   public int AdditionalPoints { get; set; }
   
   [Parameter]
@@ -34,6 +37,8 @@
   public EventCallback<int> InvokeRanks { get; set; }
   [Parameter]
   public EventCallback<int> InvokeBanners { get; set; }
+  [Parameter]
+  public EventCallback<int> InvokeOverkill { get; set; }
   [Parameter]
   public EventCallback<int> InvokeAdditionalPoints { get; set; }
   
@@ -44,7 +49,7 @@
   [Parameter]
   public EventCallback<PointStrings> InvokeCharging { get; set; }
 
-  public List<PointStrings> ChargeValues => new() {new PointStrings(0, "not charging"), new PointStrings(1, "charging")};
-  public List<PointStrings> FlankValues => new() {new PointStrings(0, "not flanking"), new PointStrings(1, "flanking"), new PointStrings(2, "great flank")};
-  public List<PointStrings> RearValues => new() {new PointStrings(0, "no rear"), new PointStrings(2, "rear"), new PointStrings(3, "great rear")};
+  public List<PointStrings> ChargeValues => new() {new PointStrings(0, "not charging"), new PointStrings(1, "Charge +1")};
+  public List<PointStrings> FlankValues => new() {new PointStrings(0, "not flanking"), new PointStrings(1, "Flank +1"), new PointStrings(2, "Flank +2")};
+  public List<PointStrings> RearValues => new() {new PointStrings(0, "no rear"), new PointStrings(2, "Rear +2"), new PointStrings(3, "Rear +3")};
 }

@@ -8,6 +8,13 @@ a, .btn-link {
     color: #0366d6;
 }
 
+.middle-float-text {
+    left: 50%; 
+    transform: translateX(-50%); 
+    font-size: 0.6rem; 
+    position: absolute 
+}
+
 .red {
     color: red;
 }

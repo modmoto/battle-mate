@@ -6,12 +6,13 @@
                     InvokeWounds="val => WoundsLeft = val"
                     InvokeRanks="val => RanksLeft = val"
                     InvokeBanners="val => BannersLeft = val"
+                    InvokeOverkill="val => OverkillLeft = val"
                     InvokeAdditionalPoints="val => AdditionalPointsLeft = val"
                     InvokeCharging="val => IsChargingLeft = val"
                     InvokeFlank="val => HasFlankLeft = val"
                     InvokeRear="val => HasRearLeft = val"
                     Ranks="RanksLeft"
-                    Banners="BannersLeft"
+                    Overkill="OverkillLeft"
                     AdditionalPoints="AdditionalPointsLeft"
                     Wounds="WoundsLeft">
     </ResultOverview>
@@ -23,12 +24,14 @@
                     InvokeWounds="val => WoundsRight = val"
                     InvokeRanks="val => RanksRight = val"
                     InvokeBanners="val => BannersRight = val"
+                    InvokeOverkill="val => OverkillRight = val"
                     InvokeAdditionalPoints="val => AdditionalPointsRight = val"
                     InvokeCharging="val => IsChargingRight = val"
                     InvokeFlank="val => HasFlankRight = val"
                     InvokeRear="val => HasRearRight = val"
                     Ranks="RanksRight"
                     Banners="BannersRight"
+                    Overkill="OverkillRight"
                     AdditionalPoints="AdditionalPointsRight"
                     Wounds="WoundsRight">
     </ResultOverview>
@@ -55,6 +58,8 @@
     RanksRight = 0;
     BannersLeft = 0;
     BannersRight = 0;
+    OverkillLeft = 0;
+    OverkillRight = 0;
     AdditionalPointsLeft = 0;
     AdditionalPointsRight = 0;
     IsChargingLeft = new PointStrings(0, "");
@@ -65,10 +70,10 @@
     HasRearRight = new PointStrings(0, "");
   }
 
-  public int PointsLeft => WoundsLeft + RanksLeft + BannersLeft + AdditionalPointsLeft + IsChargingLeft.Points + HasFlankLeft.Points + HasRearLeft.Points;
+  public int PointsLeft => WoundsLeft + RanksLeft + BannersLeft + OverkillLeft + AdditionalPointsLeft + IsChargingLeft.Points + HasFlankLeft.Points + HasRearLeft.Points;
   public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
 
-  public int PointsRight => WoundsRight + RanksRight + BannersRight + AdditionalPointsRight + IsChargingRight .Points + HasFlankRight .Points + HasRearRight.Points;
+  public int PointsRight => WoundsRight + RanksRight + BannersRight + OverkillRight + AdditionalPointsRight + IsChargingRight .Points + HasFlankRight .Points + HasRearRight.Points;
   public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
 
   public int WoundsLeft { get; set; }
@@ -77,6 +82,8 @@
   public int RanksRight { get; set; }
   public int BannersLeft { get; set; }
   public int BannersRight { get; set; }
+  public int OverkillLeft { get; set; }
+  public int OverkillRight { get; set; }
   public int AdditionalPointsLeft { get; set; }
   public int AdditionalPointsRight { get; set; }
 
