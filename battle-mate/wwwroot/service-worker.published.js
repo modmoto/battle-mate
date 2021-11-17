@@ -44,5 +44,19 @@ async function onFetch(event) {
         cachedResponse = await cache.match(request);
     }
 
-    return cachedResponse || fetch(event.request);
+    if (cachedResponse) {
+        console.info("returned cached response")
+        console.info(event.request)
+        console.info("----------------------------------------------")
+        console.info(cachedResponse)
+        console.info("++++++++++++++++++++++++++++++++++++++++++++++")
+        return cachedResponse;
+    } else {
+        console.info("cache is null, returning new fetch")
+        console.info(event.request)
+        console.info("----------------------------------------------")
+        console.info(cachedResponse)
+        console.info("++++++++++++++++++++++++++++++++++++++++++++++")
+        return fetch(event.request);
+    }
 }
