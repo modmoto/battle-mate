@@ -9,9 +9,9 @@
 <UpAndDownComp Right="Right" Topic="Banners" Input="Banners" InvokeChange="InvokeBanners"></UpAndDownComp>
 <UpAndDownComp Right="Right" Topic="Overkill" Input="Overkill" InvokeChange="InvokeOverkill"></UpAndDownComp>
 <UpAndDownComp Right="Right" Topic="Additional" Input="AdditionalPoints" InvokeChange="InvokeAdditionalPoints"></UpAndDownComp>
-<CycleChecker Right="Right" InvokeChange="InvokeCharging" Values="ChargeValues"></CycleChecker>
-<CycleChecker Right="Right" InvokeChange="InvokeFlank" Values="FlankValues"></CycleChecker>
-<CycleChecker Right="Right" InvokeChange="InvokeRear" Values="RearValues"></CycleChecker>
+<CycleChecker Right="Right" @ref="Charges" InvokeChange="InvokeCharging" Values="ChargeValues"></CycleChecker>
+<CycleChecker Right="Right" @ref="Flanks" InvokeChange="InvokeFlank" Values="FlankValues"></CycleChecker>
+<CycleChecker Right="Right" @ref="Rears" InvokeChange="InvokeRear" Values="RearValues"></CycleChecker>
 
 @code {
   [Parameter]
@@ -52,4 +52,18 @@
   public List<PointStrings> ChargeValues => new() {new PointStrings(0, "not charging"), new PointStrings(1, "Charge +1")};
   public List<PointStrings> FlankValues => new() {new PointStrings(0, "not flanking"), new PointStrings(1, "Flank +1"), new PointStrings(2, "Flank +2")};
   public List<PointStrings> RearValues => new() {new PointStrings(0, "no rear"), new PointStrings(2, "Rear +2"), new PointStrings(3, "Rear +3")};
+
+  public void Reset()
+  {
+    Rears.Reset();
+    Flanks.Reset();
+    Charges.Reset();
+  }
+
+  public CycleChecker Rears { get; set; }
+
+  public CycleChecker Flanks { get; set; }
+
+  public CycleChecker Charges { get; set; }
+
 }

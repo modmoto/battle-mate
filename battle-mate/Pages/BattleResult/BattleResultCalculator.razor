@@ -14,7 +14,8 @@
                     Ranks="RanksLeft"
                     Overkill="OverkillLeft"
                     AdditionalPoints="AdditionalPointsLeft"
-                    Wounds="WoundsLeft">
+                    Wounds="WoundsLeft"
+                    @ref="Left">
     </ResultOverview>
   </div>
   <div class="col p-0 ps-2">
@@ -33,7 +34,8 @@
                     Banners="BannersRight"
                     Overkill="OverkillRight"
                     AdditionalPoints="AdditionalPointsRight"
-                    Wounds="WoundsRight">
+                    Wounds="WoundsRight"
+                    @ref="Right">
     </ResultOverview>
   </div>
 </div>
@@ -68,6 +70,8 @@
     IsChargingRight = new PointStrings(0, "");
     HasFlankRight = new PointStrings(0, "");
     HasRearRight = new PointStrings(0, "");
+    Right?.Reset();
+    Left?.Reset();
   }
 
   public int PointsLeft => WoundsLeft + RanksLeft + BannersLeft + OverkillLeft + AdditionalPointsLeft + IsChargingLeft.Points + HasFlankLeft.Points + HasRearLeft.Points;
@@ -93,4 +97,7 @@
   public PointStrings IsChargingRight { get; set; }
   public PointStrings HasFlankRight { get; set; }
   public PointStrings HasRearRight { get; set; }
+  public ResultOverview Left { get; set; }
+  public ResultOverview Right { get; set; }
+
 }
