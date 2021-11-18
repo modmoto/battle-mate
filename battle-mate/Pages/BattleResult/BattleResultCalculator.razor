@@ -116,7 +116,7 @@
   public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
 
   public int PointsRight => WoundsRight + VsWoundsRightActual + RanksRight + BannersRight + OverkillRight + AdditionalPointsRightActual + IsChargingRight .Points + HasFlankRight .Points + HasRearRight.Points;
-  public int VsWoundsRightActual => HasVsPoints ?  (VsWoundsRight + 1) / 2 : 0;
+  public int VsWoundsRightActual => HasVsPoints ? (VsWoundsRight + 1) / 2 : 0;
   public int AdditionalPointsRightActual => HasAdditionalPoints ? AdditionalPointsRight : 0;
   public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
 
