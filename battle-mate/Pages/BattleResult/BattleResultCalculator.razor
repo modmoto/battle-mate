@@ -4,6 +4,7 @@
     <ResultOverview AllPoints="PointsLeft"
                     PointsDifference="PointsDifferenceLeft"
                     InvokeWounds="val => WoundsLeft = val"
+                    InvokeVsWounds="val => VsWoundsLeft = val"
                     InvokeRanks="val => RanksLeft = val"
                     InvokeBanners="val => BannersLeft = val"
                     InvokeOverkill="val => OverkillLeft = val"
@@ -15,7 +16,10 @@
                     Banners="BannersLeft"
                     Overkill="OverkillLeft"
                     AdditionalPoints="AdditionalPointsLeft"
+                    HasAdditionalPoints="HasAdditionalPoints"
                     Wounds="WoundsLeft"
+                    VsWounds="VsWoundsLeft"
+                    HasVsPoints="HasVsPoints"
                     @ref="Left">
     </ResultOverview>
   </div>
@@ -24,6 +28,7 @@
                     AllPoints="PointsRight"
                     PointsDifference="PointsDifferenceRight"
                     InvokeWounds="val => WoundsRight = val"
+                    InvokeVsWounds="val => VsWoundsRight = val"
                     InvokeRanks="val => RanksRight = val"
                     InvokeBanners="val => BannersRight = val"
                     InvokeOverkill="val => OverkillRight = val"
@@ -35,7 +40,10 @@
                     Banners="BannersRight"
                     Overkill="OverkillRight"
                     AdditionalPoints="AdditionalPointsRight"
+                    HasAdditionalPoints="HasAdditionalPoints"
                     Wounds="WoundsRight"
+                    VsWounds="VsWoundsRight"
+                    HasVsPoints="HasVsPoints"
                     @ref="Right">
     </ResultOverview>
   </div>
@@ -44,6 +52,33 @@
   <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="ResetStats">
     Reset combat result
   </button>
+</div>
+<div class="row ">
+  <button type="button" class="btn btn-outline-secondary w-100 my-2" data-bs-toggle="modal" data-bs-target="#optionsModal">
+    <span class="oi oi-menu" aria-hidden="true"></span>
+  </button>
+  <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="modal-header">
+            <h5 class="modal-title">Default options</h5>
+          </div>
+          <div class="row">
+            <div class="col">
+              <UpAndDownOptionComp Topic="Ranks" Input="DefaultRanks"></UpAndDownOptionComp>
+              <UpAndDownOptionComp Topic="Banners" Input="DefaultBanners"></UpAndDownOptionComp>
+              <CycleChecker Values="DefaultVsOptions" InvokeChange="SetVs"></CycleChecker>
+              <CycleChecker Values="DefaultAdditionalOptions" InvokeChange="SetAdditionalPoints"></CycleChecker>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 @code {
@@ -57,10 +92,10 @@
   {
     WoundsLeft = 0;
     WoundsRight = 0;
-    RanksLeft = 0;
-    RanksRight = 0;
-    BannersLeft = 0;
-    BannersRight = 0;
+    RanksLeft = DefaultRanks;
+    RanksRight = DefaultRanks;
+    BannersLeft = DefaultBanners;
+    BannersRight = DefaultBanners;
     OverkillLeft = 0;
     OverkillRight = 0;
     AdditionalPointsLeft = 0;
@@ -75,12 +110,20 @@
     Left?.Reset();
   }
 
-  public int PointsLeft => WoundsLeft + RanksLeft + BannersLeft + OverkillLeft + AdditionalPointsLeft + IsChargingLeft.Points + HasFlankLeft.Points + HasRearLeft.Points;
+  public int PointsLeft => WoundsLeft + VsWoundsLeftActual + RanksLeft + BannersLeft + OverkillLeft + AdditionalPointsLeftActual + IsChargingLeft.Points + HasFlankLeft.Points + HasRearLeft.Points;
+  public int VsWoundsLeftActual => HasVsPoints ? (VsWoundsLeft + 1) / 2 : 0;
+  public int AdditionalPointsLeftActual => HasAdditionalPoints ? AdditionalPointsLeft : 0;
   public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
 
-  public int PointsRight => WoundsRight + RanksRight + BannersRight + OverkillRight + AdditionalPointsRight + IsChargingRight .Points + HasFlankRight .Points + HasRearRight.Points;
+  public int PointsRight => WoundsRight + VsWoundsRightActual + RanksRight + BannersRight + OverkillRight + AdditionalPointsRightActual + IsChargingRight .Points + HasFlankRight .Points + HasRearRight.Points;
+  public int VsWoundsRightActual => HasVsPoints ?  (VsWoundsRight + 1) / 2 : 0;
+  public int AdditionalPointsRightActual => HasAdditionalPoints ? AdditionalPointsRight : 0;
   public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
 
+  public int DefaultRanks { get; set; } = 3;
+  public int DefaultBanners { get; set; } = 1;
+  public int VsWoundsLeft { get; set; }
+  public int VsWoundsRight { get; set; }
   public int WoundsLeft { get; set; }
   public int WoundsRight { get; set; }
   public int RanksLeft { get; set; }
@@ -92,6 +135,9 @@
   public int AdditionalPointsLeft { get; set; }
   public int AdditionalPointsRight { get; set; }
 
+  public bool HasVsPoints { get; set; }
+  public bool HasAdditionalPoints { get; set; }
+  
   public PointStrings IsChargingLeft { get; set; }
   public PointStrings HasFlankLeft { get; set; }
   public PointStrings HasRearLeft { get; set; }
@@ -101,4 +147,25 @@
   public ResultOverview Left { get; set; }
   public ResultOverview Right { get; set; }
 
+  public List<PointStrings> DefaultVsOptions => new()
+  {
+    new PointStrings(0, "hide vermin swarm wounds"),
+    new PointStrings(1, "show vermin swarm wounds"),
+  };
+  
+  public List<PointStrings> DefaultAdditionalOptions => new()
+  {
+    new PointStrings(0, "hide additional points"),
+    new PointStrings(1, "show additional points"),
+  };
+
+  private void SetAdditionalPoints(PointStrings newVal)
+  {
+    HasAdditionalPoints = newVal.Points != 0;
+  }
+
+  private void SetVs(PointStrings newVal)
+  {
+    HasVsPoints = newVal.Points != 0;
+  }
 }

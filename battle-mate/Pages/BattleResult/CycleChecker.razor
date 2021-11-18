@@ -16,8 +16,6 @@
 @code {
   private int _index;
   [Parameter]
-  public bool Right { get; set; }
-  [Parameter]
   public List<PointStrings> Values { get; set; }
   [Parameter]
   public EventCallback<PointStrings> InvokeChange { get; set; }
@@ -32,5 +30,10 @@
   public void Reset()
   {
     _index = 0;
+  }
+  
+  public void SetIndex(int newIndex)
+  {
+    _index = newIndex;
   }
 }

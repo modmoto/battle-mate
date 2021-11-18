@@ -5,13 +5,20 @@
   @AllPoints
 </div>
 <UpAndDownComp Right="Right" Topic="Wounds" Input="Wounds" InvokeChange="InvokeWounds" ></UpAndDownComp>
+@if (HasVsPoints)
+{
+  <UpAndDownComp Right="Right" Topic="VS wounds" Input="VsWounds" InvokeChange="InvokeVsWounds" ></UpAndDownComp>  
+}
 <UpAndDownComp Right="Right" Topic="Ranks" Input="Ranks" InvokeChange="InvokeRanks"></UpAndDownComp>
 <UpAndDownComp Right="Right" Topic="Banners" Input="Banners" InvokeChange="InvokeBanners"></UpAndDownComp>
 <UpAndDownComp Right="Right" Topic="Overkill" Input="Overkill" InvokeChange="InvokeOverkill"></UpAndDownComp>
-<UpAndDownComp Right="Right" Topic="Additional" Input="AdditionalPoints" InvokeChange="InvokeAdditionalPoints"></UpAndDownComp>
-<CycleChecker Right="Right" @ref="Charges" InvokeChange="InvokeCharging" Values="ChargeValues"></CycleChecker>
-<CycleChecker Right="Right" @ref="Flanks" InvokeChange="InvokeFlank" Values="FlankValues"></CycleChecker>
-<CycleChecker Right="Right" @ref="Rears" InvokeChange="InvokeRear" Values="RearValues"></CycleChecker>
+@if (HasAdditionalPoints)
+{
+  <UpAndDownComp Right="Right" Topic="Additional" Input="AdditionalPoints" InvokeChange="InvokeAdditionalPoints"></UpAndDownComp>  
+}
+<CycleChecker @ref="Charges" InvokeChange="InvokeCharging" Values="ChargeValues"></CycleChecker>
+<CycleChecker @ref="Flanks" InvokeChange="InvokeFlank" Values="FlankValues"></CycleChecker>
+<CycleChecker @ref="Rears" InvokeChange="InvokeRear" Values="RearValues"></CycleChecker>
 
 @code {
   [Parameter]
@@ -23,6 +30,8 @@
   [Parameter]
   public int Wounds { get; set; }
   [Parameter]
+  public int VsWounds { get; set; }
+  [Parameter]
   public int Ranks { get; set; }
   [Parameter]
   public int Banners { get; set; }
@@ -30,9 +39,15 @@
   public int Overkill { get; set; }
   [Parameter]
   public int AdditionalPoints { get; set; }
+  [Parameter]
+  public bool HasAdditionalPoints { get; set; }
+  [Parameter]
+  public bool HasVsPoints { get; set; }
   
   [Parameter]
   public EventCallback<int> InvokeWounds { get; set; }
+  [Parameter]
+  public EventCallback<int> InvokeVsWounds { get; set; }
   [Parameter]
   public EventCallback<int> InvokeRanks { get; set; }
   [Parameter]

@@ -1,0 +1,24 @@
+﻿
+<div class="d-flex mb-2 flex-row justify-content-between">
+  <div class="col w-25 my-2">@Topic</div>
+  <div class="col w-25 my-2 text-center">@Input</div>
+  <div class="col w-25 pe-1">
+    <button class="btn btn-outline-danger w-100" @onclick="async () => await InvokeChange.InvokeAsync(--Input)">
+      -
+    </button>
+  </div>
+  <div class="col w-25 ps-1">
+    <button class="btn btn-outline-success w-100" @onclick="async () => await InvokeChange.InvokeAsync(++Input)">
+      +
+    </button>
+  </div>
+</div>
+
+@code {
+  [Parameter]
+  public string Topic { get; set; }
+  [Parameter]
+  public int Input { get; set; }
+  [Parameter]
+  public EventCallback<int> InvokeChange { get; set; }
+}
