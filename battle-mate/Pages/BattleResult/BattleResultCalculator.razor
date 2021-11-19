@@ -1,7 +1,5 @@
 ﻿@page "/"
 
-<h1>LOOOOOOOOL</h1>
-
 <div class="row">
   <div class="col p-0 pe-2">
     <ResultOverview AllPoints="PointsLeft"
@@ -51,13 +49,13 @@
     </ResultOverview>
   </div>
 </div>
-<div class="row ">
+<div class="row">
   <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="ResetStats">
     Reset combat result
   </button>
 </div>
-<div class="row ">
-  <button type="button" class="btn btn-outline-secondary w-100 my-2" data-bs-toggle="modal" data-bs-target="#optionsModal">
+<div class="d-flex flex-row-reverse">
+  <button type="button" class="btn btn-outline-secondary w-25 my-2" data-bs-toggle="modal" data-bs-target="#optionsModal">
     <span class="oi oi-menu" aria-hidden="true"></span>
   </button>
   <div class="modal fade" id="optionsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
