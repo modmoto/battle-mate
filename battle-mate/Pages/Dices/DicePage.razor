@@ -1,17 +1,35 @@
 ﻿@page "/dice"
 
 <div class="mb-3">
-  <button class="btn btn-secondary" @onclick="() => SetAndRollDice(1)">1</button>
-  <button class="btn btn-secondary" @onclick="() => SetAndRollDice(2)">2</button>
-  <button class="btn btn-secondary" @onclick="() => SetAndRollDice(3)">3</button>
-  <button class="btn btn-secondary" @onclick="() => SetAndRollDice(4)">4</button>
-  <button class="@GetDiceClass(3)" @onclick="() => SelectDice(3)">d3</button>
-  <button class="@GetDiceClass(6)" @onclick="() => SelectDice(6)">d6</button>
-  <button class="@GetDiceClass(8)" @onclick="() => SetAndRollDice(1, 8)">d8</button>
+  <button class="@GetDiceClass(3)" @onclick="() => SelectDice(3)">D3</button>
+  <button class="@GetDiceClass(6)" @onclick="() => SelectDice(6)">D6</button>
+  <button class="@GetDiceClass(8)" @onclick="() => SetAndRollDice(1, 8)">D8</button>
 </div>
 <div class="mb-3">
   <div class="input-group mb-3">
-    <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" @onfocus="PrepareForRoll" placeholder="Dice" aria-label="Dice" @bind="_diceState.DiceAmount">
+    <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(1)">1</button>
+    <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(2)">2</button>
+    <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(3)">3</button>
+    <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(4)">4</button>
+    <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice" @bind="_diceState.DiceAmount">
+  </div>
+  <div class="row mt-2">
+    @if(CurrentRoleState is RollState.None or RollState.WardSave)
+    {
+      <span><b>Hiting</b> on:</span>
+    }
+    @if(CurrentRoleState is RollState.ToHit)
+    {
+      <span><b>Wounding</b> on:</span>
+    }
+    @if(CurrentRoleState is RollState.ToWound)
+    {
+      <span><b>Armor save</b> on:</span>
+    }
+    @if(CurrentRoleState is RollState.ArmorSave)
+    {
+      <span><b>Ward save</b> on:</span>
+    }
   </div>
   <div class="row align-items-center mt-2">
     <div class="col">
@@ -157,7 +175,7 @@
       @if (FirstRoleState == RollState.None)
       {
         <div class="card-header">
-          @(message.value.Results.First().RawResults.Count)D@(message.value.Results.First().DiceSides)
+          @(message.value.Results.Last().RawResults.Count)D@(message.value.Results.Last().DiceSides)
         </div>
       }
       @if (FirstRoleState == RollState.AutomaticHit)
@@ -173,7 +191,7 @@
       @if (FirstRoleState == RollState.ToHit)
       {
         <div class="card-header">
-          @(message.value.Results.Last().RawResults.Count) attacks hitting on @(message.value.Results.First().DiceGoal)+
+          @(message.value.Results.Last().RawResults.Count) attacks hitting on @(message.value.Results.Last().DiceGoal)+
           @if (SpecialRules.Count > 0)
           {
             <span> with @(string.Join(", ", SpecialRules))</span>
@@ -334,7 +352,7 @@
                 @foreach (var res in rollResult.val.GroupedResults)
                 {
                   <div class="col">
-                    @res.Min: @res.Amount
+                    @(res.Amount)x@(res.Min)
                   </div>
                 }
               </div>  
@@ -393,7 +411,7 @@
 
   private object GetDiceClass(int dice)
   {
-    return dice == _diceState.SelectedDice ? "btn btn-outline-primary" : "btn btn-outline-secondary";
+    return dice == _diceState.SelectedDice ? "btn btn-primary" : "btn btn-outline-secondary";
   }
 
   private void DeleteLastRoll()
