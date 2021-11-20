@@ -196,13 +196,13 @@
               @if (rollResult.val.RollState is RollState.ArmorSave or RollState.WardSave)
               {
                 <div>
-                  <b>+@rollResult.val.FailedRerolls from rerolling</b> @(rollResult.val.DiceGoal)+ (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                  <b>+@rollResult.val.FailedRerolls from rerolling</b>  @(rollResult.val.DiceGoal)+ (@(rollResult.val.RerollResults.Count)D@(_diceState.SelectedDice)) => (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
                 </div>
               }
               else
               {
                 <div>
-                  <b>-@rollResult.val.FailedRerolls from rerolling</b> @(rollResult.val.DiceGoal)+ (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                  <b>-@rollResult.val.FailedRerolls from rerolling</b> @(rollResult.val.DiceGoal)+ (@(rollResult.val.RerollResults.Count)D@(_diceState.SelectedDice)) => (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
                 </div>
               }
             }
@@ -211,13 +211,13 @@
               if (rollResult.val.RollState is RollState.ToHit or RollState.ToWound)
               {
                 <div>
-                  <b>+@rollResult.val.SucessfullRerolls from rerolling</b> up to @(rollResult.val.DiceGoal - 1) (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                  <b>+@rollResult.val.SucessfullRerolls from rerolling</b> up to @(rollResult.val.DiceGoal - 1) (@(rollResult.val.RerollResults.Count)D@(_diceState.SelectedDice)) => (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
                 </div>
               }
               else
               {
                 <div>
-                  <b>-@rollResult.val.SucessfullRerolls from rerolling</b> up to @(rollResult.val.DiceGoal - 1) (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                  <b>-@rollResult.val.SucessfullRerolls from rerolling</b> up to @(rollResult.val.DiceGoal - 1) (@(rollResult.val.RerollResults.Count)D@(_diceState.SelectedDice)) => (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
                 </div>
               }
             }
@@ -226,13 +226,13 @@
               if (rollResult.val.RollState is RollState.ToHit or RollState.ToWound)
               {
                 <div>
-                  <b>+@rollResult.val.SucessfullRerolls from rerolling</b> 1s (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                  <b>+@rollResult.val.SucessfullRerolls from rerolling</b> 1s (@(rollResult.val.RerollResults.Count)D@(_diceState.SelectedDice)) => (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
                 </div>
               }
               else
               {
                 <div>
-                  <b>-@rollResult.val.SucessfullRerolls from rerolling</b> 1s (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
+                  <b>-@rollResult.val.SucessfullRerolls from rerolling</b> 1s (@(rollResult.val.RerollResults.Count)D@(_diceState.SelectedDice)) => (<RedGreenResultList Rolls="@rollResult.val.RerollResults" DiceGoal="@rollResult.val.DiceGoal" />)
                 </div>
               }
               
@@ -334,7 +334,7 @@
                 @foreach (var res in rollResult.val.GroupedResults)
                 {
                   <div class="col">
-                    @res.Min+ : @res.BiggerThanAmount
+                    @res.Min: @res.Amount
                   </div>
                 }
               </div>  
