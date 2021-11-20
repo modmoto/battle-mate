@@ -1,9 +1,11 @@
 ﻿@page "/dice"
 
-<div class="mb-3">
-  <button class="@GetDiceClass(3)" @onclick="() => SelectDice(3)">D3</button>
-  <button class="@GetDiceClass(6)" @onclick="() => SelectDice(6)">D6</button>
-  <button class="@GetDiceClass(8)" @onclick="() => SetAndRollDice(1, 8)">D8</button>
+<div class="row" style="float: right">
+  <div class="mb-3 input-group">
+    <button class="@GetDiceClass(3)" @onclick="() => SelectDice(3)">D3</button>
+    <button class="@GetDiceClass(6)" @onclick="() => SelectDice(6)">D6</button>
+    <button class="@GetDiceClass(8)" @onclick="() => SetAndRollDice(1, 8)">D8</button>
+  </div>
 </div>
 <div class="mb-3">
   <div class="input-group mb-3">
@@ -16,19 +18,19 @@
   <div class="row mt-2">
     @if(CurrentRoleState is RollState.None or RollState.WardSave)
     {
-      <span><b>Hitting</b> on:</span>
+      <span>@_diceState.DiceAmount <b>hitting</b> on:</span>
     }
     @if(CurrentRoleState is RollState.ToHit)
     {
-      <span><b>Wounding</b> on:</span>
+      <span>@CurrentRole.SucessfullRolls <b>wounding</b> on:</span>
     }
     @if(CurrentRoleState is RollState.ToWound)
     {
-      <span><b>Armor save</b> on:</span>
+      <span>@CurrentRole.SucessfullRolls <b>armor saves</b> on:</span>
     }
     @if(CurrentRoleState is RollState.ArmorSave)
     {
-      <span><b>Ward save</b> on:</span>
+      <span>@CurrentRole.FailedRolls <b>ward saves</b> on:</span>
     }
   </div>
   <div class="row align-items-center mt-2">
