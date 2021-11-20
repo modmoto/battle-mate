@@ -11,7 +11,7 @@
 </div>
 <div class="mb-3">
   <div class="input-group mb-3">
-    <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" @onfocus="PrepareForRoll" placeholder="Dice" aria-label="Dice" @bind="_diceAmount">
+    <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" @onfocus="PrepareForRoll" placeholder="Dice" aria-label="Dice" @bind="_diceState.DiceAmount">
   </div>
   <div class="row align-items-center mt-2">
     <div class="col">
@@ -151,7 +151,7 @@
 </div>
 
 <div>
-  @foreach (var message in _messages.Select((value, index) => new {value, index}))
+  @foreach (var message in _diceState.DiceMessages.Select((value, index) => new {value, index}))
   {
     <div class="card mb-3">
       @if (FirstRoleState == RollState.None)
@@ -347,10 +347,9 @@
 </div>
 
 @inject Dice _dice
+@inject DiceState _diceState
 
 @code {
-  private int? _diceAmount;
-  private int _selectedDice = 6;
   private int _defaultNoRoll = 7;
   private bool _poisonChecked;
   private bool _poison5Checked;
@@ -359,13 +358,12 @@
   private bool _noArmorChecked;
   private bool _noWardChecked;
   private bool IsFirstRoll => CurrentRoleState is RollState.WardSave or RollState.None;
-  private readonly List<DiceMessage> _messages = new();
   private RollResult CurrentRole => CurrentDiceMessage?.Results?.First();
   private bool RerollWasDone => CurrentRole?.RerollState != RerollState.NoReroll;
   private RollState CurrentRoleState => CurrentDiceMessage?.Results?.First().RollState ?? RollState.None;
   private RollState FirstRoleState => CurrentDiceMessage?.Results?.Last().RollState ?? RollState.None;
   public bool NextRollIsNotToHit => !(CurrentRoleState is RollState.None or RollState.WardSave);
-  private DiceMessage CurrentDiceMessage => _messages.FirstOrDefault();
+  private DiceMessage CurrentDiceMessage => _diceState.DiceMessages.FirstOrDefault();
 
   public List<string> SpecialRules
   {
@@ -382,20 +380,20 @@
 
   private void SetAndRollDice(int amount)
   {
-    _diceAmount = amount;
-    var rollResult = _dice.JustRoll(_diceAmount.Value, _selectedDice);
+    _diceState.DiceAmount = amount;
+    var rollResult = _dice.JustRoll(_diceState.DiceAmount.Value, _diceState.SelectedDice);
     var diceMessage = new DiceMessage(rollResult);
-    _messages.Insert(0, diceMessage);
+    _diceState.DiceMessages.Insert(0, diceMessage);
   }
 
   private void SelectDice(int diceSide)
   {
-    _selectedDice = diceSide;
+    _diceState.SelectedDice = diceSide;
   }
 
   private object GetDiceClass(int dice)
   {
-    return dice == _selectedDice ? "btn btn-outline-primary" : "btn btn-outline-secondary";
+    return dice == _diceState.SelectedDice ? "btn btn-outline-primary" : "btn btn-outline-secondary";
   }
 
   private void DeleteLastRoll()
@@ -407,7 +405,7 @@
     }
     else if (rollResults.Count == 1)
     {
-      _messages.RemoveAt(0);
+      _diceState.DiceMessages.RemoveAt(0);
     }
     else
     {
@@ -417,12 +415,12 @@
 
   private void ClickDice(int toHit)
   {
-    if (_diceAmount != null)
+    if (_diceState.DiceAmount != null || !IsFirstRoll)
     {
       if (IsFirstRoll)
       {
-        var result = DoRoll(_diceAmount.Value, toHit, null, false);
-        _messages.Insert(0, new DiceMessage(result));
+        var result = DoRoll(_diceState.DiceAmount.Value, toHit, null, false);
+        _diceState.DiceMessages.Insert(0, new DiceMessage(result));
       }
       else
       {
@@ -438,12 +436,12 @@
   {
     var rollResult = CurrentRoleState switch
     {
-      RollState.None => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _poison5Checked, _lethalStrikeChecked),
+      RollState.None => _dice.ToHit(diceAmount, _diceState.SelectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _poison5Checked, _lethalStrikeChecked),
       RollState.AutomaticHit => _dice.ToWound(toHit, oldResult),
       RollState.ToHit => RollToWound(toHit, oldResult),
       RollState.ToWound => RollArmorSave(toHit, oldResult),
       RollState.ArmorSave => RollWardSave(toHit, oldResult),
-      _ => _dice.ToHit(diceAmount, _selectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _poison5Checked, _lethalStrikeChecked)
+      _ => _dice.ToHit(diceAmount, _diceState.SelectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _poison5Checked, _lethalStrikeChecked)
       };
     _battleFocusChecked = false;
     _poisonChecked = false;
@@ -512,22 +510,22 @@
 
   private void SetAndRollDice(int amount, int sides)
   {
-    _selectedDice = sides;
+    _diceState.SelectedDice = sides;
     SetAndRollDice(amount);
   }
 
   private void PrepareForRoll()
   {
-    _diceAmount = null;
-    _selectedDice = 6;
+    _diceState.DiceAmount = null;
+    _diceState.SelectedDice = 6;
   }
 
   private void RollAutoHits()
   {
-    if (IsFirstRoll && _diceAmount != null)
+    if (IsFirstRoll && _diceState.DiceAmount != null)
     {
-      var result = DoRoll(_diceAmount.Value, 0, null, true);
-      _messages.Insert(0, new DiceMessage(result));
+      var result = DoRoll(_diceState.DiceAmount.Value, 0, null, true);
+      _diceState.DiceMessages.Insert(0, new DiceMessage(result));
     }
   }
 
