@@ -64,11 +64,6 @@
     Reset combat result
   </button>
 </div>
-<div class="row">
-  <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="LoadOptions">
-    Reset combat result
-  </button>
-</div>
 <div class="row d-flex flex-row-reverse">
   <button type="button" class="btn btn-outline-secondary w-25" data-bs-toggle="modal" data-bs-target="#optionsModal">
     <span class="oi oi-menu" aria-hidden="true"></span>
@@ -112,10 +107,14 @@
     });
   }
 
-  private async void LoadOptions()
+  protected override async Task OnAfterRenderAsync(bool firstRender)
   {
-    var options = await _repository.LoadOptions();
-    _state.SetOptions(options);
-    StateHasChanged();  
+    if (firstRender)
+    {
+      var options = await _repository.LoadOptions();
+      _state.SetOptions(options);
+      _state.ResetStats();
+      StateHasChanged();
+    }
   }
 }
