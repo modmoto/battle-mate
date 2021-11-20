@@ -77,7 +77,7 @@
     {
       var options = await _repository.LoadOptions();
       _state.InitOptions(options);
-      _windowVersion = await _javascript.InvokeAsync<int>("window.buildVersion");
+      _windowVersion = await _javascript.InvokeAsync<int>("buildVersion");
       StateHasChanged();
     }
     await base.OnAfterRenderAsync(firstRender);

@@ -1,1 +1,1 @@
-window.buildVersion = () => 1
+buildVersion = () => 1
