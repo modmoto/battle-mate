@@ -34,6 +34,8 @@ steps:
 
   - task: Docker@2
     condition: eq(variables['Build.Reason'], 'IndividualCI')
+    env:
+      APP_VERSION: $(Build.BuildID)
     inputs:
       containerRegistry: 'official-docker-modmoto'
       repository: 'modmoto/battle-mate'

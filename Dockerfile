@@ -12,4 +12,6 @@ RUN dotnet publish "battle-mate.csproj" -c Release -o /app/publish
 FROM nginx:alpine AS final
 WORKDIR /usr/share/nginx/html
 COPY --from=publish /app/publish/wwwroot .
+RUN rm ./buildVersion.js
+RUN echo 'window.buildVersion = () => ${APP_VERSION};' >> ./buildVersion.js
 COPY nginx.conf /etc/nginx/nginx.conf

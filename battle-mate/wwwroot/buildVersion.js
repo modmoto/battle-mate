@@ -1,0 +1,1 @@
+window.buildVersion = () => 1;
