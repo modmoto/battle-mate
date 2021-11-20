@@ -2,65 +2,65 @@
 
 <div class="row">
   <div class="col p-0 pe-2">
-    <ResultOverview AllPoints="PointsLeft"
-                    PointsDifference="PointsDifferenceLeft"
-                    InvokeWounds="val => WoundsLeft = val"
-                    InvokeVsWounds="val => VsWoundsLeft = val"
-                    InvokeRanks="val => RanksLeft = val"
-                    InvokeBanners="val => BannersLeft = val"
-                    InvokeOverkill="val => OverkillLeft = val"
-                    InvokeAdditionalPoints="val => AdditionalPointsLeft = val"
-                    InvokeCharging="val => ChargingIndexLeft = val"
-                    InvokeFlank="val => FlankIndexLeft = val"
-                    InvokeRear="val => RearIndexLeft = val"
-                    ChargingIndex="ChargingIndexLeft"
-                    FlankIndex="FlankIndexLeft"
-                    RearIndex="RearIndexLeft"
-                    ChargeValues="PossibleChargeValues"
-                    FlankValues="PossibleFlankValues"
-                    RearValues="PossibleRearValues"
-                    Ranks="RanksLeft"
-                    Banners="BannersLeft"
-                    Overkill="OverkillLeft"
-                    AdditionalPoints="AdditionalPointsLeft"
-                    HasAdditionalPoints="HasAdditionalPoints"
-                    Wounds="WoundsLeft"
-                    VsWounds="VsWoundsLeft"
-                    HasVsPoints="HasVerminSwarmPoints">
+    <ResultOverview AllPoints="_state.PointsLeft"
+                    PointsDifference="_state.PointsDifferenceLeft"
+                    InvokeWounds="val => _state.WoundsLeft = val"
+                    InvokeVsWounds="val => _state.VsWoundsLeft = val"
+                    InvokeRanks="val => _state.RanksLeft = val"
+                    InvokeBanners="val => _state.BannersLeft = val"
+                    InvokeOverkill="val => _state.OverkillLeft = val"
+                    InvokeAdditionalPoints="val => _state.AdditionalPointsLeft = val"
+                    InvokeCharging="val => _state.ChargingIndexLeft = val"
+                    InvokeFlank="val => _state.FlankIndexLeft = val"
+                    InvokeRear="val => _state.RearIndexLeft = val"
+                    ChargingIndex="_state.ChargingIndexLeft"
+                    FlankIndex="_state.FlankIndexLeft"
+                    RearIndex="_state.RearIndexLeft"
+                    ChargeValues="_state.PossibleChargeValues"
+                    FlankValues="_state.PossibleFlankValues"
+                    RearValues="_state.PossibleRearValues"
+                    Ranks="_state.RanksLeft"
+                    Banners="_state.BannersLeft"
+                    Overkill="_state.OverkillLeft"
+                    AdditionalPoints="_state.AdditionalPointsLeft"
+                    HasAdditionalPoints="_state.HasAdditionalPoints"
+                    Wounds="_state.WoundsLeft"
+                    VsWounds="_state.VsWoundsLeft"
+                    HasVsPoints="_state.HasVerminSwarmPoints">
     </ResultOverview>
   </div>
   <div class="col p-0 ps-2">
     <ResultOverview Right
-                    AllPoints="PointsRight"
-                    PointsDifference="PointsDifferenceRight"
-                    InvokeWounds="val => WoundsRight = val"
-                    InvokeVsWounds="val => VsWoundsRight = val"
-                    InvokeRanks="val => RanksRight = val"
-                    InvokeBanners="val => BannersRight = val"
-                    InvokeOverkill="val => OverkillRight = val"
-                    InvokeAdditionalPoints="val => AdditionalPointsRight = val"
-                    InvokeCharging="val => ChargingIndexRight = val"
-                    InvokeFlank="val => FlankIndexRight = val"
-                    InvokeRear="val => RearIndexRight = val"
-                    ChargingIndex="ChargingIndexRight"
-                    FlankIndex="FlankIndexRight"
-                    RearIndex="RearIndexRight"
-                    ChargeValues="PossibleChargeValues"
-                    FlankValues="PossibleFlankValues"
-                    RearValues="PossibleRearValues"
-                    Ranks="RanksRight"
-                    Banners="BannersRight"
-                    Overkill="OverkillRight"
-                    AdditionalPoints="AdditionalPointsRight"
-                    HasAdditionalPoints="HasAdditionalPoints"
-                    Wounds="WoundsRight"
-                    VsWounds="VsWoundsRight"
-                    HasVsPoints="HasVerminSwarmPoints">
+                    AllPoints="_state.PointsRight"
+                    PointsDifference="_state.PointsDifferenceRight"
+                    InvokeWounds="val => _state.WoundsRight = val"
+                    InvokeVsWounds="val => _state.VsWoundsRight = val"
+                    InvokeRanks="val => _state.RanksRight = val"
+                    InvokeBanners="val => _state.BannersRight = val"
+                    InvokeOverkill="val => _state.OverkillRight = val"
+                    InvokeAdditionalPoints="val => _state.AdditionalPointsRight = val"
+                    InvokeCharging="val => _state.ChargingIndexRight = val"
+                    InvokeFlank="val => _state.FlankIndexRight = val"
+                    InvokeRear="val => _state.RearIndexRight = val"
+                    ChargingIndex="_state.ChargingIndexRight"
+                    FlankIndex="_state.FlankIndexRight"
+                    RearIndex="_state.RearIndexRight"
+                    ChargeValues="_state.PossibleChargeValues"
+                    FlankValues="_state.PossibleFlankValues"
+                    RearValues="_state.PossibleRearValues"
+                    Ranks="_state.RanksRight"
+                    Banners="_state.BannersRight"
+                    Overkill="_state.OverkillRight"
+                    AdditionalPoints="_state.AdditionalPointsRight"
+                    HasAdditionalPoints="_state.HasAdditionalPoints"
+                    Wounds="_state.WoundsRight"
+                    VsWounds="_state.VsWoundsRight"
+                    HasVsPoints="_state.HasVerminSwarmPoints">
     </ResultOverview>
   </div>
 </div>
 <div class="row">
-  <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="ResetStats">
+  <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="_state.ResetStats">
     Reset combat result
   </button>
 </div>
@@ -77,10 +77,10 @@
           </div>
           <div class="row">
             <div class="col">
-              <UpAndDownOptionComp Topic="Ranks" Input="DefaultRanks"></UpAndDownOptionComp>
-              <UpAndDownOptionComp Topic="Banners" Input="DefaultBanners"></UpAndDownOptionComp>
-              <CycleChecker Values="PossibleVerminSwarmWoundOptions" InvokeChange="newVal => HasVerminSwarmPoints = newVal != 0"></CycleChecker>
-              <CycleChecker Values="PossibleAdditionalOptions" InvokeChange="newVal => HasAdditionalPoints = newVal != 0"></CycleChecker>
+              <UpAndDownOptionComp Topic="Ranks" Input="_state.DefaultRanks"></UpAndDownOptionComp>
+              <UpAndDownOptionComp Topic="Banners" Input="_state.DefaultBanners"></UpAndDownOptionComp>
+              <CycleChecker Values="_state.PossibleVerminSwarmWoundOptions" InvokeChange="newVal => _state.HasVerminSwarmPoints = newVal != 0"></CycleChecker>
+              <CycleChecker Values="_state.PossibleAdditionalOptions" InvokeChange="newVal => _state.HasAdditionalPoints = newVal != 0"></CycleChecker>
             </div>
           </div>
         </div>
@@ -92,95 +92,4 @@
   </div>
 </div>
 
-@code {
-
-  protected override void OnInitialized()
-  {
-    ResetStats();
-  }
-
-  private void ResetStats()
-  {
-    WoundsLeft = 0;
-    WoundsRight = 0;
-    RanksLeft = DefaultRanks;
-    RanksRight = DefaultRanks;
-    BannersLeft = DefaultBanners;
-    BannersRight = DefaultBanners;
-    OverkillLeft = 0;
-    OverkillRight = 0;
-    AdditionalPointsLeft = 0;
-    AdditionalPointsRight = 0;
-    ChargingIndexLeft = 0;
-    FlankIndexLeft = 0;
-    RearIndexLeft = 0;
-    ChargingIndexRight = 0;
-    FlankIndexRight = 0;
-    RearIndexRight = 0;
-  }
-
-  public int PointsLeft => WoundsLeft + VerminSwarmWoundsLeftActual + RanksLeft + BannersLeft + OverkillLeft + AdditionalPointsLeftActual + PossibleChargeValues[ChargingIndexLeft].Points + PossibleFlankValues[FlankIndexLeft].Points + PossibleRearValues[RearIndexLeft].Points;
-  public int VerminSwarmWoundsLeftActual => HasVerminSwarmPoints ? (VsWoundsLeft + 1) / 2 : 0;
-  public int AdditionalPointsLeftActual => HasAdditionalPoints ? AdditionalPointsLeft : 0;
-  public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
-
-  public int PointsRight => WoundsRight + VerminSwarmWoundsRightActual + RanksRight + BannersRight + OverkillRight + AdditionalPointsRightActual + PossibleChargeValues[ChargingIndexRight].Points + PossibleFlankValues[FlankIndexRight].Points + PossibleRearValues[RearIndexRight].Points;
-  public int VerminSwarmWoundsRightActual => HasVerminSwarmPoints ? (VsWoundsRight + 1) / 2 : 0;
-  public int AdditionalPointsRightActual => HasAdditionalPoints ? AdditionalPointsRight : 0;
-  public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
-
-  public int DefaultRanks { get; set; } = 3;
-  public int DefaultBanners { get; set; } = 1;
-  public int VsWoundsLeft { get; set; }
-  public int VsWoundsRight { get; set; }
-  public int WoundsLeft { get; set; }
-  public int WoundsRight { get; set; }
-  public int RanksLeft { get; set; }
-  public int RanksRight { get; set; }
-  public int BannersLeft { get; set; }
-  public int BannersRight { get; set; }
-  public int OverkillLeft { get; set; }
-  public int OverkillRight { get; set; }
-  public int AdditionalPointsLeft { get; set; }
-  public int AdditionalPointsRight { get; set; }
-
-  public bool HasVerminSwarmPoints { get; set; }
-  public bool HasAdditionalPoints { get; set; }
-  
-  public int ChargingIndexLeft { get; set; }
-  public int FlankIndexLeft { get; set; }
-  public int RearIndexLeft { get; set; }
-  public int ChargingIndexRight { get; set; }
-  public int FlankIndexRight { get; set; }
-  public int RearIndexRight { get; set; }
-
-  public List<PointStrings> PossibleChargeValues => new()
-  {
-    new PointStrings(0, "not charging"), 
-    new PointStrings(1, "Charge +1")
-  };
-  public List<PointStrings> PossibleFlankValues => new()
-  {
-    new PointStrings(0, "not flanking"), 
-    new PointStrings(1, "Flank +1"), 
-    new PointStrings(2, "Flank +2")
-  };
-  public List<PointStrings> PossibleRearValues => new()
-  {
-    new PointStrings(0, "no rear"), 
-    new PointStrings(2, "Rear +2"), 
-    new PointStrings(3, "Rear +3")
-  };
-  
-  public List<PointStrings> PossibleVerminSwarmWoundOptions => new()
-  {
-    new PointStrings(0, "hide vermin swarm wounds"),
-    new PointStrings(1, "show vermin swarm wounds"),
-  };
-  
-  public List<PointStrings> PossibleAdditionalOptions => new()
-  {
-    new PointStrings(0, "hide additional points"),
-    new PointStrings(1, "show additional points"),
-  };
-}
+@inject CombatResultState _state

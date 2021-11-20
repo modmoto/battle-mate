@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using battle_mate.Pages;
+using battle_mate.Pages.BattleResult;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +14,7 @@ namespace battle_mate
 
             builder.Services.AddSingleton<Dice>();
             builder.Services.AddSingleton<DiceState>();
-            // builder.Services.AddSingleton<CombatState>();
+            builder.Services.AddSingleton<CombatResultState>();
 
             await builder.Build().RunAsync();
         }

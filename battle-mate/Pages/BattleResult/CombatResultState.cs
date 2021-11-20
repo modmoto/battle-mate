@@ -1,0 +1,114 @@
+﻿using System.Collections.Generic;
+
+namespace battle_mate.Pages.BattleResult
+{
+    public class CombatResultState
+    {
+        public int PointsLeft =>
+            WoundsLeft +
+            VerminSwarmWoundsLeftActual +
+            RanksLeft +
+            BannersLeft +
+            OverkillLeft +
+            AdditionalPointsLeftActual +
+            PossibleChargeValues[ChargingIndexLeft].Points +
+            PossibleFlankValues[FlankIndexLeft].Points +
+            PossibleRearValues[RearIndexLeft].Points;
+
+        public int VerminSwarmWoundsLeftActual => HasVerminSwarmPoints ? (VsWoundsLeft + 1) / 2 : 0;
+        public int AdditionalPointsLeftActual => HasAdditionalPoints ? AdditionalPointsLeft : 0;
+        public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
+
+        public int PointsRight =>
+            WoundsRight +
+            VerminSwarmWoundsRightActual +
+            RanksRight +
+            BannersRight +
+            OverkillRight +
+            AdditionalPointsRightActual +
+            PossibleChargeValues[ChargingIndexRight].Points +
+            PossibleFlankValues[FlankIndexRight].Points +
+            PossibleRearValues[RearIndexRight].Points;
+
+        public int VerminSwarmWoundsRightActual => HasVerminSwarmPoints ? (VsWoundsRight + 1) / 2 : 0;
+        public int AdditionalPointsRightActual => HasAdditionalPoints ? AdditionalPointsRight : 0;
+        public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
+
+        public int DefaultRanks { get; set; } = 3;
+        public int DefaultBanners { get; set; } = 1;
+        public int VsWoundsLeft { get; set; }
+        public int VsWoundsRight { get; set; }
+        public int WoundsLeft { get; set; }
+        public int WoundsRight { get; set; }
+        public int RanksLeft { get; set; }
+        public int RanksRight { get; set; }
+        public int BannersLeft { get; set; }
+        public int BannersRight { get; set; }
+        public int OverkillLeft { get; set; }
+        public int OverkillRight { get; set; }
+        public int AdditionalPointsLeft { get; set; }
+        public int AdditionalPointsRight { get; set; }
+
+        public bool HasVerminSwarmPoints { get; set; }
+        public bool HasAdditionalPoints { get; set; }
+
+        public int ChargingIndexLeft { get; set; }
+        public int FlankIndexLeft { get; set; }
+        public int RearIndexLeft { get; set; }
+        public int ChargingIndexRight { get; set; }
+        public int FlankIndexRight { get; set; }
+        public int RearIndexRight { get; set; }
+
+        public List<PointStrings> PossibleChargeValues => new()
+        {
+            new PointStrings(0, "not charging"),
+            new PointStrings(1, "Charge +1")
+        };
+
+        public List<PointStrings> PossibleFlankValues => new()
+        {
+            new PointStrings(0, "not flanking"),
+            new PointStrings(1, "Flank +1"),
+            new PointStrings(2, "Flank +2")
+        };
+
+        public List<PointStrings> PossibleRearValues => new()
+        {
+            new PointStrings(0, "no rear"),
+            new PointStrings(2, "Rear +2"),
+            new PointStrings(3, "Rear +3")
+        };
+
+        public List<PointStrings> PossibleVerminSwarmWoundOptions => new()
+        {
+            new PointStrings(0, "hide vermin swarm wounds"),
+            new PointStrings(1, "show vermin swarm wounds")
+        };
+
+        public List<PointStrings> PossibleAdditionalOptions => new()
+        {
+            new PointStrings(0, "hide additional points"),
+            new PointStrings(1, "show additional points")
+        };
+
+        public void ResetStats()
+        {
+            WoundsLeft = 0;
+            WoundsRight = 0;
+            RanksLeft = DefaultRanks;
+            RanksRight = DefaultRanks;
+            BannersLeft = DefaultBanners;
+            BannersRight = DefaultBanners;
+            OverkillLeft = 0;
+            OverkillRight = 0;
+            AdditionalPointsLeft = 0;
+            AdditionalPointsRight = 0;
+            ChargingIndexLeft = 0;
+            FlankIndexLeft = 0;
+            RearIndexLeft = 0;
+            ChargingIndexRight = 0;
+            FlankIndexRight = 0;
+            RearIndexRight = 0;
+        }
+    }
+}
