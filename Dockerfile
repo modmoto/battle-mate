@@ -1,4 +1,6 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+﻿ARG APP_VERSION
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["battle-mate/battle-mate.csproj", "battle-mate/"]
 RUN dotnet restore "battle-mate/battle-mate.csproj"
