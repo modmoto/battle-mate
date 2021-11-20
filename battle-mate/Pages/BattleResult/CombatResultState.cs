@@ -17,7 +17,7 @@ namespace battle_mate.Pages.BattleResult
             PossibleFlankValues[FlankIndexLeft].Points +
             PossibleRearValues[RearIndexLeft].Points;
 
-        public int VerminSwarmWoundsLeftActual => HasVerminSwarmPoints ? (VsWoundsLeft + 1) / 2 : 0;
+        public int VerminSwarmWoundsLeftActual => HasVerminSwarmPoints ? (VerminSwarmWoundsLeft + 1) / 2 : 0;
         public int AdditionalPointsLeftActual => HasAdditionalPoints ? AdditionalPointsLeft : 0;
         public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
 
@@ -32,12 +32,12 @@ namespace battle_mate.Pages.BattleResult
             PossibleFlankValues[FlankIndexRight].Points +
             PossibleRearValues[RearIndexRight].Points;
 
-        public int VerminSwarmWoundsRightActual => HasVerminSwarmPoints ? (VsWoundsRight + 1) / 2 : 0;
+        public int VerminSwarmWoundsRightActual => HasVerminSwarmPoints ? (VerminSwarmWoundsRight + 1) / 2 : 0;
         public int AdditionalPointsRightActual => HasAdditionalPoints ? AdditionalPointsRight : 0;
         public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
 
-        public int VsWoundsLeft { get; set; }
-        public int VsWoundsRight { get; set; }
+        public int VerminSwarmWoundsLeft { get; set; }
+        public int VerminSwarmWoundsRight { get; set; }
         public int WoundsLeft { get; set; }
         public int WoundsRight { get; set; }
         public int RanksLeft { get; set; }
@@ -83,14 +83,14 @@ namespace battle_mate.Pages.BattleResult
 
         public List<PointStrings> PossibleVerminSwarmWoundOptions => new()
         {
-            new PointStrings(0, "hide vermin swarm wounds"),
-            new PointStrings(1, "show vermin swarm wounds")
+            new PointStrings(0, "hiding vermin swarm wounds"),
+            new PointStrings(1, "showing vermin swarm wounds")
         };
 
         public List<PointStrings> PossibleAdditionalOptions => new()
         {
-            new PointStrings(0, "hide additional points"),
-            new PointStrings(1, "show additional points")
+            new PointStrings(0, "hiding additional points"),
+            new PointStrings(1, "showing additional points")
         };
 
         public void ResetStats()
@@ -105,6 +105,8 @@ namespace battle_mate.Pages.BattleResult
             OverkillRight = 0;
             AdditionalPointsLeft = 0;
             AdditionalPointsRight = 0;
+            VerminSwarmWoundsLeft = 0;
+            VerminSwarmWoundsRight = 0;
             ChargingIndexLeft = 0;
             FlankIndexLeft = 0;
             RearIndexLeft = 0;
