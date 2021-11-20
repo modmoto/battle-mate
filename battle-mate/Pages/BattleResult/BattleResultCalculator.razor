@@ -64,6 +64,11 @@
     Reset combat result
   </button>
 </div>
+<div class="row">
+  <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="LoadOptions">
+    Reset combat result
+  </button>
+</div>
 <div class="row d-flex flex-row-reverse">
   <button type="button" class="btn btn-outline-secondary w-25" data-bs-toggle="modal" data-bs-target="#optionsModal">
     <span class="oi oi-menu" aria-hidden="true"></span>
@@ -77,15 +82,15 @@
           </div>
           <div class="row">
             <div class="col">
-              <UpAndDownOptionComp Topic="Ranks" Input="_state.DefaultRanks"></UpAndDownOptionComp>
-              <UpAndDownOptionComp Topic="Banners" Input="_state.DefaultBanners"></UpAndDownOptionComp>
-              <CycleChecker Values="_state.PossibleVerminSwarmWoundOptions" InvokeChange="newVal => _state.HasVerminSwarmPoints = newVal != 0"></CycleChecker>
-              <CycleChecker Values="_state.PossibleAdditionalOptions" InvokeChange="newVal => _state.HasAdditionalPoints = newVal != 0"></CycleChecker>
+              <UpAndDownOptionComp Topic="Ranks" Input="_state.DefaultRanks" InvokeChange="val => _state.DefaultRanks = val"></UpAndDownOptionComp>
+              <UpAndDownOptionComp Topic="Banners" Input="_state.DefaultBanners" InvokeChange="val => _state.DefaultBanners = val"></UpAndDownOptionComp>
+              <CycleChecker Values="_state.PossibleVerminSwarmWoundOptions" InvokeChange="newVal => _state.HasVerminSwarmPoints = newVal != 0" Index="_state.HasVerminSwarmPoints ? 1 : 0"></CycleChecker>
+              <CycleChecker Values="_state.PossibleAdditionalOptions" InvokeChange="newVal => _state.HasAdditionalPoints = newVal != 0" Index="_state.HasAdditionalPoints ? 1 : 0"></CycleChecker>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="SaveCombatOptions">Close</button>
         </div>
       </div>
     </div>
@@ -93,3 +98,24 @@
 </div>
 
 @inject CombatResultState _state
+@inject CombatOptionsRepository _repository
+
+@code {
+  private async void SaveCombatOptions()
+  {
+    await _repository.SetOptions(new CombatOptions
+    {
+      DefaultBanners = _state.DefaultBanners,
+      DefaultRanks = _state.DefaultRanks,
+      HasAdditionalPoints = _state.HasAdditionalPoints,
+      HasVerminSwarmPoints = _state.HasVerminSwarmPoints,
+    });
+  }
+
+  private async void LoadOptions()
+  {
+    var options = await _repository.LoadOptions();
+    _state.SetOptions(options);
+    StateHasChanged();  
+  }
+}

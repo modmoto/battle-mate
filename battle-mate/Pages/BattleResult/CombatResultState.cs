@@ -34,8 +34,6 @@ namespace battle_mate.Pages.BattleResult
         public int AdditionalPointsRightActual => HasAdditionalPoints ? AdditionalPointsRight : 0;
         public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
 
-        public int DefaultRanks { get; set; } = 3;
-        public int DefaultBanners { get; set; } = 1;
         public int VsWoundsLeft { get; set; }
         public int VsWoundsRight { get; set; }
         public int WoundsLeft { get; set; }
@@ -49,6 +47,8 @@ namespace battle_mate.Pages.BattleResult
         public int AdditionalPointsLeft { get; set; }
         public int AdditionalPointsRight { get; set; }
 
+        public int DefaultRanks { get; set; }
+        public int DefaultBanners { get; set; }
         public bool HasVerminSwarmPoints { get; set; }
         public bool HasAdditionalPoints { get; set; }
 
@@ -109,6 +109,14 @@ namespace battle_mate.Pages.BattleResult
             ChargingIndexRight = 0;
             FlankIndexRight = 0;
             RearIndexRight = 0;
+        }
+
+        public void SetOptions(CombatOptions options)
+        {
+            HasAdditionalPoints = options.HasAdditionalPoints;
+            HasVerminSwarmPoints = options.HasVerminSwarmPoints;
+            DefaultBanners = options.DefaultBanners;
+            DefaultRanks = options.DefaultRanks;
         }
     }
 }

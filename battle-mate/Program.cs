@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using battle_mate.Pages.BattleResult;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,8 @@ namespace battle_mate
             builder.Services.AddSingleton<Dice>();
             builder.Services.AddSingleton<DiceState>();
             builder.Services.AddSingleton<CombatResultState>();
+            builder.Services.AddTransient<CombatOptionsRepository>();
+            builder.Services.AddBlazoredLocalStorage();
 
             await builder.Build().RunAsync();
         }
