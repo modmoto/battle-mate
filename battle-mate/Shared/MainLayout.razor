@@ -22,3 +22,19 @@
     </div>
   </div>
 </div>
+
+@inject CombatResultState _state
+@inject CombatOptionsRepository _repository
+
+@code
+{
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      var options = await _repository.LoadOptions();
+      _state.InitOptions(options);
+    }
+    await base.OnAfterRenderAsync(firstRender);
+  }
+}

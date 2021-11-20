@@ -107,14 +107,8 @@
     });
   }
 
-  protected override async Task OnAfterRenderAsync(bool firstRender)
+  protected override void OnInitialized()
   {
-    if (firstRender)
-    {
-      var options = await _repository.LoadOptions();
-      _state.SetOptions(options);
-      _state.ResetStats();
-      StateHasChanged();
-    }
+    _state.OnLoadFinished += (_, _) => { StateHasChanged(); };
   }
 }

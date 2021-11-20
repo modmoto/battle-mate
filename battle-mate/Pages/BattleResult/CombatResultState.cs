@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace battle_mate.Pages.BattleResult
 {
     public class CombatResultState
     {
+        public event EventHandler OnLoadFinished;
         public int PointsLeft =>
             WoundsLeft +
             VerminSwarmWoundsLeftActual +
@@ -117,6 +119,13 @@ namespace battle_mate.Pages.BattleResult
             HasVerminSwarmPoints = options.HasVerminSwarmPoints;
             DefaultBanners = options.DefaultBanners;
             DefaultRanks = options.DefaultRanks;
+        }
+
+        public void InitOptions(CombatOptions options)
+        {
+            SetOptions(options);
+            ResetStats();
+            OnLoadFinished?.Invoke(this, EventArgs.Empty);
         }
     }
 }
