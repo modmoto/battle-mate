@@ -159,6 +159,14 @@
                   <button type="button" class="@($"btn btn-outline-{(_noArmorChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _noArmorChecked = !_noArmorChecked">No armor saves</button>
                 </div>
               </div>
+              <div class="row">
+                <div class="col">
+                  <button type="button" class="@($"btn btn-outline-{(_onlyHitAndWoundChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _onlyHitAndWoundChecked = !_onlyHitAndWoundChecked">Roll only to hit and to wound</button>
+                </div>
+                <div class="col">
+                  <button type="button" class="@($"btn btn-outline-{(_onlyArmorAndWardChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _onlyArmorAndWardChecked = !_onlyArmorAndWardChecked">Roll only armor and ward saves</button>
+                </div>
+              </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="LazySavesCorrection">Close</button>
@@ -375,6 +383,8 @@
   private bool _poison5Checked;
   private bool _lethalStrikeChecked;
   private bool _battleFocusChecked;
+  private bool _onlyHitAndWoundChecked;
+  private bool _onlyArmorAndWardChecked;
   private bool _noArmorChecked;
   private bool _noWardChecked;
   private bool IsFirstRoll => CurrentRoleState is RollState.WardSave or RollState.None;
