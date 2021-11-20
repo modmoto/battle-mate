@@ -10,9 +10,15 @@
                     InvokeBanners="val => BannersLeft = val"
                     InvokeOverkill="val => OverkillLeft = val"
                     InvokeAdditionalPoints="val => AdditionalPointsLeft = val"
-                    InvokeCharging="val => IsChargingLeft = val"
-                    InvokeFlank="val => HasFlankLeft = val"
-                    InvokeRear="val => HasRearLeft = val"
+                    InvokeCharging="val => ChargingIndexLeft = val"
+                    InvokeFlank="val => FlankIndexLeft = val"
+                    InvokeRear="val => RearIndexLeft = val"
+                    ChargingIndex="ChargingIndexLeft"
+                    FlankIndex="FlankIndexLeft"
+                    RearIndex="RearIndexLeft"
+                    ChargeValues="PossibleChargeValues"
+                    FlankValues="PossibleFlankValues"
+                    RearValues="PossibleRearValues"
                     Ranks="RanksLeft"
                     Banners="BannersLeft"
                     Overkill="OverkillLeft"
@@ -20,8 +26,7 @@
                     HasAdditionalPoints="HasAdditionalPoints"
                     Wounds="WoundsLeft"
                     VsWounds="VsWoundsLeft"
-                    HasVsPoints="HasVsPoints"
-                    @ref="Left">
+                    HasVsPoints="HasVerminSwarmPoints">
     </ResultOverview>
   </div>
   <div class="col p-0 ps-2">
@@ -34,9 +39,15 @@
                     InvokeBanners="val => BannersRight = val"
                     InvokeOverkill="val => OverkillRight = val"
                     InvokeAdditionalPoints="val => AdditionalPointsRight = val"
-                    InvokeCharging="val => IsChargingRight = val"
-                    InvokeFlank="val => HasFlankRight = val"
-                    InvokeRear="val => HasRearRight = val"
+                    InvokeCharging="val => ChargingIndexRight = val"
+                    InvokeFlank="val => FlankIndexRight = val"
+                    InvokeRear="val => RearIndexRight = val"
+                    ChargingIndex="ChargingIndexRight"
+                    FlankIndex="FlankIndexRight"
+                    RearIndex="RearIndexRight"
+                    ChargeValues="PossibleChargeValues"
+                    FlankValues="PossibleFlankValues"
+                    RearValues="PossibleRearValues"
                     Ranks="RanksRight"
                     Banners="BannersRight"
                     Overkill="OverkillRight"
@@ -44,8 +55,7 @@
                     HasAdditionalPoints="HasAdditionalPoints"
                     Wounds="WoundsRight"
                     VsWounds="VsWoundsRight"
-                    HasVsPoints="HasVsPoints"
-                    @ref="Right">
+                    HasVsPoints="HasVerminSwarmPoints">
     </ResultOverview>
   </div>
 </div>
@@ -69,8 +79,8 @@
             <div class="col">
               <UpAndDownOptionComp Topic="Ranks" Input="DefaultRanks"></UpAndDownOptionComp>
               <UpAndDownOptionComp Topic="Banners" Input="DefaultBanners"></UpAndDownOptionComp>
-              <CycleChecker Values="DefaultVsOptions" InvokeChange="SetVs"></CycleChecker>
-              <CycleChecker Values="DefaultAdditionalOptions" InvokeChange="SetAdditionalPoints"></CycleChecker>
+              <CycleChecker Values="PossibleVerminSwarmWoundOptions" InvokeChange="newVal => HasVerminSwarmPoints = newVal != 0"></CycleChecker>
+              <CycleChecker Values="PossibleAdditionalOptions" InvokeChange="newVal => HasAdditionalPoints = newVal != 0"></CycleChecker>
             </div>
           </div>
         </div>
@@ -101,23 +111,21 @@
     OverkillRight = 0;
     AdditionalPointsLeft = 0;
     AdditionalPointsRight = 0;
-    IsChargingLeft = new PointStrings(0, "");
-    HasFlankLeft = new PointStrings(0, "");
-    HasRearLeft = new PointStrings(0, "");
-    IsChargingRight = new PointStrings(0, "");
-    HasFlankRight = new PointStrings(0, "");
-    HasRearRight = new PointStrings(0, "");
-    Right?.Reset();
-    Left?.Reset();
+    ChargingIndexLeft = 0;
+    FlankIndexLeft = 0;
+    RearIndexLeft = 0;
+    ChargingIndexRight = 0;
+    FlankIndexRight = 0;
+    RearIndexRight = 0;
   }
 
-  public int PointsLeft => WoundsLeft + VsWoundsLeftActual + RanksLeft + BannersLeft + OverkillLeft + AdditionalPointsLeftActual + IsChargingLeft.Points + HasFlankLeft.Points + HasRearLeft.Points;
-  public int VsWoundsLeftActual => HasVsPoints ? (VsWoundsLeft + 1) / 2 : 0;
+  public int PointsLeft => WoundsLeft + VerminSwarmWoundsLeftActual + RanksLeft + BannersLeft + OverkillLeft + AdditionalPointsLeftActual + PossibleChargeValues[ChargingIndexLeft].Points + PossibleFlankValues[FlankIndexLeft].Points + PossibleRearValues[RearIndexLeft].Points;
+  public int VerminSwarmWoundsLeftActual => HasVerminSwarmPoints ? (VsWoundsLeft + 1) / 2 : 0;
   public int AdditionalPointsLeftActual => HasAdditionalPoints ? AdditionalPointsLeft : 0;
   public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
 
-  public int PointsRight => WoundsRight + VsWoundsRightActual + RanksRight + BannersRight + OverkillRight + AdditionalPointsRightActual + IsChargingRight .Points + HasFlankRight .Points + HasRearRight.Points;
-  public int VsWoundsRightActual => HasVsPoints ? (VsWoundsRight + 1) / 2 : 0;
+  public int PointsRight => WoundsRight + VerminSwarmWoundsRightActual + RanksRight + BannersRight + OverkillRight + AdditionalPointsRightActual + PossibleChargeValues[ChargingIndexRight].Points + PossibleFlankValues[FlankIndexRight].Points + PossibleRearValues[RearIndexRight].Points;
+  public int VerminSwarmWoundsRightActual => HasVerminSwarmPoints ? (VsWoundsRight + 1) / 2 : 0;
   public int AdditionalPointsRightActual => HasAdditionalPoints ? AdditionalPointsRight : 0;
   public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
 
@@ -136,37 +144,43 @@
   public int AdditionalPointsLeft { get; set; }
   public int AdditionalPointsRight { get; set; }
 
-  public bool HasVsPoints { get; set; }
+  public bool HasVerminSwarmPoints { get; set; }
   public bool HasAdditionalPoints { get; set; }
   
-  public PointStrings IsChargingLeft { get; set; }
-  public PointStrings HasFlankLeft { get; set; }
-  public PointStrings HasRearLeft { get; set; }
-  public PointStrings IsChargingRight { get; set; }
-  public PointStrings HasFlankRight { get; set; }
-  public PointStrings HasRearRight { get; set; }
-  public ResultOverview Left { get; set; }
-  public ResultOverview Right { get; set; }
+  public int ChargingIndexLeft { get; set; }
+  public int FlankIndexLeft { get; set; }
+  public int RearIndexLeft { get; set; }
+  public int ChargingIndexRight { get; set; }
+  public int FlankIndexRight { get; set; }
+  public int RearIndexRight { get; set; }
 
-  public List<PointStrings> DefaultVsOptions => new()
+  public List<PointStrings> PossibleChargeValues => new()
+  {
+    new PointStrings(0, "not charging"), 
+    new PointStrings(1, "Charge +1")
+  };
+  public List<PointStrings> PossibleFlankValues => new()
+  {
+    new PointStrings(0, "not flanking"), 
+    new PointStrings(1, "Flank +1"), 
+    new PointStrings(2, "Flank +2")
+  };
+  public List<PointStrings> PossibleRearValues => new()
+  {
+    new PointStrings(0, "no rear"), 
+    new PointStrings(2, "Rear +2"), 
+    new PointStrings(3, "Rear +3")
+  };
+  
+  public List<PointStrings> PossibleVerminSwarmWoundOptions => new()
   {
     new PointStrings(0, "hide vermin swarm wounds"),
     new PointStrings(1, "show vermin swarm wounds"),
   };
   
-  public List<PointStrings> DefaultAdditionalOptions => new()
+  public List<PointStrings> PossibleAdditionalOptions => new()
   {
     new PointStrings(0, "hide additional points"),
     new PointStrings(1, "show additional points"),
   };
-
-  private void SetAdditionalPoints(PointStrings newVal)
-  {
-    HasAdditionalPoints = newVal.Points != 0;
-  }
-
-  private void SetVs(PointStrings newVal)
-  {
-    HasVsPoints = newVal.Points != 0;
-  }
 }

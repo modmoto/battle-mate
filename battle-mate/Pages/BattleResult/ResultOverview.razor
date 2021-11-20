@@ -16,9 +16,9 @@
 {
   <UpAndDownComp Right="Right" Topic="Additional" Input="AdditionalPoints" InvokeChange="InvokeAdditionalPoints"></UpAndDownComp>  
 }
-<CycleChecker @ref="Charges" InvokeChange="InvokeCharging" Values="ChargeValues"></CycleChecker>
-<CycleChecker @ref="Flanks" InvokeChange="InvokeFlank" Values="FlankValues"></CycleChecker>
-<CycleChecker @ref="Rears" InvokeChange="InvokeRear" Values="RearValues"></CycleChecker>
+<CycleChecker InvokeChange="InvokeCharging" Values="ChargeValues" Index="ChargingIndex"></CycleChecker>
+<CycleChecker InvokeChange="InvokeFlank" Values="FlankValues" Index="FlankIndex"></CycleChecker>
+<CycleChecker InvokeChange="InvokeRear" Values="RearValues" Index="RearIndex"></CycleChecker>
 
 @code {
   [Parameter]
@@ -40,6 +40,12 @@
   [Parameter]
   public int AdditionalPoints { get; set; }
   [Parameter]
+  public int ChargingIndex { get; set; }
+  [Parameter]
+  public int FlankIndex { get; set; }
+  [Parameter]
+  public int RearIndex { get; set; }
+  [Parameter]
   public bool HasAdditionalPoints { get; set; }
   [Parameter]
   public bool HasVsPoints { get; set; }
@@ -58,27 +64,16 @@
   public EventCallback<int> InvokeAdditionalPoints { get; set; }
   
   [Parameter]
-  public EventCallback<PointStrings> InvokeRear { get; set; }
+  public EventCallback<int> InvokeRear { get; set; }
   [Parameter]
-  public EventCallback<PointStrings> InvokeFlank { get; set; }
+  public EventCallback<int> InvokeFlank { get; set; }
   [Parameter]
-  public EventCallback<PointStrings> InvokeCharging { get; set; }
-
-  public List<PointStrings> ChargeValues => new() {new PointStrings(0, "not charging"), new PointStrings(1, "Charge +1")};
-  public List<PointStrings> FlankValues => new() {new PointStrings(0, "not flanking"), new PointStrings(1, "Flank +1"), new PointStrings(2, "Flank +2")};
-  public List<PointStrings> RearValues => new() {new PointStrings(0, "no rear"), new PointStrings(2, "Rear +2"), new PointStrings(3, "Rear +3")};
-
-  public void Reset()
-  {
-    Rears.Reset();
-    Flanks.Reset();
-    Charges.Reset();
-  }
-
-  public CycleChecker Rears { get; set; }
-
-  public CycleChecker Flanks { get; set; }
-
-  public CycleChecker Charges { get; set; }
-
+  public EventCallback<int> InvokeCharging { get; set; }
+  
+  [Parameter]
+  public List<PointStrings> ChargeValues { get; set; }
+  [Parameter]
+  public List<PointStrings> FlankValues  { get; set; }
+  [Parameter]
+  public List<PointStrings> RearValues { get; set; }
 }

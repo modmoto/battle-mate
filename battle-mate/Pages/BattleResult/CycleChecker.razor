@@ -1,39 +1,28 @@
 ﻿<div class="mb-2">
-  @if (_index != 0)
+  @if (Index != 0)
   {
     <button type="button" class="btn btn-success w-100" @onclick="() => InvokeChange.InvokeAsync(Next())">
-      @Values[_index].Text
+      @Values[Index].Text
     </button>
   }
   else
   {
     <button type="button" class="btn btn-outline-secondary w-100" @onclick="() => InvokeChange.InvokeAsync(Next())">
-      @Values[_index].Text
+      @Values[Index].Text
     </button>  
   }
 </div>
 
 @code {
-  private int _index;
+  [Parameter]
+  public int Index { get; set; }
   [Parameter]
   public List<PointStrings> Values { get; set; }
   [Parameter]
-  public EventCallback<PointStrings> InvokeChange { get; set; }
+  public EventCallback<int> InvokeChange { get; set; }
 
-  private PointStrings Next()
+  private int Next()
   {
-    var nextCycle = (_index + 1) % Values.Count;
-    _index = nextCycle;
-    return Values[nextCycle];
-  }
-
-  public void Reset()
-  {
-    _index = 0;
-  }
-  
-  public void SetIndex(int newIndex)
-  {
-    _index = newIndex;
+    return (Index + 1) % Values.Count;
   }
 }
