@@ -3,22 +3,31 @@
 
 <div class="page">
   <div class="main">
-    <div class="d-flex flex-row-reverse px-4">
-      <NavLink class="nav-link px-0" href="/dice" Match="NavLinkMatch.All">
-        <button class="btn btn-outline-primary">
-          Roll dice
-        </button>
-      </NavLink>
+    <div class="row justify-content-between px-4">
 
-      <NavLink class="nav-link px-2" href="/" Match="NavLinkMatch.All">
-        <button class="btn btn-outline-primary">
-          Combat result
+      <div class="col px-0">
+        <button type="button" class="btn btn-outline-secondary my-2" data-bs-toggle="modal" data-bs-target="#infoModal">
+          <span class="oi oi-info" aria-hidden="true"></span>
         </button>
-      </NavLink>
+      </div>
 
-      <button type="button" class="btn btn-outline-secondary px-3 my-2" data-bs-toggle="modal" data-bs-target="#infoModal">
-        <span class="oi oi-info" aria-hidden="true"></span>
-      </button>
+      @if (_isOnCombat)
+      {
+        <div class="col px-0">
+          <button class="btn btn-outline-primary my-2 float-end" @onclick="GoToRollDice">
+            <span class="oi oi-arrow-right"></span>
+          </button>
+        </div>
+      }
+      else
+      {
+        <div class="col px-0">
+          <button class="btn btn-outline-primary my-2 float-end" @onclick="GoToCombat">
+            <span class="oi oi-arrow-left"></span>
+          </button>
+        </div>
+      }
+
       <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
           <div class="modal-content">
@@ -69,10 +78,12 @@
 @inject CombatResultState _state
 @inject CombatOptionsRepository _repository
 @inject IJSRuntime _javascript
+@inject NavigationManager _navigationManager
 
 @code
 {
   private int _windowVersion;
+  private bool _isOnCombat = true;
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
@@ -84,5 +95,17 @@
       StateHasChanged();
     }
     await base.OnAfterRenderAsync(firstRender);
+  }
+
+  private void GoToCombat()
+  {
+    _navigationManager.NavigateTo("/");
+    _isOnCombat = true;
+  }
+  
+  private void GoToRollDice()
+  {
+    _navigationManager.NavigateTo("/dice");
+    _isOnCombat = false;
   }
 }
