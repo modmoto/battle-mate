@@ -13,7 +13,7 @@
     <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(2)">2</button>
     <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(3)">3</button>
     <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(4)">4</button>
-    <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice" @bind="_diceState.DiceAmount">
+    <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" style="text-align: right;" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice" @bind="_diceState.DiceAmount">
   </div>
   <div class="row mt-2">
     @if(CurrentRoleState is RollState.None or RollState.WardSave)
