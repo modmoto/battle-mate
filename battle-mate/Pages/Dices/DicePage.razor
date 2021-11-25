@@ -201,11 +201,31 @@
       @if (FirstRoleState == RollState.ToHit)
       {
         <div class="card-header">
-          @(message.value.Results.Last().RawResults.Count) attacks hitting on @(message.value.Results.Last().DiceGoal)+
-          @if (SpecialRules.Count > 0)
-          {
-            <span> with @(string.Join(", ", SpecialRules))</span>
-          }
+          <div class="row justify-content-between">
+            <span class="col">
+              @(message.value.Results.Last().RawResults.Count) hitting on @(message.value.Results.Last().DiceGoal)+
+              @if (SpecialRules.Count > 0)
+              {
+                <span> with @(string.Join(", ", SpecialRules))</span>
+              }
+            </span>
+           
+            @if (FirstRoleState != RollState.None && message.value.Results[0].RollState == RollState.WardSave)
+            {
+              <div class="col">
+                <div class="float-end">
+                  <span class="me-1">
+                    <b>@message.value.Results[0].FailedRolls</b> wounds
+                  </span>
+                  @* <button class="btn btn-outline-success"> *@
+                  @*   <span class="oi oi-plus"></span> *@
+                  @* </button> *@
+                </div>
+              </div>
+            }
+            
+          </div>
+          
         </div>
       }
       <div class="card-body m-0">
@@ -516,8 +536,18 @@
 
     if (_noArmorChecked && _noWardChecked)
     {
-      var armorResult = GetAndInsertNoArmorSaveResult(result);
-      return GetAndInserNoWardSaveResult(armorResult);
+      var rollResults = CurrentDiceMessage.Results;
+      rollResults.Insert(0, result);
+      var currentRole = CurrentRole;
+      var armorRole = new RollResult(Enumerable.Repeat(1, result.SucessfullRolls).ToList(), currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides,
+        RollState.ArmorSave, currentRole.RerollState, _defaultNoRoll, false, currentRole.BattleFocus, false,
+        currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
+      rollResults.Insert(0, armorRole);
+      var newCurrentRole = CurrentRole;
+      var wardResult = new RollResult(Enumerable.Repeat(1, result.SucessfullRolls).ToList(), newCurrentRole.RerollResults, newCurrentRole.OldResults, newCurrentRole.DiceSides, RollState.WardSave,
+        newCurrentRole.RerollState, _defaultNoRoll, false, newCurrentRole.BattleFocus, false, newCurrentRole.Poison, newCurrentRole.Poison5Up,
+        newCurrentRole.PoisonHits, false, newCurrentRole.LethalStrike, newCurrentRole.LethalStrikeHits);
+      return wardResult;
     }
 
     return _noArmorChecked ? GetAndInsertNoArmorSaveResult(result) : result;
@@ -533,9 +563,10 @@
 
   private RollResult NoArmorSaveResultFromCurrent()
   {
-    return new RollResult(CurrentRole.RawResults, CurrentRole.RerollResults, CurrentRole.OldResults, CurrentRole.DiceSides,
-      RollState.ArmorSave, CurrentRole.RerollState, _defaultNoRoll, false, CurrentRole.BattleFocus, false,
-      CurrentRole.Poison, CurrentRole.Poison5Up, CurrentRole.PoisonHits, false, CurrentRole.LethalStrike, CurrentRole.LethalStrikeHits);
+    var currentRole = CurrentRole;
+    return new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides,
+      RollState.ArmorSave, currentRole.RerollState, _defaultNoRoll, false, currentRole.BattleFocus, false,
+      currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
   }
 
   private void SetAndRollDice(int amount, int sides)
