@@ -1,23 +1,24 @@
-﻿<div class="@($"d-flex mb-2 {(Right ? "flex-row" : "flex-row-reverse")}")">
+﻿<div class="d-flex mb-2 flex-row">
   @if (Right)
   {
     <span class="pt-4 middle-float-text">@Topic</span>
     <div class="col text-start">@Input</div>
   }
-  else
-  {
-    <div class="col text-end">@Input</div>
-  }
-  <div class="@($"col w-25 {(Right ? "pe-2" : "ps-2")}")">
-    <button class="btn btn-outline-success w-100" @onclick="async () => await InvokeChange.InvokeAsync(++Input)">
-      +
-    </button>
-  </div>
+  
   <div class="col w-25">
     <button class="btn btn-outline-danger w-100" @onclick="async () => await InvokeChange.InvokeAsync(--Input)">
       -
     </button>
   </div>
+  <div class="col w-25 ps-2">
+    <button class="btn btn-outline-success w-100" @onclick="async () => await InvokeChange.InvokeAsync(++Input)">
+      +
+    </button>
+  </div>
+  @if (!Right)
+  {
+    <div class="col text-end">@Input</div>
+  }
 </div>
 
 @code {
