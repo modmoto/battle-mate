@@ -70,30 +70,30 @@
     </button>
   </div>
   <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle" type="button" disabled="@(!IsFirstRoll)" id="diceOptions" data-bs-toggle="dropdown" aria-expanded="false">
+    <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle" type="button" id="diceOptions" data-bs-toggle="dropdown" aria-expanded="false">
       <span class="oi oi-cog"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="diceOptions">
       <li class="py-3">
-        <input class="form-check-input" type="checkbox" value="" id="_poisonChecked" checked="@_poisonChecked" @onclick="() => _poisonChecked = !_poisonChecked">
+        <input class="form-check-input" type="checkbox" value="" id="_poisonChecked" checked="@_poisonChecked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit))" @onclick="TogglePoison">
         <label class="form-check-label ps-2" for="_poisonChecked">
           Poison
         </label>
       </li>
       <li class="py-3">
-        <input class="form-check-input" type="checkbox" value="" id="_poison5Checked" checked="@_poison5Checked" @onclick="() => _poison5Checked = !_poison5Checked">
+        <input class="form-check-input" type="checkbox" value="" id="_poison5Checked" checked="@_poison5Checked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit))" @onclick="TogglePoison5">
         <label class="form-check-label ps-2" for="_poison5Checked">
           Poison 5+
         </label>
       </li>
       <li class="py-3">
-        <input class="form-check-input" type="checkbox" value="" id="_battleFocusChecked" checked="@_battleFocusChecked" @onclick="() => _battleFocusChecked = !_battleFocusChecked">
+        <input class="form-check-input" type="checkbox" value="" id="_battleFocusChecked" checked="@_battleFocusChecked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit))" @onclick="ToggleBattleFocus">
         <label class="form-check-label ps-2" for="_battleFocusChecked">
           Battlefocus
         </label>
       </li>
       <li class="py-3">
-        <input class="form-check-input" type="checkbox" value="" id="_lethalStrikeChecked" checked="@_lethalStrikeChecked" @onclick="() => _lethalStrikeChecked = !_lethalStrikeChecked">
+        <input class="form-check-input" type="checkbox" value="" id="_lethalStrikeChecked" checked="@_lethalStrikeChecked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit or RollState.ToWound))" @onclick="ToggleLethalStrike">
         <label class="form-check-label ps-2" for="_lethalStrikeChecked">
           Lethal strike
         </label>
@@ -538,6 +538,46 @@
     {
       var newRoll = RollResult.AutoFail(CurrentRole.FailedRolls, CurrentRole.OldResults, RollState.NoWardSave);
       CurrentDiceMessage.Results.Insert(0, newRoll);
+    }
+  }
+
+  private void ToggleLethalStrike()
+  {
+    _lethalStrikeChecked = !_lethalStrikeChecked;
+    var currentRole = CurrentRole;
+    if (_lethalStrikeChecked && CurrentRoleState == RollState.ToWound && !currentRole.LethalStrike)
+    {
+      CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, false, currentRole.BattleFocus, true, currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, _lethalStrikeChecked, currentRole.LethalStrikeHits);
+    }
+  }
+
+  private void ToggleBattleFocus()
+  {
+    _battleFocusChecked = !_battleFocusChecked;
+    var currentRole = CurrentRole;
+    if (_battleFocusChecked && CurrentRoleState == RollState.ToHit && !currentRole.BattleFocus)
+    {
+      CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, _battleFocusChecked, false, currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
+    }
+  }
+
+  private void TogglePoison5()
+  {
+    _poison5Checked = !_poison5Checked;
+    var currentRole = CurrentRole;
+    if (_poison5Checked && CurrentRoleState == RollState.ToHit && !currentRole.Poison5Up)
+    {
+      CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, currentRole.BattleFocus, false, currentRole.Poison, _poison5Checked, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
+    }
+  }
+
+  private void TogglePoison()
+  {
+    _poisonChecked = !_poisonChecked;
+    var currentRole = CurrentRole;
+    if (_poisonChecked && CurrentRoleState == RollState.ToHit && !currentRole.Poison)
+    {
+      CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, currentRole.BattleFocus, false, _poisonChecked, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
     }
   }
 }
