@@ -18,6 +18,6 @@ namespace battle_mate
         NoReroll,
         Reroll1s,
         RerollBiggerThan,
-        RerollSmallerThan,
+        RerollSmallerThan
     }
 }
