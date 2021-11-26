@@ -15,7 +15,7 @@
     <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(4)">4</button>
     <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" style="text-align: right;" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice" @oninput="UpdateDice">
   </div>
-  <div class="row mt-2">
+  <div class="row text-center">
     @if (CurrentRoleState is RollState.None or RollState.WardSave)
     {
       <span>@(_diceState.DiceAmount ?? 0) <b>hitting</b> on:</span>
