@@ -463,13 +463,19 @@
       RollState.ToHit => _dice.ToWound(toHit, oldResult),
       RollState.ToWound => _dice.ArmorSave(toHit, oldResult),
       RollState.AutomaticWound => _dice.ArmorSave(toHit, oldResult),
-      RollState.ArmorSave => _dice.WardSave(toHit, oldResult),
-      RollState.NoArmorSave => _dice.WardSave(toHit, oldResult),
+      RollState.ArmorSave => DoAndResetRoll(toHit, oldResult),
+      RollState.NoArmorSave => DoAndResetRoll(toHit, oldResult),
       _ => _dice.ToHit(diceAmount, _diceState.SelectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _poison5Checked, _lethalStrikeChecked)
       };
-    _battleFocusChecked = false;
-    _poisonChecked = false;
+    return rollResult;
+  }
+
+  private RollResult DoAndResetRoll(int toHit, RollResult oldResult)
+  {
+    var rollResult = _dice.WardSave(toHit, oldResult);
     _poison5Checked = false;
+    _poisonChecked = false;
+    _battleFocusChecked = false;
     _lethalStrikeChecked = false;
     return rollResult;
   }
@@ -549,6 +555,10 @@
     {
       CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, false, currentRole.BattleFocus, true, currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, _lethalStrikeChecked, currentRole.LethalStrikeHits);
     }
+    else if (!_lethalStrikeChecked && CurrentRoleState == RollState.ToWound && currentRole.LethalStrike)
+    {
+      CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, false, currentRole.BattleFocus, true, currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, _lethalStrikeChecked, currentRole.LethalStrikeHits);
+    }
   }
 
   private void ToggleBattleFocus()
@@ -556,6 +566,9 @@
     _battleFocusChecked = !_battleFocusChecked;
     var currentRole = CurrentRole;
     if (_battleFocusChecked && CurrentRoleState == RollState.ToHit && !currentRole.BattleFocus)
+    {
+      CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, _battleFocusChecked, false, currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
+    } else if (!_battleFocusChecked && CurrentRoleState == RollState.ToHit && currentRole.BattleFocus)
     {
       CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, _battleFocusChecked, false, currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
     }
@@ -569,6 +582,10 @@
     {
       CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, currentRole.BattleFocus, false, currentRole.Poison, _poison5Checked, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
     }
+    else if (!_poison5Checked && CurrentRoleState == RollState.ToHit && currentRole.Poison5Up)
+    {
+      CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, currentRole.BattleFocus, false, currentRole.Poison, _poison5Checked, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
+    }
   }
 
   private void TogglePoison()
@@ -576,6 +593,10 @@
     _poisonChecked = !_poisonChecked;
     var currentRole = CurrentRole;
     if (_poisonChecked && CurrentRoleState == RollState.ToHit && !currentRole.Poison)
+    {
+      CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, currentRole.BattleFocus, false, _poisonChecked, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
+    }
+    else if (!_poisonChecked && CurrentRoleState == RollState.ToHit && currentRole.Poison)
     {
       CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, currentRole.BattleFocus, false, _poisonChecked, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
     }
