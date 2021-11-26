@@ -179,21 +179,9 @@
                   <button type="button" disabled="@NextRollIsNotToHit" class="@($"btn btn-outline-{(_poison5Checked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _poison5Checked = !_poison5Checked">Poison 5+</button>
                 </div>
               </div>
-
-              <div class="modal-header">
-                <h5 class="modal-title">Options for <b>all</b> rolls</h5>
-              </div>
-              <div class="row">
-                <div class="col">
-                  <button type="button" class="@($"btn btn-outline-{(_noWardChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _noWardChecked = !_noWardChecked">No ward saves</button>
-                </div>
-                <div class="col">
-                  <button type="button" class="@($"btn btn-outline-{(_noArmorChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _noArmorChecked = !_noArmorChecked">No armor saves</button>
-                </div>
-              </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="LazySavesCorrection">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
@@ -212,29 +200,27 @@
           @(message.value.Results.Last().RawResults.Count)D@(message.value.Results.Last().DiceSides)
         </div>
       }
-      @if (GetRollStateAt(message.value, 0) == RollState.AutomaticHit)
-      {
-        <div class="card-header">
-          @(GetRollCount(message.value, 0)) automatic hits
-          @if (SpecialRules.Count > 0)
-          {
-            <span> with @(string.Join(", ", SpecialRules))</span>
-          }
-        </div>
-      }
       
       @if (FirstRoleState is RollState.ToHit or RollState.AutomaticHit)
       {
         <div class="card-header">
           <div class="row justify-content-between">
             <span class="col">
-              @(message.value.Results.Last().RawResults.Count) hitting on @(message.value.Results.Last().DiceGoal)+
+              @if (message.value.Results.Last().RollState is RollState.ToHit)
+              {
+                <span>@(message.value.Results.Last().SucessfullRolls) hitting on @(message.value.Results.Last().DiceGoal)+</span>
+              }
+              @if (message.value.Results.Last().RollState is RollState.AutomaticHit)
+              {
+                <span>@(message.value.Results.Last().RawResults.Count) automatic hits</span>
+              }
+              
               @if (SpecialRules.Count > 0)
               {
                 <span> with @(string.Join(", ", SpecialRules))</span>
               }
             </span>
-           
+
             @if (FirstRoleState != RollState.None && message.value.Results[0].RollState is RollState.WardSave or RollState.NoWardSave)
             {
               <div class="col">
@@ -248,7 +234,7 @@
                 </div>
               </div>
             }
-            
+
           </div>
           
         </div>
@@ -428,8 +414,6 @@
   private bool _poison5Checked;
   private bool _lethalStrikeChecked;
   private bool _battleFocusChecked;
-  private bool _noArmorChecked;
-  private bool _noWardChecked;
   private bool IsFirstRoll => CurrentRoleState is RollState.WardSave or RollState.NoWardSave or RollState.None;
   private RollResult CurrentRole => CurrentDiceMessage?.Results?.First();
   private bool RerollWasDone => CurrentRole?.RerollState != RerollState.NoReroll;
@@ -510,12 +494,12 @@
     var rollResult = CurrentRoleState switch
     {
       RollState.None => _dice.ToHit(diceAmount, _diceState.SelectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _poison5Checked, _lethalStrikeChecked),
-      RollState.AutomaticHit => RollToWound(toHit, oldResult),
-      RollState.ToHit => RollToWound(toHit, oldResult),
-      RollState.ToWound => RollArmorSave(toHit, oldResult),
-      RollState.AutomaticWound => RollArmorSave(toHit, oldResult),
-      RollState.ArmorSave => RollWardSave(toHit, oldResult),
-      RollState.NoArmorSave => RollWardSave(toHit, oldResult),
+      RollState.AutomaticHit => _dice.ToWound(toHit, oldResult),
+      RollState.ToHit => _dice.ToWound(toHit, oldResult),
+      RollState.ToWound => _dice.ArmorSave(toHit, oldResult),
+      RollState.AutomaticWound => _dice.ArmorSave(toHit, oldResult),
+      RollState.ArmorSave => _dice.WardSave(toHit, oldResult),
+      RollState.NoArmorSave => _dice.WardSave(toHit, oldResult),
       _ => _dice.ToHit(diceAmount, _diceState.SelectedDice, toHit, automaticHits, _battleFocusChecked, _poisonChecked, _poison5Checked, _lethalStrikeChecked)
       };
     _battleFocusChecked = false;
@@ -523,22 +507,6 @@
     _poison5Checked = false;
     _lethalStrikeChecked = false;
     return rollResult;
-  }
-
-  private RollResult RollWardSave(int toHit, RollResult oldResult)
-  {
-    return _noWardChecked
-      ? GetAndInserNoWardSaveResult(oldResult)
-      : _dice.WardSave(toHit, oldResult);
-  }
-
-  private RollResult RollArmorSave(int toHit, RollResult oldResult)
-  {
-    var result = _noArmorChecked
-      ? GetAndInsertNoArmorSaveResult(oldResult)
-      : _dice.ArmorSave(toHit, oldResult);
-
-    return _noWardChecked ? GetAndInserNoWardSaveResult(result) : result;
   }
 
   private RollResult GetAndInserNoWardSaveResult(RollResult result)
@@ -553,29 +521,6 @@
     return new RollResult(CurrentRole.RawResults, CurrentRole.RerollResults, CurrentRole.OldResults, CurrentRole.DiceSides, RollState.WardSave,
       CurrentRole.RerollState, _defaultNoRoll, false, CurrentRole.BattleFocus, false, CurrentRole.Poison, CurrentRole.Poison5Up,
       CurrentRole.PoisonHits, false, CurrentRole.LethalStrike, CurrentRole.LethalStrikeHits);
-  }
-
-  private RollResult RollToWound(int toHit, RollResult oldResult)
-  {
-    var result = _dice.ToWound(toHit, oldResult);
-
-    if (_noArmorChecked && _noWardChecked)
-    {
-      var rollResults = CurrentDiceMessage.Results;
-      rollResults.Insert(0, result);
-      var currentRole = CurrentRole;
-      var armorRole = new RollResult(Enumerable.Repeat(1, result.SucessfullRolls).ToList(), currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides,
-        RollState.ArmorSave, currentRole.RerollState, _defaultNoRoll, false, currentRole.BattleFocus, false,
-        currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
-      rollResults.Insert(0, armorRole);
-      var newCurrentRole = CurrentRole;
-      var wardResult = new RollResult(Enumerable.Repeat(1, result.SucessfullRolls).ToList(), newCurrentRole.RerollResults, newCurrentRole.OldResults, newCurrentRole.DiceSides, RollState.WardSave,
-        newCurrentRole.RerollState, _defaultNoRoll, false, newCurrentRole.BattleFocus, false, newCurrentRole.Poison, newCurrentRole.Poison5Up,
-        newCurrentRole.PoisonHits, false, newCurrentRole.LethalStrike, newCurrentRole.LethalStrikeHits);
-      return wardResult;
-    }
-
-    return _noArmorChecked ? GetAndInsertNoArmorSaveResult(result) : result;
   }
 
   private RollResult GetAndInsertNoArmorSaveResult(RollResult result)
@@ -645,27 +590,6 @@
     }
   }
 
-  private void LazySavesCorrection()
-  {
-    if (_noArmorChecked && CurrentRoleState == RollState.ToWound && !_noWardChecked)
-    {
-      var armorResult = NoArmorSaveResultFromCurrent();
-      CurrentDiceMessage.Results.Insert(0, armorResult);
-    }
-    else if (_noWardChecked && CurrentRoleState == RollState.ArmorSave)
-    {
-      var wardResult = NoWardSaveResultFromCurrent();
-      CurrentDiceMessage.Results.Insert(0, wardResult);
-    }
-    else if (_noArmorChecked && _noWardChecked && CurrentRoleState == RollState.ToWound)
-    {
-      var armorResult = NoArmorSaveResultFromCurrent();
-      CurrentDiceMessage.Results.Insert(0, armorResult);
-      var wardResult = NoWardSaveResultFromCurrent();
-      CurrentDiceMessage.Results.Insert(0, wardResult);
-    }
-  }
-
   private void SkipDice()
   {
     if (CurrentRoleState is RollState.None or RollState.WardSave or RollState.NoWardSave)
@@ -689,25 +613,5 @@
       var newRoll = RollResult.AutoFail(CurrentRole.FailedRolls, CurrentRole.OldResults, RollState.NoWardSave);
       CurrentDiceMessage.Results.Insert(0, newRoll);
     }
-  }
-
-  private static RollState GetRollStateAt(DiceMessage message, int index)
-  {
-    if (message.Results.Count > index)
-    {
-      return message.Results.SkipLast(index).Last().RollState;
-    }
-    
-    return RollState.None;
-  }
-  
-  private static int GetRollCount(DiceMessage message, int index)
-  {
-    if (message.Results.Count > index)
-    {
-      return message.Results.SkipLast(index).Last().RawResults.Count;
-    }
-    
-    return 0;
   }
 }
