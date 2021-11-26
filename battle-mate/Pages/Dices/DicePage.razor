@@ -8,153 +8,171 @@
   </div>
 </div>
 <div class="mb-3">
-<div class="input-group mb-3">
-  <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(1)">1</button>
-  <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(2)">2</button>
-  <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(3)">3</button>
-  <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(4)">4</button>
-  <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" style="text-align: right;" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice" @bind="_diceState.DiceAmount">
-</div>
-<div class="row align-items-center mt-2">
-  <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(2)">
-      2+
-    </button>
+  <div class="input-group mb-3">
+    <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(1)">1</button>
+    <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(2)">2</button>
+    <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(3)">3</button>
+    <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(4)">4</button>
+    <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" style="text-align: right;" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice" @oninput="UpdateDice">
   </div>
-  <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(3)">
-      3+
-    </button>
+  <div class="row mt-2">
+    @if (CurrentRoleState is RollState.None or RollState.WardSave)
+    {
+      <span>@(_diceState.DiceAmount ?? 0) <b>hitting</b> on:</span>
+    }
+    @if (CurrentRoleState is RollState.ToHit)
+    {
+      <span>@CurrentRole.SucessfullRolls <b>wounding</b> on:</span>
+    }
+    @if (CurrentRoleState is RollState.ToWound)
+    {
+      <span>@CurrentRole.SucessfullRolls <b>armor saves</b> on:</span>
+    }
+    @if (CurrentRoleState is RollState.ArmorSave)
+    {
+      <span>@CurrentRole.FailedRolls <b>ward saves</b> on:</span>
+    }
   </div>
-  <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(4)">
-      4+
-    </button>
-  </div>
-</div>
-<div class="row align-items-center mt-2">
-  <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(5)">
-      5+
-    </button>
-  </div>
-  <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(6)">
-      6+
-    </button>
-  </div>
-  <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2" @onclick="SkipDice">
-      @if (CurrentRoleState is RollState.None or RollState.WardSave or RollState.NoWardSave)
-      {
-        <span>auto hit</span>
-      }
-      @if (CurrentRoleState is RollState.ToHit or RollState.AutomaticHit)
-      {
-        <span>auto wnd</span>
-      }
-      @if (CurrentRoleState is RollState.ToWound or RollState.AutomaticWound)
-      {
-        <span>no armor</span>
-      }
-      @if (CurrentRoleState is RollState.ArmorSave or RollState.NoArmorSave)
-      {
-        <span>no ward</span>
-      }
-    </button>
-  </div>
-</div>
-<div class="row align-items-center">
-  <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2 collapse">
-    </button>
-  </div>
-  <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle" type="button" id="diceOptions" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="oi oi-cog"></span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="diceOptions">
-      <li class="py-3">
-        <input class="form-check-input" type="checkbox" value="" id="_poisonChecked" checked="@_poisonChecked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit))" @onclick="TogglePoison">
-        <label class="form-check-label ps-2" for="_poisonChecked">
-          Poison
-        </label>
-      </li>
-      <li class="py-3">
-        <input class="form-check-input" type="checkbox" value="" id="_poison5Checked" checked="@_poison5Checked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit))" @onclick="TogglePoison5">
-        <label class="form-check-label ps-2" for="_poison5Checked">
-          Poison 5+
-        </label>
-      </li>
-      <li class="py-3">
-        <input class="form-check-input" type="checkbox" value="" id="_battleFocusChecked" checked="@_battleFocusChecked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit))" @onclick="ToggleBattleFocus">
-        <label class="form-check-label ps-2" for="_battleFocusChecked">
-          Battlefocus
-        </label>
-      </li>
-      <li class="py-3">
-        <input class="form-check-input" type="checkbox" value="" id="_lethalStrikeChecked" checked="@_lethalStrikeChecked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit or RollState.ToWound))" @onclick="ToggleLethalStrike">
-        <label class="form-check-label ps-2" for="_lethalStrikeChecked">
-          Lethal strike
-        </label>
-      </li>
-    </ul>
-  </div>
-  <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle" type="button" id="rerollOptions" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="oi oi-reload"></span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="rerollOptions">
-      <li>
-        <button class="btn btn-outline-primary m-2 float-end" disabled="@RerollNotPossible" @onclick="RerollFailed">
-          <span>Reroll</span>
-          @if (CurrentRoleState is RollState.ToHit)
-          {
-            <span> misses</span>
-          }
-          @if (CurrentRoleState is RollState.ToWound)
-          {
-            <span> failed wounds</span>
-          }
-          @if (CurrentRoleState is RollState.ArmorSave)
-          {
-            <span> failed armor save</span>
-          }
-          @if (CurrentRoleState is RollState.WardSave)
-          {
-            <span> failed ward save</span>
-          }
-        </button>
-      </li>
-      <li>
-        <button class="btn btn-outline-primary m-2 float-end" disabled="@RerollNotPossible" @onclick="RerollSuceeded">
-          <span>Reroll</span>
-          @if (CurrentRoleState is RollState.ToHit)
-          {
-            <span> hits</span>
-          }
-          @if (CurrentRoleState is RollState.ToWound)
-          {
-            <span> wounds</span>
-          }
-          @if (CurrentRoleState is RollState.ArmorSave)
-          {
-            <span> armor save</span>
-          }
-          @if (CurrentRoleState is RollState.WardSave)
-          {
-            <span> ward save</span>
-          }
-        </button>
-      </li>
-      <li>
-        <button class="btn btn-outline-primary m-2 float-end" disabled="@RerollNotPossible" @onclick="RerollOnes">
-          Reroll 1s
-        </button>
-      </li>
-    </ul>
+  <div class="row align-items-center mt-2">
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(2)">
+        2+
+      </button>
     </div>
-</div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(3)">
+        3+
+      </button>
+    </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(4)">
+        4+
+      </button>
+    </div>
+  </div>
+  <div class="row align-items-center mt-2">
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(5)">
+        5+
+      </button>
+    </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(6)">
+        6+
+      </button>
+    </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2" @onclick="SkipDice">
+        @if (CurrentRoleState is RollState.None or RollState.WardSave or RollState.NoWardSave)
+        {
+          <span>auto hit</span>
+        }
+        @if (CurrentRoleState is RollState.ToHit or RollState.AutomaticHit)
+        {
+          <span>auto wnd</span>
+        }
+        @if (CurrentRoleState is RollState.ToWound or RollState.AutomaticWound)
+        {
+          <span>no armor</span>
+        }
+        @if (CurrentRoleState is RollState.ArmorSave or RollState.NoArmorSave)
+        {
+          <span>no ward</span>
+        }
+      </button>
+    </div>
+  </div>
+  <div class="row align-items-center">
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2 collapse">
+      </button>
+    </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle" type="button" id="diceOptions" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="oi oi-cog"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="diceOptions">
+        <li class="py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_poisonChecked" checked="@_poisonChecked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit))" @onclick="TogglePoison">
+          <label class="form-check-label ps-2" for="_poisonChecked">
+            Poison
+          </label>
+        </li>
+        <li class="py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_poison5Checked" checked="@_poison5Checked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit))" @onclick="TogglePoison5">
+          <label class="form-check-label ps-2" for="_poison5Checked">
+            Poison 5+
+          </label>
+        </li>
+        <li class="py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_battleFocusChecked" checked="@_battleFocusChecked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit))" @onclick="ToggleBattleFocus">
+          <label class="form-check-label ps-2" for="_battleFocusChecked">
+            Battlefocus
+          </label>
+        </li>
+        <li class="py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_lethalStrikeChecked" checked="@_lethalStrikeChecked" disabled="@(CurrentRoleState is not (RollState.WardSave or RollState.None or RollState.ToHit or RollState.ToWound))" @onclick="ToggleLethalStrike">
+          <label class="form-check-label ps-2" for="_lethalStrikeChecked">
+            Lethal strike
+          </label>
+        </li>
+      </ul>
+    </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle" type="button" id="rerollOptions" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="oi oi-reload"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="rerollOptions">
+        <li>
+          <button class="btn btn-outline-primary m-2 float-end" disabled="@RerollNotPossible" @onclick="RerollFailed">
+            <span>Reroll</span>
+            @if (CurrentRoleState is RollState.ToHit)
+            {
+              <span> misses</span>
+            }
+            @if (CurrentRoleState is RollState.ToWound)
+            {
+              <span> failed wounds</span>
+            }
+            @if (CurrentRoleState is RollState.ArmorSave)
+            {
+              <span> failed armor save</span>
+            }
+            @if (CurrentRoleState is RollState.WardSave)
+            {
+              <span> failed ward save</span>
+            }
+          </button>
+        </li>
+        <li>
+          <button class="btn btn-outline-primary m-2 float-end" disabled="@RerollNotPossible" @onclick="RerollSuceeded">
+            <span>Reroll</span>
+            @if (CurrentRoleState is RollState.ToHit)
+            {
+              <span> hits</span>
+            }
+            @if (CurrentRoleState is RollState.ToWound)
+            {
+              <span> wounds</span>
+            }
+            @if (CurrentRoleState is RollState.ArmorSave)
+            {
+              <span> armor save</span>
+            }
+            @if (CurrentRoleState is RollState.WardSave)
+            {
+              <span> ward save</span>
+            }
+          </button>
+        </li>
+        <li>
+          <button class="btn btn-outline-primary m-2 float-end" disabled="@RerollNotPossible" @onclick="RerollOnes">
+            Reroll 1s
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 <div>
@@ -568,7 +586,8 @@
     if (_battleFocusChecked && CurrentRoleState == RollState.ToHit && !currentRole.BattleFocus)
     {
       CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, _battleFocusChecked, false, currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
-    } else if (!_battleFocusChecked && CurrentRoleState == RollState.ToHit && currentRole.BattleFocus)
+    }
+    else if (!_battleFocusChecked && CurrentRoleState == RollState.ToHit && currentRole.BattleFocus)
     {
       CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, _battleFocusChecked, false, currentRole.Poison, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
     }
@@ -601,4 +620,13 @@
       CurrentDiceMessage.Results[0] = new RollResult(currentRole.RawResults, currentRole.RerollResults, currentRole.OldResults, currentRole.DiceSides, currentRole.RollState, currentRole.RerollState, currentRole.DiceGoal, true, currentRole.BattleFocus, false, _poisonChecked, currentRole.Poison5Up, currentRole.PoisonHits, false, currentRole.LethalStrike, currentRole.LethalStrikeHits);
     }
   }
+
+  private void UpdateDice(ChangeEventArgs obj)
+  {
+    if (int.TryParse(obj.Value?.ToString(), out var num))
+    {
+      _diceState.DiceAmount = num;
+    }
+  }
+
 }
