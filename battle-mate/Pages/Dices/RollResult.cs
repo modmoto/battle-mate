@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using battle_mate.Pages;
@@ -114,6 +115,18 @@ namespace battle_mate
             }
 
             return resultGroups;
+        }
+
+        public static RollResult AutoSucess(int ammount, List<int> oldResults, RollState state)
+        {
+            return new RollResult(Enumerable.Repeat(4, ammount).ToList(), new List<int>(), oldResults, 6,
+                state, RerollState.NoReroll, 2, false, false, false, false, false, 0, false, false, 0);
+        }
+        
+        public static RollResult AutoFail(int ammount, List<int> oldResults, RollState state)
+        {
+            return new RollResult(Enumerable.Repeat(4, ammount).ToList(), new List<int>(), oldResults, 6,
+                state, RerollState.NoReroll, 5, false, false, false, false, false, 0, false, false, 0);
         }
     }
 }

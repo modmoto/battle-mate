@@ -7,7 +7,10 @@ namespace battle_mate
         ToWound,
         ArmorSave,
         WardSave,
-        AutomaticHit
+        AutomaticHit,
+        AutomaticWound,
+        NoArmorSave,
+        NoWardSave
     }
 
     public enum RerollState
@@ -15,6 +18,6 @@ namespace battle_mate
         NoReroll,
         Reroll1s,
         RerollBiggerThan,
-        RerollSmallerThan,
+        RerollSmallerThan
     }
 }
