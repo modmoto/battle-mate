@@ -3,26 +3,32 @@
 
 <div class="page">
   <div class="main">
-    <div class="row justify-content-between px-4">
+    <div class="row justify-content-between card-header">
 
-      <div class="col px-0">
-        <button type="button" class="btn btn-outline-secondary my-2" data-bs-toggle="modal" data-bs-target="#infoModal">
+      <div class="col">
+        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#infoModal">
           <span class="oi oi-info" aria-hidden="true"></span>
         </button>
       </div>
 
       @if (_isOnCombat)
       {
-        <div class="col px-0">
-          <button class="btn btn-outline-primary my-2 float-end" @onclick="GoToRollDice">
+        <div class="col-2 text-center justify-content-center ">
+          <h4 class="pt-1 pb-0 mb-0">Combat Result</h4>
+        </div>
+        <div class="col">
+          <button class="btn btn-outline-primary float-end" @onclick="GoToRollDice">
             <span class="oi oi-arrow-right"></span>
           </button>
         </div>
       }
       else
       {
-        <div class="col px-0">
-          <button class="btn btn-outline-primary my-2 float-end" @onclick="GoToCombat">
+        <div class="col-2 text-center justify-content-center ">
+          <h4 class="pt-1 pb-0 mb-0">Dices</h4>
+        </div>
+        <div class="col">
+          <button class="btn btn-outline-primary float-end" @onclick="GoToCombat">
             <span class="oi oi-arrow-left"></span>
           </button>
         </div>
