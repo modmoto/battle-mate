@@ -50,7 +50,38 @@
       </button>
     </div>
   </div>
-
+  <div class="row align-items-center mt-2">
+      <div class="col">
+        <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(5)">
+          5+
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(6)">
+          6+
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-outline-primary w-100 my-2" @onclick="SkipDice">
+          @if (CurrentRoleState is RollState.None or RollState.WardSave)
+          {
+            <span>auto hit</span>
+          }
+          @if (CurrentRoleState is RollState.ToHit)
+          {
+            <span>auto wound</span>
+          }
+          @if (CurrentRoleState is RollState.ToWound)
+          {
+            <span>no armor</span>
+          }
+          @if (CurrentRoleState is RollState.ArmorSave)
+          {
+            <span>no ward</span>
+          }
+        </button>
+      </div>
+    </div>
   <div class="row align-items-center">
     <div class="col">
       <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(5)">
@@ -159,14 +190,6 @@
                   <button type="button" class="@($"btn btn-outline-{(_noArmorChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _noArmorChecked = !_noArmorChecked">No armor saves</button>
                 </div>
               </div>
-              @* <div class="row"> *@
-              @*   <div class="col"> *@
-              @*     <button type="button" class="@($"btn btn-outline-{(_onlyHitAndWoundChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _onlyHitAndWoundChecked = !_onlyHitAndWoundChecked">Roll only to hit and to wound</button> *@
-              @*   </div> *@
-              @*   <div class="col"> *@
-              @*     <button type="button" class="@($"btn btn-outline-{(_onlyArmorAndWardChecked ? "primary" : "secondary")} w-100 my-2")" @onclick="() => _onlyArmorAndWardChecked = !_onlyArmorAndWardChecked">Roll only armor and ward saves</button> *@
-              @*   </div> *@
-              @* </div> *@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="LazySavesCorrection">Close</button>
@@ -407,6 +430,7 @@
   private bool _onlyArmorAndWardChecked;
   private bool _noArmorChecked;
   private bool _noWardChecked;
+  private int _autoHitGoal = 0;
   private bool IsFirstRoll => CurrentRoleState is RollState.WardSave or RollState.None;
   private RollResult CurrentRole => CurrentDiceMessage?.Results?.First();
   private bool RerollWasDone => CurrentRole?.RerollState != RerollState.NoReroll;
@@ -638,6 +662,31 @@
       CurrentDiceMessage.Results.Insert(0, armorResult);
       var wardResult = NoWardSaveResultFromCurrent();
       CurrentDiceMessage.Results.Insert(0, wardResult);
+    }
+  }
+
+  private void SkipDice()
+  {
+    if (CurrentRoleState is RollState.None or RollState.WardSave)
+    {
+      if (_diceState.DiceAmount == null) return;
+      var newRoll = RollResult.AutoSucess(_diceState.DiceAmount.Value, null);
+      _diceState.DiceMessages.Insert(0, new DiceMessage(newRoll));
+    }
+    else if (CurrentRoleState is RollState.ToHit)
+    {
+      var newRoll = RollResult.AutoSucess(CurrentRole.SucessfullRolls, CurrentRole.OldResults);
+      CurrentDiceMessage.Results.Insert(0, newRoll);
+    }
+    else if (CurrentRoleState is RollState.ToWound)
+    {
+      var newRoll = RollResult.AutoSucess(CurrentRole.SucessfullRolls, CurrentRole.OldResults);
+      CurrentDiceMessage.Results.Insert(0, newRoll);
+    }
+    else if (CurrentRoleState is RollState.ArmorSave)
+    {
+      var newRoll = RollResult.AutoFail(CurrentRole.FailedRolls, CurrentRole.OldResults);
+      CurrentDiceMessage.Results.Insert(0, newRoll);
     }
   }
 }
