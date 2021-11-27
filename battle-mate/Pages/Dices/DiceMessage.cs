@@ -10,5 +10,6 @@ namespace battle_mate.Pages
         }
 
         public List<RollResult> Results { get; } = new();
+
     }
 }

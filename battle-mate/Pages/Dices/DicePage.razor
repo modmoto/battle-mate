@@ -1,4 +1,5 @@
 ﻿@page "/dice"
+@using battle_mate.Pages.BattleResult
 
 <div class="row" style="float: right">
   <div class="mb-3 input-group">
@@ -213,9 +214,37 @@
               <span class="me-1">
                 <b>@message.value.Results[0].FailedRolls</b> wounds
               </span>
-              @* <button class="btn btn-outline-success"> *@
-              @*   <span class="oi oi-plus"></span> *@
-              @* </button> *@
+              <button class="btn btn-outline-success dropdown-toggle" type="button" id="addToResultsOpton" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="oi oi-plus"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="addToResultsOpton">
+                <li>
+                  <button class="btn btn-outline-primary m-2 float-start" disabled="@message.value.Results[0].ReportedToLeft" @onclick="() => AddWoundsToLeft(message.value, false)">
+                    <span>Left</span>
+                  </button>
+                </li>
+                @if (_combatResultState.HasVerminSwarmPoints)
+                {
+                  <li>
+                    <button class="btn btn-outline-primary m-2 float-start" disabled="@message.value.Results[0].ReportedToLeft" @onclick="() => AddWoundsToRight(message.value, true)">
+                      <span>Left to VS</span>
+                    </button>
+                  </li>
+                }
+                <li>
+                  <button class="btn btn-outline-primary m-2 float-end" disabled="@message.value.Results[0].ReportedToRight" @onclick="() => AddWoundsToRight(message.value, false)">
+                    <span>Right</span>
+                  </button>
+                </li>
+                @if (_combatResultState.HasVerminSwarmPoints)
+                {
+                  <li>
+                    <button class="btn btn-outline-primary m-2 float-end" disabled="@message.value.Results[0].ReportedToRight" @onclick="() => AddWoundsToRight(message.value, true)">
+                      <span>Right to VS</span>
+                    </button>
+                  </li>
+                }
+              </ul>
             </div>
           </div>
         }
@@ -391,6 +420,7 @@
 
 @inject Dice _dice
 @inject DiceState _diceState
+@inject CombatResultState _combatResultState
 
 @code {
   private readonly int _defaultNoRoll = 7;
@@ -629,4 +659,25 @@
     }
   }
 
+  private void AddWoundsToLeft(DiceMessage message, bool isVerminSwarm)
+  {
+    var rollResult = message.Results[0];
+    _combatResultState.AddWoundLeft(rollResult.FailedRolls, isVerminSwarm);
+    if (rollResult.ReportedToRight)
+    {
+      _combatResultState.AddWoundRight(- rollResult.FailedRolls, isVerminSwarm);
+    }
+    rollResult.ReportLeft();
+  }
+
+  private void AddWoundsToRight(DiceMessage message, bool isVerminSwarm)
+  {
+    var rollResult = message.Results[0];
+    _combatResultState.AddWoundRight(rollResult.FailedRolls, isVerminSwarm);
+    if (rollResult.ReportedToLeft)
+    {
+      _combatResultState.AddWoundLeft(- rollResult.FailedRolls, isVerminSwarm);
+    }
+    rollResult.ReportRight();
+  }
 }

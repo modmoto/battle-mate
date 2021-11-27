@@ -91,6 +91,8 @@ namespace battle_mate
         public List<DiceResultGroup> GroupedResults { get; }
         public RollState RollState { get; }
         public RerollState RerollState { get; }
+        public bool ReportedToLeft { get; private set; }
+        public bool ReportedToRight { get; private set; }
 
         public RollResult UndoReroll()
         {
@@ -127,6 +129,24 @@ namespace battle_mate
         {
             return new RollResult(Enumerable.Repeat(4, ammount).ToList(), new List<int>(), oldResults, 6,
                 state, RerollState.NoReroll, 5, false, false, false, false, false, 0, false, false, 0);
+        }
+
+        public void ReportRight()
+        {
+            ReportedToLeft = false;
+            ReportedToRight = true;
+        }
+
+        public void ReportLeft()
+        {
+            ReportedToLeft = true;
+            ReportedToRight = false;
+        }
+
+        public void ResetReport()
+        {
+            ReportedToLeft = false;
+            ReportedToRight = false;
         }
     }
 }

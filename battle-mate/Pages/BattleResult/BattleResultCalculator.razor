@@ -60,7 +60,7 @@
   </div>
 </div>
 <div class="row">
-  <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="_state.ResetStats">
+  <button type="button" class="btn btn-outline-danger w-100 my-2" @onclick="ResetStats">
     Reset combat result
   </button>
 </div>
@@ -93,6 +93,7 @@
 </div>
 
 @inject CombatResultState _state
+@inject DiceState _diceState
 @inject CombatOptionsRepository _repository
 
 @code {
@@ -111,4 +112,14 @@
   {
     _state.OnLoadFinished += (_, _) => { StateHasChanged(); };
   }
+
+  private void ResetStats()
+  {
+    _state.ResetStats();
+    foreach (var message in _diceState.DiceMessages)
+    {
+      message.Results[0].ResetReport();
+    }
+  }
+
 }

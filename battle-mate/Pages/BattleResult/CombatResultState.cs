@@ -129,5 +129,29 @@ namespace battle_mate.Pages.BattleResult
             ResetStats();
             OnLoadFinished?.Invoke(this, EventArgs.Empty);
         }
+
+        public void AddWoundLeft(int woundsForLeft, bool verminSwarm)
+        {
+            if (verminSwarm)
+            {
+                VerminSwarmWoundsLeft += woundsForLeft;
+            }
+            else
+            {
+                WoundsLeft += woundsForLeft;
+            }
+        }
+
+        public void AddWoundRight(int woundsForRight, bool verminSwarm)
+        {
+            if (verminSwarm)
+            {
+                VerminSwarmWoundsRight += woundsForRight;
+            }
+            else
+            {
+                WoundsRight += woundsForRight;
+            }
+        }
     }
 }
