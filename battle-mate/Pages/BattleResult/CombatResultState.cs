@@ -53,13 +53,13 @@ namespace battle_mate.Pages.BattleResult
         public int DefaultBanners { get; set; }
         public bool HasVerminSwarmPoints { get; set; }
         public bool HasAdditionalPoints { get; set; }
-
         public int ChargingIndexLeft { get; set; }
         public int FlankIndexLeft { get; set; }
         public int RearIndexLeft { get; set; }
         public int ChargingIndexRight { get; set; }
         public int FlankIndexRight { get; set; }
         public int RearIndexRight { get; set; }
+        public bool HasResetRanksAndBanners { get; set; }
 
         public List<PointStrings> PossibleChargeValues => new()
         {
@@ -92,15 +92,25 @@ namespace battle_mate.Pages.BattleResult
             new PointStrings(0, "hiding additional points"),
             new PointStrings(1, "showing additional points")
         };
+        
+        public List<PointStrings> PossibleHasResetRanksAndBannersOptions => new()
+        {
+            new PointStrings(0, "leaving ranks and banners"),
+            new PointStrings(1, "resetting ranks and banners")
+        };
 
         public void ResetStats()
         {
             WoundsLeft = 0;
             WoundsRight = 0;
-            RanksLeft = DefaultRanks;
-            RanksRight = DefaultRanks;
-            BannersLeft = DefaultBanners;
-            BannersRight = DefaultBanners;
+            if (HasResetRanksAndBanners)
+            {
+                RanksLeft = DefaultRanks;
+                RanksRight = DefaultRanks;
+                BannersLeft = DefaultBanners;
+                BannersRight = DefaultBanners;
+            }
+            
             OverkillLeft = 0;
             OverkillRight = 0;
             AdditionalPointsLeft = 0;
@@ -121,6 +131,7 @@ namespace battle_mate.Pages.BattleResult
             HasVerminSwarmPoints = options.HasVerminSwarmPoints;
             DefaultBanners = options.DefaultBanners;
             DefaultRanks = options.DefaultRanks;
+            HasResetRanksAndBanners = options.HasResetRanksAndBanners;
         }
 
         public void InitOptions(CombatOptions options)

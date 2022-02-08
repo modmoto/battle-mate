@@ -81,6 +81,7 @@
               <UpAndDownOptionComp Topic="Banners" Input="_state.DefaultBanners" InvokeChange="val => _state.DefaultBanners = val"></UpAndDownOptionComp>
               <CycleChecker Values="_state.PossibleVerminSwarmWoundOptions" InvokeChange="newVal => _state.HasVerminSwarmPoints = newVal != 0" Index="_state.HasVerminSwarmPoints ? 1 : 0"></CycleChecker>
               <CycleChecker Values="_state.PossibleAdditionalOptions" InvokeChange="newVal => _state.HasAdditionalPoints = newVal != 0" Index="_state.HasAdditionalPoints ? 1 : 0"></CycleChecker>
+              <CycleChecker Values="_state.PossibleHasResetRanksAndBannersOptions" InvokeChange="newVal => _state.HasResetRanksAndBanners = newVal != 0" Index="_state.HasResetRanksAndBanners ? 1 : 0"></CycleChecker>
             </div>
           </div>
         </div>
@@ -105,6 +106,7 @@
       DefaultRanks = _state.DefaultRanks,
       HasAdditionalPoints = _state.HasAdditionalPoints,
       HasVerminSwarmPoints = _state.HasVerminSwarmPoints,
+      HasResetRanksAndBanners = _state.HasResetRanksAndBanners,
     });
   }
 
@@ -121,5 +123,4 @@
       message.Results[0].ResetReport();
     }
   }
-
 }
