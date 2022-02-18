@@ -3,9 +3,10 @@
 
 <div class="row" style="float: right">
   <div class="mb-3 input-group">
-    <button class="@GetDiceClass(3)" @onclick="() => SelectDice(3)">D3</button>
-    <button class="@GetDiceClass(6)" @onclick="() => SelectDice(6)">D6</button>
-    <button class="@GetDiceClass(8)" @onclick="() => SetAndRollDice(1, 8)">D8</button>
+    <button class="@(_diceState.SelectedDice == 3 ? "btn btn-primary" : "btn btn-outline-secondary")" @onclick="() => SelectDice(3)">D3</button>
+    <button class="@(_diceState.SelectedDice == 6 ? "btn btn-primary" : "btn btn-outline-secondary")" @onclick="() => SelectDice(6)">D6</button>
+    <button class="@(_diceState.SelectedDice == 8 ? "btn btn-primary" : "btn btn-outline-secondary")" @onclick="() => SelectDice(8)">D8</button>
+    <button class="@(_diceState.SelectedDice == 10 ? "btn btn-primary" : "btn btn-outline-secondary")" @onclick="() => SelectDice(10)">D10</button>
   </div>
 </div>
 <div class="mb-3">
@@ -15,7 +16,7 @@
     <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(3)">3</button>
     <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(4)">4</button>
     <button class="btn btn-outline-primary" @onclick="() => JustRollDiceAmount()">R</button>
-    <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" style="text-align: right;" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice" @oninput="UpdateDice">
+    <input value="@_diceState.DiceAmount" @oninput="UpdateDice" inputmode="numeric" pattern="[0-9]*" type="number" class="form-control text-end" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice">
   </div>
   <div class="row text-center">
     @if (CurrentRoleState is RollState.None or RollState.WardSave)
@@ -469,11 +470,6 @@
     _diceState.SelectedDice = diceSide;
   }
 
-  private object GetDiceClass(int dice)
-  {
-    return dice == _diceState.SelectedDice ? "btn btn-primary" : "btn btn-outline-secondary";
-  }
-
   private void DeleteLastRoll()
   {
     var rollResults = CurrentDiceMessage.Results;
@@ -534,12 +530,6 @@
     _battleFocusChecked = false;
     _lethalStrikeChecked = false;
     return rollResult;
-  }
-
-  private void SetAndRollDice(int amount, int sides)
-  {
-    _diceState.SelectedDice = sides;
-    SetAndRollDice(amount);
   }
 
   private void PrepareForRoll()
