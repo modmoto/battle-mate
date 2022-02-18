@@ -99,11 +99,11 @@ namespace battle_mate.Pages.BattleResult
             new PointStrings(1, "resetting ranks and banners")
         };
 
-        public void ResetStats()
+        public void ResetStats(bool isInitializing = false)
         {
             WoundsLeft = 0;
             WoundsRight = 0;
-            if (HasResetRanksAndBanners)
+            if (HasResetRanksAndBanners || isInitializing)
             {
                 RanksLeft = DefaultRanks;
                 RanksRight = DefaultRanks;
@@ -137,7 +137,7 @@ namespace battle_mate.Pages.BattleResult
         public void InitOptions(CombatOptions options)
         {
             SetOptions(options);
-            ResetStats();
+            ResetStats(true);
             OnLoadFinished?.Invoke(this, EventArgs.Empty);
         }
 

@@ -182,14 +182,13 @@
 @foreach (var message in _diceState.DiceMessages.Select((value, index) => new {value, index}))
 {
   <div class="card mb-3">
-  @if (FirstRoleState == RollState.None)
+  @if (message.value.Results.First().RollState == RollState.None)
   {
     <div class="card-header">
       @(message.value.Results.Last().RawResults.Count)D@(message.value.Results.Last().DiceSides)
     </div>
-  }
-
-  @if (FirstRoleState is RollState.ToHit or RollState.AutomaticHit)
+  } 
+  else 
   {
     <div class="card-header">
       <div class="row justify-content-between">
