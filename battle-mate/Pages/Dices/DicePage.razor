@@ -14,6 +14,7 @@
     <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(2)">2</button>
     <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(3)">3</button>
     <button class="btn btn-outline-primary" @onclick="() => SetAndRollDice(4)">4</button>
+    <button class="btn btn-outline-primary" @onclick="() => JustRollDiceAmount()">R</button>
     <input inputmode="numeric" pattern="[0-9]*" type="number" class="form-control" style="text-align: right;" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice" @oninput="UpdateDice">
   </div>
   <div class="row text-center">
@@ -198,7 +199,7 @@
           }
           @if (message.value.Results.Last().RollState is RollState.AutomaticHit)
           {
-            <span>@(message.value.Results.Last().RawResults.Count) automatic hits</span>
+            <span>@(message.value.Results.Last().RawResults.Count) auto hits</span>
           }
 
           @if (SpecialRules.Count > 0)
@@ -226,7 +227,7 @@
                 @if (_combatResultState.HasVerminSwarmPoints)
                 {
                   <li>
-                    <button class="btn btn-outline-primary m-2 float-start" disabled="@message.value.Results[0].ReportedToLeft" @onclick="() => AddWoundsToRight(message.value, true)">
+                    <button class="btn btn-outline-primary m-2 float-start" disabled="@message.value.Results[0].ReportedToLeft" @onclick="() => AddWoundsToLeft(message.value, true)">
                       <span>Left to VS</span>
                     </button>
                   </li>
@@ -383,7 +384,7 @@
         }
       </div>
 
-      @if (rollResult.val.DiceGoal != _defaultNoRoll && rollResult.val.RollState is RollState.ToHit or RollState.ToWound or RollState.ArmorSave or RollState.WardSave)
+      @if (rollResult.val.DiceGoal != _defaultNoRoll && rollResult.val.RollState is RollState.ToHit or RollState.ToWound or RollState.ArmorSave or RollState.WardSave or RollState.None)
       {
         <div>
           <span>@(rollResult.val.RawResults.Count)D@(rollResult.val.DiceSides): </span>
@@ -448,6 +449,13 @@
     }
   }
 
+  private void JustRollDiceAmount()
+  {
+    var rollResult = _dice.JustRoll(_diceState.DiceAmount ?? 1, _diceState.SelectedDice);
+    var diceMessage = new DiceMessage(rollResult);
+    _diceState.DiceMessages.Insert(0, diceMessage);
+  }
+  
   private void SetAndRollDice(int amount)
   {
     _diceState.DiceAmount = amount;
