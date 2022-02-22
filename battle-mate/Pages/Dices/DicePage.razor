@@ -19,19 +19,19 @@
     <input value="@_diceState.DiceAmount" @oninput="UpdateDice" inputmode="numeric" pattern="[0-9]*" type="number" class="form-control text-end" @onfocus="PrepareForRoll" placeholder="Amount of dice" aria-label="Dice">
   </div>
   <div class="row text-center">
-    @if (CurrentRoleState is RollState.None or RollState.WardSave)
+    @if (CurrentRoleState is RollState.None or RollState.WardSave or RollState.NoWardSave)
     {
       <span>@(_diceState.DiceAmount ?? 0) <b>hitting</b> on:</span>
     }
-    @if (CurrentRoleState is RollState.ToHit)
+    @if (CurrentRoleState is RollState.ToHit or RollState.AutomaticHit)
     {
       <span>@CurrentRole.SucessfullRolls <b>wounding</b> on:</span>
     }
-    @if (CurrentRoleState is RollState.ToWound)
+    @if (CurrentRoleState is RollState.ToWound or RollState.AutomaticWound)
     {
       <span>@CurrentRole.SucessfullRolls <b>armor saves</b> on:</span>
     }
-    @if (CurrentRoleState is RollState.ArmorSave)
+    @if (CurrentRoleState is RollState.ArmorSave or RollState.NoArmorSave)
     {
       <span>@CurrentRole.FailedRolls <b>ward saves</b> on:</span>
     }
