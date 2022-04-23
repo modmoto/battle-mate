@@ -18,7 +18,7 @@ public class Program
         builder.Services.AddSingleton<DiceState>();
         builder.Services.AddSingleton<CombatResultState>();
         builder.Services.AddSingleton<ProbabilityState>();
-        builder.Services.AddTransient<CombatOptionsRepository>();
+        builder.Services.AddTransient<LocalStorageRepository>();
         builder.Services.AddBlazoredLocalStorage();
 
         await builder.Build().RunAsync();

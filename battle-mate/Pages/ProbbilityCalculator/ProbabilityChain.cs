@@ -1,4 +1,6 @@
-﻿namespace battle_mate.Pages.BattleResult;
+﻿using System.Text.Json.Serialization;
+
+namespace battle_mate.Pages.BattleResult;
 
 public class ProbabilityChain
 {
@@ -7,12 +9,17 @@ public class ProbabilityChain
     public int ToWound { get; set; }
     public int ToArmorSave { get; set; }
     public int ToWardSave { get; set; }
+    [JsonIgnore]
     public Probability ExpectedHits => new(StartDice, ToHit);
+    [JsonIgnore]
     public Probability ExpectedWounds => ExpectedHits.Append(ToWound);
+    [JsonIgnore]
     public Probability ExpectedArmorSaves => ExpectedWounds.Append(ToArmorSave);
+    [JsonIgnore]
     public Probability ExpectedWardSaves => ExpectedArmorSaves.NegativeAppend(ToWardSave);
+    [JsonIgnore]
     public double ExpectedFailedWardSaves => ExpectedWardSaves.FailedResult;
-
+    [JsonIgnore]
     public double CurrentWounds
     {
         get

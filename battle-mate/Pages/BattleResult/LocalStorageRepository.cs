@@ -4,13 +4,13 @@ using Blazored.LocalStorage;
 
 namespace battle_mate.Pages.BattleResult;
 
-public class CombatOptionsRepository
+public class LocalStorageRepository
 {
     private readonly ILocalStorageService _localStorageService;
     private string _optionKey = "combat-options";
     private string _probabilityKey = "probability-chains";
 
-    public CombatOptionsRepository(ILocalStorageService localStorageService)
+    public LocalStorageRepository(ILocalStorageService localStorageService)
     {
         _localStorageService = localStorageService;
     }
@@ -32,7 +32,7 @@ public class CombatOptionsRepository
         return itemAsync ?? new List<ProbabilityChain>();
     }
         
-    public Task SetOptions(List<ProbabilityChain> options)
+    public Task SetProbabilities(List<ProbabilityChain> options)
     {
         return _localStorageService.SetItemAsync(_probabilityKey, options).AsTask();
     }

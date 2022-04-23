@@ -129,12 +129,22 @@
 </div>
 
 @inject ProbabilityState _probabilityState
+@inject LocalStorageRepository _localStorageRepository
 
 @code {
 
-  private void ClickDice(int target)
+  protected override void OnInitialized()
+  {
+    _probabilityState.OnProbabilitiesChanged += async (_, _) =>
+    {
+      await _localStorageRepository.SetProbabilities(_probabilityState.ProbabilityChains);
+    };
+  }
+
+  private async void ClickDice(int target)
   {
     _probabilityState.AddBuildStep(target);
+    await _localStorageRepository.SetProbabilities(_probabilityState.ProbabilityChains);
   }
 
   private void SkipDice()
@@ -155,8 +165,9 @@
     _probabilityState.ResetBuilding();
   }
 
-  private void DeleteProbability(ProbabilityChain prob)
+  private async void DeleteProbability(ProbabilityChain prob)
   {
     _probabilityState.Delete(prob);
+    await _localStorageRepository.SetProbabilities(_probabilityState.ProbabilityChains);
   }
 }

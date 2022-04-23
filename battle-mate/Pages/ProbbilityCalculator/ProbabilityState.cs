@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using battle_mate.Pages.BattleResult;
 
 namespace battle_mate.Pages.ProbbilityCalculator;
@@ -9,6 +10,7 @@ public class ProbabilityState
     public BuildState BuildState { get; set; }
     public ProbabilityChain BuildingChain { get; set; }
     public int? DiceAmount { get; set; }
+    public event EventHandler OnProbabilitiesChanged;
 
     public void ResetBuilding()
     {
@@ -44,6 +46,7 @@ public class ProbabilityState
                 ProbabilityChains.Insert(0, BuildingChain);
                 BuildState = BuildState.IsNothing;
                 BuildingChain = null;
+                OnProbabilitiesChanged?.Invoke(this, EventArgs.Empty);
                 break;
         }
     }
@@ -51,6 +54,7 @@ public class ProbabilityState
     public void Delete(ProbabilityChain prob)
     {
         ProbabilityChains.Remove(prob);
+        OnProbabilitiesChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void SkipNextStep()
@@ -64,6 +68,11 @@ public class ProbabilityState
             AddBuildStep(7);
         }
         
+    }
+
+    public void Init(List<ProbabilityChain> probabilities)
+    {
+        ProbabilityChains = probabilities;
     }
 }
 
