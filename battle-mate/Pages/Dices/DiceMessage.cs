@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 
-namespace battle_mate.Pages
+namespace battle_mate.Pages;
+
+public class DiceMessage
 {
-    public class DiceMessage
+    public DiceMessage(RollResult result)
     {
-        public DiceMessage(RollResult result)
-        {
-            Results.Add(result);
-        }
-
-        public List<RollResult> Results { get; } = new();
-
+        Results.Add(result);
     }
+
+    public List<RollResult> Results { get; } = new();
+
 }

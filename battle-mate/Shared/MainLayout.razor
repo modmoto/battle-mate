@@ -11,22 +11,19 @@
         </button>
       </div>
 
-      @if (_isOnCombat)
-      {
-        <div class="col">
-          <button class="btn btn-outline-primary float-end" @onclick="GoToRollDice">
-            <span class="oi oi-arrow-right"></span>
+      <div class="col">
+        <div class="mb-3 input-group d-flex justify-content-end">
+          <button class="@($"btn {(_openedPageIndex == 0 ? "btn-primary" : "btn-outline-secondary")}")" @onclick="GoToCombat">
+            <span class="oi oi-list"></span>
+          </button>
+          <button class="@($"btn {(_openedPageIndex == 1 ? "btn-primary" : "btn-outline-secondary")}")" @onclick="GoToProbability">
+            <span class="oi oi-graph"></span>
+          </button>
+          <button class="@($"btn {(_openedPageIndex == 2 ? "btn-primary" : "btn-outline-secondary")}")" @onclick="GoToRollDice">
+            <span class="oi oi-fire"></span>
           </button>
         </div>
-      }
-      else
-      {
-        <div class="col">
-          <button class="btn btn-outline-primary float-end" @onclick="GoToCombat">
-            <span class="oi oi-arrow-left"></span>
-          </button>
-        </div>
-      }
+      </div>
 
       <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
@@ -83,7 +80,7 @@
 @code
 {
   private int _windowVersion;
-  private bool _isOnCombat = true;
+  private int _openedPageIndex = 0;
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
@@ -100,12 +97,18 @@
   private void GoToCombat()
   {
     _navigationManager.NavigateTo("/");
-    _isOnCombat = true;
+    _openedPageIndex = 0;
   }
   
   private void GoToRollDice()
   {
     _navigationManager.NavigateTo("/dice");
-    _isOnCombat = false;
+    _openedPageIndex = 2;
+  }
+  
+  private void GoToProbability()
+  {
+    _navigationManager.NavigateTo("/probability");
+    _openedPageIndex = 1;
   }
 }

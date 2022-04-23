@@ -1,0 +1,162 @@
+﻿@page "/probability"
+@using battle_mate.Pages.BattleResult
+
+<div class="row mb-3">
+  <div class="row align-items-center mt-2">
+    <div class="input-group mb-3">
+      <input value="@_probabilityState.DiceAmount" @oninput="UpdateDiceAmount" inputmode="numeric" pattern="[0-9]*" type="number" class="form-control text-end" @onfocus="ResetProbabilityCreation" placeholder="Amount of dice" aria-label="Dice">
+    </div>
+  </div>
+  <div class="row text-center">
+    @if (_probabilityState.BuildingChain != null)
+    {
+      <span><b>@_probabilityState.DiceAmount hits</b> on @_probabilityState.BuildingChain.ToHit+/@_probabilityState.BuildingChain.ToWound+/@_probabilityState.BuildingChain.ToArmorSave+/@_probabilityState.BuildingChain.ToWardSave+ => <b>@_probabilityState.BuildingChain.CurrentWounds.ToString("F2") wounds</b></span>
+    }
+    else if (_probabilityState.DiceAmount == null)
+    {
+      <span>Select dice amount first</span>
+    }
+    else
+    {
+      <span>Select to hit target</span> 
+    }
+  </div>
+  <div class="row align-items-center mt-2">
+      <div class="col">
+        <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(2)">
+          2+
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(3)">
+          3+
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(4)">
+          4+
+        </button>
+      </div>
+    </div>
+  <div class="row align-items-center mt-2">
+      <div class="col">
+        <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(5)">
+          5+
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-outline-primary w-100 my-2" @onclick="() => ClickDice(6)">
+          6+
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-outline-primary w-100 my-2" @onclick="SkipDice">
+          @switch (_probabilityState.BuildState)
+          {
+            case BuildState.IsNothing:
+              <span>auto hit</span>
+              break;
+            case BuildState.IsHitting:
+              <span>auto wnd</span>
+              break;
+            case BuildState.IsWounding:
+              <span>no armor</span>
+              break;
+            case BuildState.IsArmorSave:
+              <span>no ward</span>                         
+              break;
+            default:
+              <span>auto hit</span>
+              break;
+          }
+        </button>
+      </div>
+    </div>
+</div>
+<div class="row">
+  @foreach (var prob in _probabilityState.ProbabilityChains)
+  {
+    <div>
+      <div class="card mb-3">
+        <div class="card-header">
+          <div class="row justify-content-between">
+            <span class="col">
+              <b>@prob.StartDice hits</b> on @prob.ToHit+/@prob.ToWound+/@prob.ToArmorSave+/@prob.ToWardSave+ => <b>@prob.ExpectedFailedWardSaves.ToString("F2") wounds</b>
+            </span>
+            <div class="col">
+              <div class="float-end">
+                <button class="btn btn-outline-danger" type="button" @onclick="() => DeleteProbability(prob)"><span class="oi oi-trash"></span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <details>
+            <summary>Details</summary>
+            <div>
+              <table class="table">
+                <thead>
+                    <tr>
+                      <th>Step</th>
+                      <th>Result</th>
+                    </tr>
+                  </thead>
+                <tbody>
+                <tr>
+                  <td>@prob.StartDice hitting on @prob.ToHit+</td>
+                  <td>@prob.ExpectedHits.SuccessResult.ToString("F2") hits</td>
+                </tr>
+                <tr>
+                  <td>@prob.ExpectedWounds.StartResult wounding on @prob.ToWound+</td>
+                  <td>@prob.ExpectedWounds.SuccessResult.ToString("F2") wounds</td>
+                </tr>
+                <tr>
+                  <td>@prob.ExpectedArmorSaves.StartResult armor saves on @prob.ToArmorSave+</td>
+                  <td>@prob.ExpectedArmorSaves.FailedResult.ToString("F2") failed armor saves</td>
+                </tr>
+                <tr>
+                  <td>@prob.ExpectedWardSaves.StartResult ward armor saves on @prob.ToWardSave+</td>
+                  <td>@prob.ExpectedWardSaves.FailedResult.ToString("F2") unsaved wounds</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </div>  
+      </div>
+    </div>
+  }
+</div>
+
+@inject ProbabilityState _probabilityState
+
+@code {
+
+  private void ClickDice(int target)
+  {
+    _probabilityState.AddBuildStep(target);
+  }
+
+  private void SkipDice()
+  {
+    _probabilityState.SkipNextStep();
+  }
+
+  private void UpdateDiceAmount(ChangeEventArgs obj)
+  {
+    if (int.TryParse(obj.Value?.ToString(), out var num))
+    {
+      _probabilityState.DiceAmount = num;
+    }
+  }
+
+  private void ResetProbabilityCreation()
+  {
+    _probabilityState.ResetBuilding();
+  }
+
+  private void DeleteProbability(ProbabilityChain prob)
+  {
+    _probabilityState.Delete(prob);
+  }
+}
