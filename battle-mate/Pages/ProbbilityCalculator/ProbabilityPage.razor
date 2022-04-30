@@ -227,7 +227,14 @@
                     } 
                   </td>
                   <td>
-                    @prob.ExpectedWounds.SuccessResult.ToString("F2") wounds
+                    @if (prob.PoisonChecked || prob.Poison5Checked)
+                    {
+                      <span>@((prob.ExpectedWounds.SuccessResult - prob.ExpectedWounds.Additional).ToString("F2")) + @prob.ExpectedWounds.Additional.ToString("F2")P  wounds</span>
+                    }
+                    else
+                    {
+                      <span>@prob.ExpectedWounds.SuccessResult.ToString("F2") wounds</span>
+                    }
                   </td>
                 </tr>
                 <tr>
