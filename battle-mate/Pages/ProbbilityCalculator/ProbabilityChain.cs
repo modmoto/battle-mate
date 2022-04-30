@@ -17,11 +17,59 @@ public class ProbabilityChain
     public int ToArmorSave { get; set; }
     public int ToWardSave { get; set; }
     [JsonIgnore]
-    public Probability ExpectedHits => new(StartDice, ToHit);
+    public Probability ExpectedHits
+    {
+        get
+        {
+            if (BattleFocusChecked)
+            {
+                var battleFocusHits = StartDice / 6;
+                return new Probability(StartDice, ToHit, battleFocusHits);
+            }
+            
+            return new(StartDice, ToHit);
+        }
+    }
+
     [JsonIgnore]
-    public Probability ExpectedWounds => ExpectedHits.Append(ToWound);
+    public Probability ExpectedWounds
+    {
+        get
+        {
+            if (Poison5Checked)
+            {
+                var poison5Hits = ExpectedHits.StartResult / 3;
+                var hitsWithOutPoison5 = ExpectedHits.SuccessResult - poison5Hits;
+                return new Probability(hitsWithOutPoison5, ToWound, poison5Hits);
+            }
+            
+            if (PoisonChecked)
+            {
+                var poisonHits = ExpectedHits.StartResult / 6;
+                var hitsWithOutPoison = ExpectedHits.SuccessResult - poisonHits;
+                return new Probability(hitsWithOutPoison, ToWound, poisonHits);
+            }
+            
+            return ExpectedHits.Append(ToWound);
+        }
+    }
+
     [JsonIgnore]
-    public Probability ExpectedArmorSaves => ExpectedWounds.Append(ToArmorSave);
+    public Probability ExpectedArmorSaves
+    {
+        get
+        {
+            if (LethalStrikeChecked)
+            {
+                var lethalHits = ExpectedWounds.SuccessResult / 6;
+                var hitsWithOutLethal = ExpectedWounds.SuccessResult - lethalHits;
+                return new Probability(hitsWithOutLethal, ToArmorSave, 0, lethalHits);
+            }
+            
+            return ExpectedWounds.Append(ToArmorSave);
+        }
+    }
+
     [JsonIgnore]
     public Probability ExpectedWardSaves => ExpectedArmorSaves.NegativeAppend(ToWardSave);
     [JsonIgnore]

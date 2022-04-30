@@ -180,4 +180,204 @@ public class Probabilities
         
         Assert.AreEqual(3, probabilityState.ProbabilityChains.Single().ExpectedFailedWardSaves);
     }
+
+    [Test]
+    public void Poison()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            PoisonChecked = true
+        };
+        
+        Assert.AreEqual(8, probabilityChain.ExpectedWounds.SuccessResult);
+        Assert.AreEqual(4, probabilityChain.ExpectedArmorSaves.SuccessResult);
+        Assert.AreEqual(2, probabilityChain.ExpectedWardSaves.SuccessResult);
+    }
+    
+    [Test]
+    public void Poison_Hitting6es()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 6,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            PoisonChecked = true
+        };
+        
+        Assert.AreEqual(4, probabilityChain.ExpectedHits.SuccessResult);
+        Assert.AreEqual(4, probabilityChain.ExpectedWounds.SuccessResult);
+        Assert.AreEqual(2, probabilityChain.ExpectedArmorSaves.SuccessResult);
+        Assert.AreEqual(1, probabilityChain.ExpectedWardSaves.SuccessResult);
+    }
+    
+    [Test]
+    public void LethalStrikes()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            LethalStrikeChecked = true
+        };
+        
+        Assert.AreEqual(12, probabilityChain.ExpectedHits.SuccessResult);
+        Assert.AreEqual(6, probabilityChain.ExpectedWounds.SuccessResult);
+        Assert.AreEqual(3.5, probabilityChain.ExpectedArmorSaves.FailedResult);
+        Assert.AreEqual(2.5, probabilityChain.ExpectedArmorSaves.SuccessResult);
+        Assert.AreEqual(1.75, probabilityChain.ExpectedWardSaves.SuccessResult);
+        Assert.AreEqual(1.75, probabilityChain.ExpectedWardSaves.FailedResult);
+    }
+    
+    [Test]
+    public void LethalStrikes_6sToSave()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 6,
+            ToWardSave = 4,
+            LethalStrikeChecked = true
+        };
+        
+        Assert.AreEqual(6, probabilityChain.ExpectedWounds.SuccessResult);
+        Assert.AreEqual(5.166666666666667d, probabilityChain.ExpectedArmorSaves.FailedResult);
+        Assert.AreEqual(0.83333333333333326d, probabilityChain.ExpectedArmorSaves.SuccessResult);
+    }
+    
+    [Test]
+    public void NoLethalStrikes_6sToSave()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 6,
+            ToWardSave = 4
+        };
+        
+        Assert.AreEqual(6, probabilityChain.ExpectedWounds.SuccessResult);
+        Assert.AreEqual(5, probabilityChain.ExpectedArmorSaves.FailedResult);
+        Assert.AreEqual(1, probabilityChain.ExpectedArmorSaves.SuccessResult);
+    }
+    
+    [Test]
+    public void Poison5()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            Poison5Checked = true
+        };
+        
+        Assert.AreEqual(10, probabilityChain.ExpectedWounds.SuccessResult);
+        Assert.AreEqual(5, probabilityChain.ExpectedArmorSaves.SuccessResult);
+        Assert.AreEqual(2.5, probabilityChain.ExpectedWardSaves.SuccessResult);
+    }
+
+    [Test]
+    public void Poison5And6()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            Poison5Checked = true,
+            PoisonChecked = true,
+        };
+        
+        Assert.AreEqual(10, probabilityChain.ExpectedWounds.SuccessResult);
+        Assert.AreEqual(5, probabilityChain.ExpectedArmorSaves.SuccessResult);
+        Assert.AreEqual(2.5, probabilityChain.ExpectedWardSaves.SuccessResult);
+    }
+    
+    [Test]
+    public void BattleFocus()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            BattleFocusChecked = true
+        };
+        
+        Assert.AreEqual(16, probabilityChain.ExpectedHits.SuccessResult);
+        Assert.AreEqual(8, probabilityChain.ExpectedWounds.SuccessResult);
+    }
+    
+    [Test]
+    public void BattleFocus_6es()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 6,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            BattleFocusChecked = true
+        };
+        
+        Assert.AreEqual(8, probabilityChain.ExpectedHits.SuccessResult);
+        Assert.AreEqual(4, probabilityChain.ExpectedWounds.SuccessResult);
+    }
+    
+    [Test]
+    public void BattleFocusAndPoison()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            BattleFocusChecked = true,
+            PoisonChecked = true
+        };
+        
+        Assert.AreEqual(16, probabilityChain.ExpectedHits.SuccessResult);
+        Assert.AreEqual(10, probabilityChain.ExpectedWounds.SuccessResult);
+    }
+    
+    [Test]
+    public void BattleFocusAndPoison5()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            BattleFocusChecked = true,
+            Poison5Checked = true
+        };
+        
+        Assert.AreEqual(16, probabilityChain.ExpectedHits.SuccessResult);
+        Assert.AreEqual(12, probabilityChain.ExpectedWounds.SuccessResult);
+    }
 }
