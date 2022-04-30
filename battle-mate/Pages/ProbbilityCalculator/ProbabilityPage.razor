@@ -4,15 +4,15 @@
 <div class="row mb-3">
   <div class="row align-items-center mt-2">
     <div class="input-group mb-3">
-      <input value="@_probabilityState.DiceAmount" @oninput="UpdateDiceAmount" inputmode="numeric" pattern="[0-9]*" type="number" class="form-control text-end" @onfocus="ResetProbabilityCreation" placeholder="Amount of dice" aria-label="Dice">
+      <input value="@ProbabilityState.DiceAmount" @oninput="UpdateDiceAmount" inputmode="numeric" pattern="[0-9]*" type="number" class="form-control text-end" @onfocus="ResetProbabilityCreation" placeholder="Amount of dice" aria-label="Dice">
     </div>
   </div>
   <div class="row text-center">
-    @if (_probabilityState.BuildingChain != null)
+    @if (ProbabilityState.BuildingChain != null)
     {
-      <span><b>@_probabilityState.DiceAmount hits</b> on @_probabilityState.BuildingChain.ToHit+/@_probabilityState.BuildingChain.ToWound+/@_probabilityState.BuildingChain.ToArmorSave+/@_probabilityState.BuildingChain.ToWardSave+ => <b>@_probabilityState.BuildingChain.CurrentWounds.ToString("F2") wounds</b></span>
+      <span><b>@ProbabilityState.DiceAmount hits</b> on @ProbabilityState.BuildingChain.ToHit+/@ProbabilityState.BuildingChain.ToWound+/@ProbabilityState.BuildingChain.ToArmorSave+/@ProbabilityState.BuildingChain.ToWardSave+ => <b>@ProbabilityState.BuildingChain.CurrentWounds.ToString("F2") wounds</b></span>
     }
-    else if (_probabilityState.DiceAmount == null)
+    else if (ProbabilityState.DiceAmount == null)
     {
       <span>Select dice amount first</span>
     }
@@ -51,7 +51,7 @@
       </div>
       <div class="col">
         <button class="btn btn-outline-primary w-100 my-2" @onclick="SkipDice">
-          @switch (_probabilityState.BuildState)
+          @switch (ProbabilityState.BuildState)
           {
             case BuildState.IsNothing:
               <span>auto hit</span>
@@ -72,9 +72,71 @@
         </button>
       </div>
     </div>
+  <div class="row align-items-center">
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2 collapse">
+      </button>
+    </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle" type="button" id="diceOptions" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="oi oi-cog"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="diceOptions">
+        <li class="ps-2 py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_poisonChecked" @bind="@ProbabilityState.PoisonChecked">
+          <label class="form-check-label ps-2" for="_poisonChecked">
+            Poison
+          </label>
+        </li>
+        <li class="ps-2 py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_poison5Checked" @bind="@ProbabilityState.Poison5Checked">
+          <label class="form-check-label ps-2" for="_poison5Checked">
+            Poison 5+
+          </label>
+        </li>
+        <li class="ps-2 py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_battleFocusChecked" @bind="@ProbabilityState.BattleFocusChecked">
+          <label class="form-check-label ps-2" for="_battleFocusChecked">
+            Battlefocus
+          </label>
+        </li>
+        <li class="ps-2 py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_lethalStrikeChecked" @bind="@ProbabilityState.LethalStrikeChecked">
+          <label class="form-check-label ps-2" for="_lethalStrikeChecked">
+            Lethal strike
+          </label>
+        </li>
+      </ul>
+    </div>
+    <div class="col">
+      <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle" type="button" id="rerollOptions" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="oi oi-reload"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="rerollOptions">
+        <li class="ps-2 py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_rerollSuccessChecked" @bind="@ProbabilityState.RerollSuccessChecked"> 
+          <label class="form-check-label ps-2" for="_lethalStrikeChecked">
+            Reroll sucess
+          </label>
+        </li>
+        <li class="ps-2 py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_rerollFailsChecked" @bind="@ProbabilityState.RerollFailsChecked">
+          <label class="form-check-label ps-2" for="_lethalStrikeChecked">
+            Reroll Fails
+          </label>
+        </li>
+        <li class="ps-2 py-3">
+          <input class="form-check-input" type="checkbox" value="" id="_reroll1sChecked" @bind="@ProbabilityState.Reroll1SChecked">
+          <label class="form-check-label ps-2" for="_lethalStrikeChecked">
+            Reroll 1s
+          </label>
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>
 <div class="row">
-  @foreach (var prob in _probabilityState.ProbabilityChains)
+  @foreach (var prob in ProbabilityState.ProbabilityChains)
   {
     <div>
       <div class="card mb-3">
@@ -128,46 +190,45 @@
   }
 </div>
 
-@inject ProbabilityState _probabilityState
-@inject LocalStorageRepository _localStorageRepository
+@inject ProbabilityState ProbabilityState
+@inject LocalStorageRepository LocalStorageRepository
 
 @code {
-
   protected override void OnInitialized()
   {
-    _probabilityState.OnProbabilitiesChanged += async (_, _) =>
+    ProbabilityState.OnProbabilitiesChanged += async (_, _) =>
     {
-      await _localStorageRepository.SetProbabilities(_probabilityState.ProbabilityChains);
+      await LocalStorageRepository.SetProbabilities(ProbabilityState.ProbabilityChains);
     };
   }
 
   private async void ClickDice(int target)
   {
-    _probabilityState.AddBuildStep(target);
-    await _localStorageRepository.SetProbabilities(_probabilityState.ProbabilityChains);
+    ProbabilityState.AddBuildStep(target);
+    await LocalStorageRepository.SetProbabilities(ProbabilityState.ProbabilityChains);
   }
 
   private void SkipDice()
   {
-    _probabilityState.SkipNextStep();
+    ProbabilityState.SkipNextStep();
   }
 
   private void UpdateDiceAmount(ChangeEventArgs obj)
   {
     if (int.TryParse(obj.Value?.ToString(), out var num))
     {
-      _probabilityState.DiceAmount = num;
+      ProbabilityState.DiceAmount = num;
     }
   }
 
   private void ResetProbabilityCreation()
   {
-    _probabilityState.ResetBuilding();
+    ProbabilityState.ResetBuilding();
   }
 
   private async void DeleteProbability(ProbabilityChain prob)
   {
-    _probabilityState.Delete(prob);
-    await _localStorageRepository.SetProbabilities(_probabilityState.ProbabilityChains);
+    ProbabilityState.Delete(prob);
+    await LocalStorageRepository.SetProbabilities(ProbabilityState.ProbabilityChains);
   }
 }

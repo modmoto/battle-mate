@@ -11,6 +11,14 @@ public class ProbabilityState
     public ProbabilityChain BuildingChain { get; set; }
     public int? DiceAmount { get; set; }
     public event EventHandler OnProbabilitiesChanged;
+    
+    public bool PoisonChecked { get; set; }
+    public bool Poison5Checked { get; set; }
+    public bool LethalStrikeChecked { get; set; }
+    public bool BattleFocusChecked { get; set; }
+    public bool RerollSuccessChecked { get; set; }
+    public bool RerollFailsChecked { get; set; }
+    public bool Reroll1SChecked { get; set; }
 
     public void ResetBuilding()
     {
@@ -32,23 +40,45 @@ public class ProbabilityState
                     ToHit = target
                 };
                 BuildState = BuildState.IsHitting;
+                SetOptions();
                 break;
             case BuildState.IsHitting:
                 BuildingChain.ToWound = target;
                 BuildState = BuildState.IsWounding;
+                SetOptions();
                 break;
             case BuildState.IsWounding:
                 BuildingChain.ToArmorSave = target;
                 BuildState = BuildState.IsArmorSave;
+                SetOptions();
                 break;
             case BuildState.IsArmorSave:
                 BuildingChain.ToWardSave = target;
+                SetOptions();
                 ProbabilityChains.Insert(0, BuildingChain);
                 BuildState = BuildState.IsNothing;
                 BuildingChain = null;
+                RerollSuccessChecked = false;
+                RerollFailsChecked = false;
+                Reroll1SChecked = false;
+                PoisonChecked = false;
+                Poison5Checked = false;
+                LethalStrikeChecked = false;
+                BattleFocusChecked = false;
                 OnProbabilitiesChanged?.Invoke(this, EventArgs.Empty);
                 break;
         }
+    }
+
+    private void SetOptions()
+    {
+        BuildingChain.PoisonChecked = PoisonChecked;
+        BuildingChain.Poison5Checked = Poison5Checked;
+        BuildingChain.BattleFocusChecked = BattleFocusChecked;
+        BuildingChain.LethalStrikeChecked = LethalStrikeChecked;
+        BuildingChain.RerollSuccessChecked = RerollSuccessChecked;
+        BuildingChain.RerollFailsChecked = RerollFailsChecked;
+        BuildingChain.Reroll1SChecked = Reroll1SChecked;
     }
 
     public void Delete(ProbabilityChain prob)
