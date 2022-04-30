@@ -10,7 +10,16 @@
   <div class="row text-center">
     @if (ProbabilityState.BuildingChain != null)
     {
-      <span><b>@ProbabilityState.DiceAmount hits</b> on @ProbabilityState.BuildingChain.ToHit+/@ProbabilityState.BuildingChain.ToWound+/@ProbabilityState.BuildingChain.ToArmorSave+/@ProbabilityState.BuildingChain.ToWardSave+ => <b>@ProbabilityState.BuildingChain.CurrentWounds.ToString("F2") wounds</b></span>
+      <span>
+        <b>
+          @ProbabilityState.DiceAmount hits
+          @if (ListOfRules(ProbabilityState).Any())
+          {
+            <span>(@string.Join(", ", ListOfRules(ProbabilityState)))</span>
+          }                  
+        </b> 
+        on @ProbabilityState.BuildingChain.ToHit+/@ProbabilityState.BuildingChain.ToWound+/@ProbabilityState.BuildingChain.ToArmorSave+/@ProbabilityState.BuildingChain.ToWardSave+ => <b>@ProbabilityState.BuildingChain.CurrentWounds.ToString("F2")</b>
+      </span>
     }
     else if (ProbabilityState.DiceAmount == null)
     {
@@ -143,7 +152,13 @@
         <div class="card-header">
           <div class="row justify-content-between">
             <span class="col">
-              <b>@prob.StartDice hits</b> on @prob.ToHit+/@prob.ToWound+/@prob.ToArmorSave+/@prob.ToWardSave+ => <b>@prob.ExpectedFailedWardSaves.ToString("F2") wounds</b>
+              <b>
+                @prob.StartDice hits
+                @if (ListOfRules(prob).Any())
+                {
+                  <span>(@string.Join(", ", ListOfRules(prob)))</span>
+                }
+              </b> on @prob.ToHit+/@prob.ToWound+/@prob.ToArmorSave+/@prob.ToWardSave+ => <b>@prob.ExpectedFailedWardSaves.ToString("F2") wounds</b>
             </span>
             <div class="col">
               <div class="float-end">
@@ -165,16 +180,67 @@
                   </thead>
                 <tbody>
                 <tr>
-                  <td>@prob.StartDice hitting on @prob.ToHit+</td>
-                  <td>@prob.ExpectedHits.SuccessResult.ToString("F2") hits</td>
+                  <td>
+                    @prob.StartDice hitting on @prob.ToHit+ 
+                    @if (prob.BattleFocusChecked && (prob.PoisonChecked || prob.Poison5Checked))
+                    {
+                      <span>with Battlefocus and Poison</span>
+                    } 
+                    else if (prob.BattleFocusChecked)
+                    {
+                      <span>with Battlefocus</span>
+                    }
+                    else if (prob.Poison5Checked)
+                    {
+                      <span>with Poison 5+</span>
+                    } 
+                    else if (prob.PoisonChecked)
+                    {
+                      <span>with Poison</span>
+                    } 
+                  </td>
+                  <td>
+                    @if (prob.BattleFocusChecked && (prob.PoisonChecked || prob.Poison5Checked))
+                    {
+                      <span>@prob.ExpectedHits.SuccessResult.ToString("F2") hits (BF: @prob.ExpectedHits.Additional.ToString("F2"), P: @prob.ExpectedWounds.Additional.ToString("F2"))</span>
+                    }
+                    else if (prob.PoisonChecked || prob.Poison5Checked)
+                    {
+                      <span>@((prob.ExpectedHits.SuccessResult - prob.ExpectedWounds.Additional).ToString("F2")) hits (P: @prob.ExpectedWounds.Additional.ToString("F2"))</span>
+                    }
+                    else if (prob.BattleFocusChecked)
+                    {
+                      <span>@prob.ExpectedHits.SuccessResult.ToString("F2") hits (BF: @prob.ExpectedHits.Additional.ToString("F2"))</span>
+                    }
+                    else
+                    {
+                      <span>@prob.ExpectedHits.SuccessResult.ToString("F2") hits</span>
+                    }
+                  </td>
                 </tr>
                 <tr>
-                  <td>@prob.ExpectedWounds.StartResult.ToString("F2") wounding on @prob.ToWound+</td>
-                  <td>@prob.ExpectedWounds.SuccessResult.ToString("F2") wounds</td>
+                  <td>
+                    @prob.ExpectedWounds.StartResult.ToString("F2") wounding on @prob.ToWound+
+                    @if (prob.LethalStrikeChecked)
+                    {
+                      <span>with Lethalstrike</span>
+                    } 
+                  </td>
+                  <td>
+                    @prob.ExpectedWounds.SuccessResult.ToString("F2") wounds
+                  </td>
                 </tr>
                 <tr>
-                  <td>@prob.ExpectedArmorSaves.StartResult.ToString("F2") armor saves on @prob.ToArmorSave+</td>
-                  <td>@prob.ExpectedArmorSaves.FailedResult.ToString("F2") failed armor saves</td>
+                  <td>
+                    @prob.ExpectedArmorSaves.StartResult.ToString("F2") armor saves on @prob.ToArmorSave+
+                  </td>
+                  <td>
+                    @prob.ExpectedArmorSaves.FailedResult.ToString("F2") failed armor saves
+                    @if (prob.LethalStrikeChecked)
+                    {
+                      <span>(LS: @prob.ExpectedArmorSaves.AdditionalFails.ToString("F2"))</span>
+                    }
+                  </td>
                 </tr>
                 <tr>
                   <td>@prob.ExpectedWardSaves.StartResult.ToString("F2") ward armor saves on @prob.ToWardSave+</td>
@@ -231,4 +297,31 @@
     ProbabilityState.Delete(prob);
     await LocalStorageRepository.SetProbabilities(ProbabilityState.ProbabilityChains);
   }
+
+  private List<string> ListOfRules(ProbabilityChain prob)
+  {
+    var list = new List<string>();
+    if (prob.BattleFocusChecked) list.Add("BF");
+    if (prob.PoisonChecked) list.Add("P");
+    if (prob.Poison5Checked) list.Add("P5");
+    if (prob.LethalStrikeChecked) list.Add("LS");
+    if (prob.RerollSuccessChecked) list.Add("RS");
+    if (prob.RerollFailsChecked) list.Add("RF");
+    if (prob.Reroll1SChecked) list.Add("R1");
+    return list;
+  }
+
+  private IEnumerable<string?> ListOfRules(ProbabilityState prob)
+  {
+    var list = new List<string>();
+    if (prob.BattleFocusChecked) list.Add("BF");
+    if (prob.PoisonChecked) list.Add("P");
+    if (prob.Poison5Checked) list.Add("P5");
+    if (prob.LethalStrikeChecked) list.Add("LS");
+    if (prob.RerollSuccessChecked) list.Add("RS");
+    if (prob.RerollFailsChecked) list.Add("RF");
+    if (prob.Reroll1SChecked) list.Add("R1");
+    return list;
+  }
+
 }

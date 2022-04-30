@@ -28,6 +28,4 @@ public class Probability
     public double SuccessResult => Additional + StartResult * ((7 - Target) / 6d);
 
     public double FailedResult => StartResult - SuccessResult + AdditionalFails;
-
-    
 }
