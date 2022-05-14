@@ -23,7 +23,7 @@ public class ProbabilityChain
         {
             if (BattleFocusChecked)
             {
-                var battleFocusHits = StartDice / 6;
+                var battleFocusHits = StartDice / 6d;
                 return new Probability(StartDice, ToHit, battleFocusHits);
             }
             
@@ -38,14 +38,14 @@ public class ProbabilityChain
         {
             if (Poison5Checked)
             {
-                var poison5Hits = ExpectedHits.StartResult / 3;
+                var poison5Hits = ExpectedHits.StartResult / 3d;
                 var hitsWithOutPoison5 = ExpectedHits.SuccessResult - poison5Hits;
                 return new Probability(hitsWithOutPoison5, ToWound, poison5Hits);
             }
             
             if (PoisonChecked)
             {
-                var poisonHits = ExpectedHits.StartResult / 6;
+                var poisonHits = ExpectedHits.StartResult / 6d;
                 var hitsWithOutPoison = ExpectedHits.SuccessResult - poisonHits;
                 return new Probability(hitsWithOutPoison, ToWound, poisonHits);
             }
@@ -61,7 +61,7 @@ public class ProbabilityChain
         {
             if (LethalStrikeChecked)
             {
-                var lethalHits = ExpectedWounds.SuccessResult / 6;
+                var lethalHits = ExpectedWounds.SuccessResult / 6d;
                 var hitsWithOutLethal = ExpectedWounds.SuccessResult - lethalHits;
                 return new Probability(hitsWithOutLethal, ToArmorSave, 0, lethalHits);
             }

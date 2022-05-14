@@ -329,6 +329,23 @@ public class Probabilities
     }
     
     [Test]
+    public void BattleFocus_14Bug()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 14,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            BattleFocusChecked = true
+        };
+        
+        Assert.AreEqual(9.3333333333333339d, probabilityChain.ExpectedHits.SuccessResult);
+        Assert.AreEqual(4.666666666666667d, probabilityChain.ExpectedWounds.SuccessResult);
+    }
+    
+    [Test]
     public void BattleFocus_6es()
     {
         var probabilityChain = new ProbabilityChain()
