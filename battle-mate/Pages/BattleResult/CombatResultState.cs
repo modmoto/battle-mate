@@ -83,20 +83,20 @@ public class CombatResultState
 
     public List<PointStrings> PossibleVerminSwarmWoundOptions => new()
     {
-        new PointStrings(0, "hiding vermin swarm wounds"),
-        new PointStrings(1, "showing vermin swarm wounds")
+        new PointStrings(0, "hide vermin swarm wounds"),
+        new PointStrings(1, "hide vermin swarm wounds")
     };
 
     public List<PointStrings> PossibleAdditionalOptions => new()
     {
-        new PointStrings(0, "hiding additional points"),
-        new PointStrings(1, "showing additional points")
+        new PointStrings(0, "hide additional points"),
+        new PointStrings(1, "hide additional points")
     };
         
     public List<PointStrings> PossibleHasResetRanksAndBannersOptions => new()
     {
-        new PointStrings(0, "leaving ranks and banners"),
-        new PointStrings(1, "resetting ranks and banners")
+        new PointStrings(0, "reset ranks and banners"),
+        new PointStrings(1, "reset ranks and banners")
     };
 
     public void ResetStats(bool isInitializing = false)
