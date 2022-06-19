@@ -41,20 +41,24 @@ public class ProbabilityState
                 };
                 BuildState = BuildState.IsHitting;
                 SetOptions();
+                BuildingChain.RerollsHit = CreateRerollDtoAndResetReroll();
                 break;
             case BuildState.IsHitting:
                 BuildingChain.ToWound = target;
                 BuildState = BuildState.IsWounding;
                 SetOptions();
+                BuildingChain.RerollsWound = CreateRerollDtoAndResetReroll();
                 break;
             case BuildState.IsWounding:
                 BuildingChain.ToArmorSave = target;
                 BuildState = BuildState.IsArmorSave;
                 SetOptions();
+                BuildingChain.RerollsArmorSaves = CreateRerollDtoAndResetReroll();
                 break;
             case BuildState.IsArmorSave:
                 BuildingChain.ToWardSave = target;
                 SetOptions();
+                BuildingChain.RerollsWardSaves = CreateRerollDtoAndResetReroll();
                 ProbabilityChains.Insert(0, BuildingChain);
                 BuildState = BuildState.IsNothing;
                 BuildingChain = null;
@@ -70,15 +74,26 @@ public class ProbabilityState
         }
     }
 
+    private RerollDto CreateRerollDtoAndResetReroll()
+    {
+        var rerollDto = new RerollDto
+        {
+            Reroll1SChecked = Reroll1SChecked,
+            RerollFailsChecked = RerollFailsChecked,
+            RerollSuccessChecked = RerollSuccessChecked,
+        };
+        Reroll1SChecked = false;
+        RerollFailsChecked = false;
+        RerollSuccessChecked = false;
+        return rerollDto;
+    }
+
     private void SetOptions()
     {
         BuildingChain.PoisonChecked = PoisonChecked;
         BuildingChain.Poison5Checked = Poison5Checked;
         BuildingChain.BattleFocusChecked = BattleFocusChecked;
         BuildingChain.LethalStrikeChecked = LethalStrikeChecked;
-        BuildingChain.RerollSuccessChecked = RerollSuccessChecked;
-        BuildingChain.RerollFailsChecked = RerollFailsChecked;
-        BuildingChain.Reroll1SChecked = Reroll1SChecked;
     }
 
     public void Delete(ProbabilityChain prob)

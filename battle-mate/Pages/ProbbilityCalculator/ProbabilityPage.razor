@@ -117,25 +117,25 @@
     </ul>
   </div>
   <div class="col">
-    <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle collapse" type="button" id="rerollOptions" data-bs-toggle="dropdown" aria-expanded="false">
+    <button class="btn btn-outline-primary w-100 my-2 dropdown-toggle" type="button" id="rerollOptions" data-bs-toggle="dropdown" aria-expanded="false">
       <span class="oi oi-reload"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="rerollOptions">
       <li class="ps-2 py-3">
         <input class="form-check-input" type="checkbox" value="" id="_rerollSuccessChecked" @bind="@ProbabilityState.RerollSuccessChecked"> 
-        <label class="form-check-label ps-2" for="_lethalStrikeChecked">
+        <label class="form-check-label ps-2" for="_rerollSuccessChecked">
           Reroll sucess
         </label>
       </li>
       <li class="ps-2 py-3">
         <input class="form-check-input" type="checkbox" value="" id="_rerollFailsChecked" @bind="@ProbabilityState.RerollFailsChecked">
-        <label class="form-check-label ps-2" for="_lethalStrikeChecked">
+        <label class="form-check-label ps-2" for="_rerollFailsChecked">
           Reroll Fails
         </label>
       </li>
       <li class="ps-2 py-3">
         <input class="form-check-input" type="checkbox" value="" id="_reroll1sChecked" @bind="@ProbabilityState.Reroll1SChecked">
-        <label class="form-check-label ps-2" for="_lethalStrikeChecked">
+        <label class="form-check-label ps-2" for="_reroll1sChecked">
           Reroll 1s
         </label>
       </li>
@@ -310,9 +310,10 @@
     if (prob.PoisonChecked) list.Add("P");
     if (prob.Poison5Checked) list.Add("P5");
     if (prob.LethalStrikeChecked) list.Add("LS");
-    if (prob.RerollSuccessChecked) list.Add("RS");
-    if (prob.RerollFailsChecked) list.Add("RF");
-    if (prob.Reroll1SChecked) list.Add("R1");
+    if (prob.RerollsHit != null) list.Add("RRHi");
+    if (prob.RerollsWound != null) list.Add("RRWo");
+    if (prob.RerollsArmorSaves != null) list.Add("RRAr");
+    if (prob.RerollsWardSaves != null) list.Add("RRWa");
     return list;
   }
 
@@ -323,10 +324,6 @@
     if (prob.PoisonChecked) list.Add("P");
     if (prob.Poison5Checked) list.Add("P5");
     if (prob.LethalStrikeChecked) list.Add("LS");
-    if (prob.RerollSuccessChecked) list.Add("RS");
-    if (prob.RerollFailsChecked) list.Add("RF");
-    if (prob.Reroll1SChecked) list.Add("R1");
     return list;
   }
-
 }

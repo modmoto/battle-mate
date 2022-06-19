@@ -397,4 +397,25 @@ public class Probabilities
         Assert.AreEqual(16, probabilityChain.ExpectedHits.SuccessResult);
         Assert.AreEqual(12, probabilityChain.ExpectedWounds.SuccessResult);
     }
+
+    [Test]
+    public void Reroll1sToHit()
+    {
+        var probabilityChain = new ProbabilityChain()
+        {
+            StartDice = 24,
+            ToHit = 4,
+            ToWound = 4,
+            ToArmorSave = 4,
+            ToWardSave = 4,
+            
+            RerollsHit = new RerollDto
+            {
+                Reroll1SChecked = true
+            }
+        };
+        
+        Assert.AreEqual(16, probabilityChain.ExpectedHits.SuccessResult);
+        Assert.AreEqual(12, probabilityChain.ExpectedWounds.SuccessResult);
+    }
 }

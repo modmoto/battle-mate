@@ -8,9 +8,12 @@ public class ProbabilityChain
     public bool Poison5Checked { get; set; }
     public bool LethalStrikeChecked { get; set; }
     public bool BattleFocusChecked { get; set; }
-    public bool RerollSuccessChecked { get; set; }
-    public bool RerollFailsChecked { get; set; }
-    public bool Reroll1SChecked { get; set; }
+    
+    public RerollDto RerollsHit  { get; set; }
+    public RerollDto RerollsWound { get; set; }
+    public RerollDto RerollsArmorSaves  { get; set; }
+    public RerollDto RerollsWardSaves  { get; set; }
+    
     public int StartDice { get; set; }
     public int ToHit { get; set; }
     public int ToWound { get; set; }
@@ -99,4 +102,11 @@ public class ProbabilityChain
             return 0;
         }
     }
+}
+
+public class RerollDto
+{
+    public bool RerollSuccessChecked { get; set; }
+    public bool RerollFailsChecked { get; set; }
+    public bool Reroll1SChecked { get; set; }
 }
