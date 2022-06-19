@@ -11,7 +11,7 @@
 }
 <UpAndDownComp Right="Right" Topic="Ranks" Input="Ranks" InvokeChange="InvokeRanks"></UpAndDownComp>
 <UpAndDownComp Right="Right" Topic="Banners" Input="Banners" InvokeChange="InvokeBanners"></UpAndDownComp>
-<UpAndDownComp Right="Right" Topic="Overkill" Input="Overkill" InvokeChange="InvokeOverkill"></UpAndDownComp>
+<UpAndDownComp Right="Right" Topic="Duel" Input="Duel" InvokeChange="InvokeOverkill"></UpAndDownComp>
 @if (HasAdditionalPoints)
 {
   <UpAndDownComp Right="Right" Topic="Additional" Input="AdditionalPoints" InvokeChange="InvokeAdditionalPoints"></UpAndDownComp>  
@@ -36,7 +36,7 @@
   [Parameter]
   public int Banners { get; set; }
   [Parameter]
-  public int Overkill { get; set; }
+  public int Duel { get; set; }
   [Parameter]
   public int AdditionalPoints { get; set; }
   [Parameter]

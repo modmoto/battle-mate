@@ -11,7 +11,7 @@ public class CombatResultState
         VerminSwarmWoundsLeftActual +
         RanksLeft +
         BannersLeft +
-        OverkillLeft +
+        DuelLeft +
         AdditionalPointsLeftActual +
         PossibleChargeValues[ChargingIndexLeft].Points +
         PossibleFlankValues[FlankIndexLeft].Points +
@@ -26,7 +26,7 @@ public class CombatResultState
         VerminSwarmWoundsRightActual +
         RanksRight +
         BannersRight +
-        OverkillRight +
+        DuelRight +
         AdditionalPointsRightActual +
         PossibleChargeValues[ChargingIndexRight].Points +
         PossibleFlankValues[FlankIndexRight].Points +
@@ -44,8 +44,8 @@ public class CombatResultState
     public int RanksRight { get; set; }
     public int BannersLeft { get; set; }
     public int BannersRight { get; set; }
-    public int OverkillLeft { get; set; }
-    public int OverkillRight { get; set; }
+    public int DuelLeft { get; set; }
+    public int DuelRight { get; set; }
     public int AdditionalPointsLeft { get; set; }
     public int AdditionalPointsRight { get; set; }
 
@@ -111,8 +111,8 @@ public class CombatResultState
             BannersRight = DefaultBanners;
         }
             
-        OverkillLeft = 0;
-        OverkillRight = 0;
+        DuelLeft = 0;
+        DuelRight = 0;
         AdditionalPointsLeft = 0;
         AdditionalPointsRight = 0;
         VerminSwarmWoundsLeft = 0;
