@@ -399,6 +399,7 @@ public class Probabilities
     }
 
     [Test]
+    [Ignore("not finished")]
     public void Reroll1sToHit()
     {
         var probabilityChain = new ProbabilityChain()
