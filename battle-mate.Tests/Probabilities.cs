@@ -399,8 +399,7 @@ public class Probabilities
     }
 
     [Test]
-    [Ignore("not finished")]
-    public void Reroll1sToHit()
+    public void RerollFailsCheckedToHit()
     {
         var probabilityChain = new ProbabilityChain()
         {
@@ -412,11 +411,35 @@ public class Probabilities
             
             RerollsHit = new RerollDto
             {
-                Reroll1SChecked = true
+                RerollFailsChecked = true
             }
         };
         
-        Assert.AreEqual(16, probabilityChain.ExpectedHits.SuccessResult);
-        Assert.AreEqual(12, probabilityChain.ExpectedWounds.SuccessResult);
+        Assert.AreEqual(18, probabilityChain.ExpectedHits.SuccessResult);
+        Assert.AreEqual(9, probabilityChain.ExpectedWounds.SuccessResult);
+    }
+
+    [Test]
+    public void PropWithRerollFailedSet()
+    {
+        var probability = new Probability(12, 4, new RerollDto { RerollFailsChecked = true });
+        
+        Assert.AreEqual(9, probability.SuccessResult);
+    }
+    
+    [Test]
+    public void PropWithRerollSuccessSet()
+    {
+        var probability = new Probability(12, 4, new RerollDto { RerollSuccessChecked = true });
+        
+        Assert.AreEqual(3, probability.SuccessResult);
+    }
+    
+    [Test]
+    public void PropWithReroll1sSet()
+    {
+        var probability = new Probability(12, 4, new RerollDto { Reroll1SChecked = true });
+        
+        Assert.AreEqual(6 + 2 * 1 / 6, probability.SuccessResult);
     }
 }

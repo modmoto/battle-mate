@@ -27,10 +27,10 @@ public class ProbabilityChain
             if (BattleFocusChecked)
             {
                 var battleFocusHits = StartDice / 6d;
-                return new Probability(StartDice, ToHit, battleFocusHits);
+                return new Probability(StartDice, ToHit, RerollsHit, battleFocusHits);
             }
             
-            return new(StartDice, ToHit);
+            return new(StartDice, ToHit, RerollsHit);
         }
     }
 
@@ -43,17 +43,17 @@ public class ProbabilityChain
             {
                 var poison5Hits = ExpectedHits.StartResult / 3d;
                 var hitsWithOutPoison5 = ExpectedHits.SuccessResult - poison5Hits;
-                return new Probability(hitsWithOutPoison5, ToWound, poison5Hits);
+                return new Probability(hitsWithOutPoison5, ToWound, RerollsWound, poison5Hits);
             }
             
             if (PoisonChecked)
             {
                 var poisonHits = ExpectedHits.StartResult / 6d;
                 var hitsWithOutPoison = ExpectedHits.SuccessResult - poisonHits;
-                return new Probability(hitsWithOutPoison, ToWound, poisonHits);
+                return new Probability(hitsWithOutPoison, ToWound, RerollsWound, poisonHits);
             }
             
-            return ExpectedHits.Append(ToWound);
+            return ExpectedHits.Append(ToWound, RerollsWound);
         }
     }
 
@@ -66,15 +66,15 @@ public class ProbabilityChain
             {
                 var lethalHits = ExpectedWounds.SuccessResult / 6d;
                 var hitsWithOutLethal = ExpectedWounds.SuccessResult - lethalHits;
-                return new Probability(hitsWithOutLethal, ToArmorSave, 0, lethalHits);
+                return new Probability(hitsWithOutLethal, ToArmorSave, RerollsArmorSaves, 0, lethalHits);
             }
             
-            return ExpectedWounds.Append(ToArmorSave);
+            return ExpectedWounds.Append(ToArmorSave, RerollsArmorSaves);
         }
     }
 
     [JsonIgnore]
-    public Probability ExpectedWardSaves => ExpectedArmorSaves.NegativeAppend(ToWardSave);
+    public Probability ExpectedWardSaves => ExpectedArmorSaves.NegativeAppend(ToWardSave, RerollsWardSaves);
     [JsonIgnore]
     public double ExpectedFailedWardSaves => ExpectedWardSaves.FailedResult;
     [JsonIgnore]
