@@ -31,22 +31,26 @@ public class Probability
     {
         get
         {
-            if (Rerolls.Reroll1SChecked)
+            if (Rerolls != null)
             {
-                var onesRolled = (Additional + StartResult) / 6;
-                return onesRolled * ((7 - Target) / 6d);
-            }
+                if (Rerolls.Reroll1SChecked)
+                {
+                    var onesRolled = (Additional + StartResult) / 6;
+                    return onesRolled * ((7 - Target) / 6d);
+                }
 
-            if (Rerolls.RerollFailsChecked)
-            {
-                var failed = StartResult - SuccessResultBase + AdditionalFails;
-                var additionalSuccess = failed * ((7 - Target) / 6d);
-                return additionalSuccess;
-            }
+                if (Rerolls.RerollFailsChecked)
+                {
+                    var failed = StartResult - SuccessResultBase + AdditionalFails;
+                    var additionalSuccess = failed * ((7 - Target) / 6d);
+                    return additionalSuccess;
+                }
 
-            if (Rerolls.RerollSuccessChecked)
-            {
-                return (7 - Target) / 6d;
+                if (Rerolls.RerollSuccessChecked)
+                {
+                    var pureSuccess = StartResult * ((7 - Target) / 6d);
+                    return -(pureSuccess * ((7 - Target) / 6d));
+                }
             }
 
             return 0;

@@ -425,6 +425,7 @@ public class Probabilities
         var probability = new Probability(12, 4, new RerollDto { RerollFailsChecked = true });
         
         Assert.AreEqual(9, probability.SuccessResult);
+        Assert.AreEqual(3, probability.FailedResult);
     }
     
     [Test]
@@ -433,6 +434,7 @@ public class Probabilities
         var probability = new Probability(12, 4, new RerollDto { RerollSuccessChecked = true });
         
         Assert.AreEqual(3, probability.SuccessResult);
+        Assert.AreEqual(9, probability.FailedResult);
     }
     
     [Test]
@@ -440,6 +442,7 @@ public class Probabilities
     {
         var probability = new Probability(12, 4, new RerollDto { Reroll1SChecked = true });
         
-        Assert.AreEqual(6 + 2 * 1 / 6, probability.SuccessResult);
+        Assert.AreEqual(7, probability.SuccessResult);
+        Assert.AreEqual(5, probability.FailedResult);
     }
 }
