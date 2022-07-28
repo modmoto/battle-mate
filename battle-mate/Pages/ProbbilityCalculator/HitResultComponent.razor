@@ -1,0 +1,28 @@
+﻿@using battle_mate.Pages.BattleResult
+
+@if (Prob.BattleFocusChecked && (Prob.PoisonChecked || Prob.Poison5Checked))
+{
+  <span>@Prob.ExpectedHits.SuccessResultBase.ToString("F2") hits (BF: @Prob.ExpectedHits.Additional.ToString("F2"), P: @Prob.ExpectedWounds.Additional.ToString("F2"))</span>
+}
+else if (Prob.PoisonChecked || Prob.Poison5Checked)
+{
+  <span>@((Prob.ExpectedHits.SuccessResultBase - Prob.ExpectedWounds.Additional).ToString("F2")) hits (P: @Prob.ExpectedWounds.Additional.ToString("F2"))</span>
+}
+else if (Prob.BattleFocusChecked)
+{
+  <span>@Prob.ExpectedHits.SuccessResultBase.ToString("F2") hits (BF: @Prob.ExpectedHits.Additional.ToString("F2"))</span>
+}
+else
+{
+  <span>@Prob.ExpectedHits.SuccessResultBase.ToString("F2") hits</span>
+}
+
+@if (Prob.RerollsHit.IsChecked)
+{
+  <span> + @Prob.ExpectedHits.RerollCount RR</span>
+}
+
+@code {
+    [Parameter]
+    public ProbabilityChain Prob { get; set; }
+}

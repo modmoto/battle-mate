@@ -1,0 +1,14 @@
+﻿@using battle_mate.Pages.BattleResult
+
+<span>@Prob.ExpectedWounds.StartResult.ToString("F2") wounding on @Prob.ToWound+</span>
+@if (Prob.LethalStrikeChecked)
+{
+  <span> with Lethalstrike</span>
+}
+
+<RerollComponent Rerolls="@Prob.RerollsWound"></RerollComponent>
+
+@code {
+    [Parameter]
+    public ProbabilityChain Prob { get; set; }
+}

@@ -1,0 +1,9 @@
+﻿@using battle_mate.Pages.BattleResult
+
+<span>@Prob.ExpectedArmorSaves.StartResult.ToString("F2") armor saves on @Prob.ToArmorSave+</span>
+<RerollComponent Rerolls="@Prob.RerollsArmorSaves"></RerollComponent>
+
+@code {
+    [Parameter]
+    public ProbabilityChain Prob { get; set; }
+}

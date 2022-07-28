@@ -1,0 +1,13 @@
+﻿@using battle_mate.Pages.BattleResult
+
+<span>@Prob.ExpectedWardSaves.FailedResultBase.ToString("F2") unsaved wounds</span>
+
+@if (Prob.RerollsWardSaves.IsChecked)
+{
+  <span> -@Prob.ExpectedWardSaves.RerollCount RR</span>
+}
+
+@code {
+    [Parameter]
+    public ProbabilityChain Prob { get; set; }
+}

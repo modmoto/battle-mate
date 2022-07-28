@@ -1,0 +1,17 @@
+﻿@using battle_mate.Pages.BattleResult
+
+@if (Rerolls.Reroll1SChecked)
+{
+  <span>, Rerolling 1s</span>
+} else if (Rerolls.RerollFailsChecked)
+{
+  <span>, Rerolling failed rolls</span>
+} else if (Rerolls.RerollSuccessChecked)
+{
+  <span>, Rerolling sucessfull rolls</span>
+}
+
+@code {
+  [Parameter]
+  public RerollDto Rerolls { get; set; }
+}

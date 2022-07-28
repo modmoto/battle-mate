@@ -106,6 +106,7 @@ public class ProbabilityChain
 
 public class RerollDto
 {
+    public bool IsChecked => Reroll1SChecked || RerollFailsChecked || Reroll1SChecked;
     public bool RerollSuccessChecked { get; set; }
     public bool RerollFailsChecked { get; set; }
     public bool Reroll1SChecked { get; set; }

@@ -1,0 +1,26 @@
+﻿@using battle_mate.Pages.BattleResult
+
+<span>@Prob.StartDice hitting on @Prob.ToHit+</span> 
+@if (Prob.BattleFocusChecked && (Prob.PoisonChecked || Prob.Poison5Checked))
+{
+    <span>with Battlefocus and Poison</span>
+} 
+else if (Prob.BattleFocusChecked)
+{
+    <span>with Battlefocus</span>
+}
+else if (Prob.Poison5Checked)
+{
+    <span>with Poison 5+</span>
+} 
+else if (Prob.PoisonChecked)
+{
+    <span>with Poison</span>
+}
+
+<RerollComponent Rerolls="@Prob.RerollsHit"></RerollComponent>
+
+@code {
+    [Parameter]
+    public ProbabilityChain Prob { get; set; }
+}

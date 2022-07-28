@@ -1,0 +1,20 @@
+﻿@using battle_mate.Pages.BattleResult
+
+@if (Prob.PoisonChecked || Prob.Poison5Checked)
+{
+  <span>@((Prob.ExpectedWounds.SuccessResultBase - Prob.ExpectedWounds.Additional).ToString("F2")) + @Prob.ExpectedWounds.Additional.ToString("F2")P  wounds</span>
+}
+else
+{
+  <span>@Prob.ExpectedWounds.SuccessResultBase.ToString("F2") wounds</span>
+}
+
+@if (Prob.RerollsWound.IsChecked)
+{
+  <span> +@Prob.ExpectedWounds.RerollCount RR</span>
+}
+
+@code {
+    [Parameter]
+    public ProbabilityChain Prob { get; set; }
+}

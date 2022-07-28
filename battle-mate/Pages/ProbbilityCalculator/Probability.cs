@@ -27,34 +27,34 @@ public class Probability
         return new Probability(FailedResult, nextTarget, rerolls);
     }
 
-    public double SuccessResult
+    public double RerollCount
     {
         get
         {
-            var successResultBase = Additional + StartResult * ((7 - Target) / 6d);
-            
-            if (Rerolls != null)
+            if (Rerolls.Reroll1SChecked)
             {
-                if (Rerolls.Reroll1SChecked)
-                {
-                    var onesRolled = (Additional + StartResult) / 6;
-                    successResultBase += onesRolled * ((7 - Target) / 6d);
-                }
-                if (Rerolls.RerollFailsChecked)
-                {
-                    var failed = StartResult - successResultBase + AdditionalFails;
-                    var additionalSuccess = failed * ((7 - Target) / 6d);
-                    successResultBase += additionalSuccess;
-                }
-                if (Rerolls.RerollSuccessChecked)
-                {
-                    successResultBase *= (7 - Target) / 6d;
-                }
+                var onesRolled = (Additional + StartResult) / 6;
+                return onesRolled * ((7 - Target) / 6d);
             }
 
-            return successResultBase;
+            if (Rerolls.RerollFailsChecked)
+            {
+                var failed = StartResult - SuccessResultBase + AdditionalFails;
+                var additionalSuccess = failed * ((7 - Target) / 6d);
+                return additionalSuccess;
+            }
+
+            if (Rerolls.RerollSuccessChecked)
+            {
+                return (7 - Target) / 6d;
+            }
+
+            return 0;
         }
     }
 
+    public double SuccessResultBase => Additional + StartResult * ((7 - Target) / 6d);
+    public double SuccessResult => SuccessResultBase + RerollCount;
     public double FailedResult => StartResult - SuccessResult + AdditionalFails;
+    public double FailedResultBase => StartResult - SuccessResultBase + AdditionalFails;
 }

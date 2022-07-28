@@ -179,77 +179,31 @@
                 <tbody>
                 <tr>
                   <td>
-                    @prob.StartDice hitting on @prob.ToHit+ 
-                    @if (prob.BattleFocusChecked && (prob.PoisonChecked || prob.Poison5Checked))
-                    {
-                      <span>with Battlefocus and Poison</span>
-                    } 
-                    else if (prob.BattleFocusChecked)
-                    {
-                      <span>with Battlefocus</span>
-                    }
-                    else if (prob.Poison5Checked)
-                    {
-                      <span>with Poison 5+</span>
-                    } 
-                    else if (prob.PoisonChecked)
-                    {
-                      <span>with Poison</span>
-                    } 
+                    <HitStepComponent Prob="prob"></HitStepComponent>
                   </td>
                   <td>
-                    @if (prob.BattleFocusChecked && (prob.PoisonChecked || prob.Poison5Checked))
-                    {
-                      <span>@prob.ExpectedHits.SuccessResult.ToString("F2") hits (BF: @prob.ExpectedHits.Additional.ToString("F2"), P: @prob.ExpectedWounds.Additional.ToString("F2"))</span>
-                    }
-                    else if (prob.PoisonChecked || prob.Poison5Checked)
-                    {
-                      <span>@((prob.ExpectedHits.SuccessResult - prob.ExpectedWounds.Additional).ToString("F2")) hits (P: @prob.ExpectedWounds.Additional.ToString("F2"))</span>
-                    }
-                    else if (prob.BattleFocusChecked)
-                    {
-                      <span>@prob.ExpectedHits.SuccessResult.ToString("F2") hits (BF: @prob.ExpectedHits.Additional.ToString("F2"))</span>
-                    }
-                    else
-                    {
-                      <span>@prob.ExpectedHits.SuccessResult.ToString("F2") hits</span>
-                    }
+                    <HitResultComponent Prob="prob"></HitResultComponent>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    @prob.ExpectedWounds.StartResult.ToString("F2") wounding on @prob.ToWound+
-                    @if (prob.LethalStrikeChecked)
-                    {
-                      <span>with Lethalstrike</span>
-                    } 
+                    <WoundStepComponent Prob="prob"></WoundStepComponent>
                   </td>
                   <td>
-                    @if (prob.PoisonChecked || prob.Poison5Checked)
-                    {
-                      <span>@((prob.ExpectedWounds.SuccessResult - prob.ExpectedWounds.Additional).ToString("F2")) + @prob.ExpectedWounds.Additional.ToString("F2")P  wounds</span>
-                    }
-                    else
-                    {
-                      <span>@prob.ExpectedWounds.SuccessResult.ToString("F2") wounds</span>
-                    }
+                   <WoundResultComponent Prob="prob"></WoundResultComponent>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    @prob.ExpectedArmorSaves.StartResult.ToString("F2") armor saves on @prob.ToArmorSave+
+                    <ArmorSaveStepComponent Prob="prob"></ArmorSaveStepComponent>
                   </td>
                   <td>
-                    @prob.ExpectedArmorSaves.FailedResult.ToString("F2") failed armor saves
-                    @if (prob.LethalStrikeChecked)
-                    {
-                      <span>(LS: @prob.ExpectedArmorSaves.AdditionalFails.ToString("F2"))</span>
-                    }
+                    <ArmorSaveResultComponent Prob="prob"></ArmorSaveResultComponent>
                   </td>
                 </tr>
                 <tr>
-                  <td>@prob.ExpectedWardSaves.StartResult.ToString("F2") ward armor saves on @prob.ToWardSave+</td>
-                  <td>@prob.ExpectedWardSaves.FailedResult.ToString("F2") unsaved wounds</td>
+                  <td><WardSaveStepComponent Prob="prob"></WardSaveStepComponent></td>
+                  <td><WardSaveResultComponent Prob="prob"></WardSaveResultComponent></td>
                 </tr>
                 </tbody>
               </table>
@@ -310,10 +264,10 @@
     if (prob.PoisonChecked) list.Add("P");
     if (prob.Poison5Checked) list.Add("P5");
     if (prob.LethalStrikeChecked) list.Add("LS");
-    if (prob.RerollsHit != null) list.Add("RRHi");
-    if (prob.RerollsWound != null) list.Add("RRWo");
-    if (prob.RerollsArmorSaves != null) list.Add("RRAr");
-    if (prob.RerollsWardSaves != null) list.Add("RRWa");
+    if (prob.RerollsHit.IsChecked) list.Add("RRHi");
+    if (prob.RerollsWound.IsChecked) list.Add("RRWo");
+    if (prob.RerollsArmorSaves.IsChecked) list.Add("RRAr");
+    if (prob.RerollsWardSaves.IsChecked) list.Add("RRWa");
     return list;
   }
 
@@ -325,26 +279,5 @@
     if (prob.Poison5Checked) list.Add("P5");
     if (prob.LethalStrikeChecked) list.Add("LS");
     return list;
-  }
-
-  private void CloseRerollSuccess()
-  {
-    ProbabilityState.Reroll1SChecked = false;
-    ProbabilityState.RerollSuccessChecked = true;
-    ProbabilityState.RerollFailsChecked = false;
-  }
-  
-  private void CloseReroll1s()
-  {
-    ProbabilityState.Reroll1SChecked = true;
-    ProbabilityState.RerollSuccessChecked = false;
-    ProbabilityState.RerollFailsChecked = false;
-  }
-  
-  private void CloseRerollFailed()
-  {
-    ProbabilityState.Reroll1SChecked = false;
-    ProbabilityState.RerollSuccessChecked = false;
-    ProbabilityState.RerollFailsChecked = true;
   }
 }

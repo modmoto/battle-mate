@@ -1,0 +1,17 @@
+﻿@using battle_mate.Pages.BattleResult
+
+<span>@Prob.ExpectedArmorSaves.FailedResultBase.ToString("F2") failed armor saves</span>
+@if (Prob.LethalStrikeChecked)
+{
+    <span>(LS: @Prob.ExpectedArmorSaves.AdditionalFails.ToString("F2"))</span>
+}
+
+@if (Prob.RerollsArmorSaves.IsChecked)
+{
+  <span> -@Prob.ExpectedArmorSaves.RerollCount RR</span>
+}
+
+@code {
+    [Parameter]
+    public ProbabilityChain Prob { get; set; }
+}
