@@ -264,10 +264,10 @@
     if (prob.PoisonChecked) list.Add("P");
     if (prob.Poison5Checked) list.Add("P5");
     if (prob.LethalStrikeChecked) list.Add("LS");
-    if (prob.RerollsHit.IsChecked) list.Add("RRHi");
-    if (prob.RerollsWound.IsChecked) list.Add("RRWo");
-    if (prob.RerollsArmorSaves.IsChecked) list.Add("RRAr");
-    if (prob.RerollsWardSaves.IsChecked) list.Add("RRWa");
+    if (prob.RerollsHit?.IsChecked == true) list.Add("RRHi");
+    if (prob.RerollsWound?.IsChecked == true) list.Add("RRWo");
+    if (prob.RerollsArmorSaves?.IsChecked == true) list.Add("RRAr");
+    if (prob.RerollsWardSaves?.IsChecked == true) list.Add("RRWa");
     return list;
   }
 
