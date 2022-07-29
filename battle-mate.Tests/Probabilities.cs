@@ -445,4 +445,28 @@ public class Probabilities
         Assert.AreEqual(7, probability.SuccessResult);
         Assert.AreEqual(5, probability.FailedResult);
     }
+    
+    [Test]
+    public void RerollSuccessHits6()
+    {
+        var probability = new Probability(12, 6, new RerollDto { RerollSuccessChecked = true });
+        
+        Assert.AreEqual(2d * 1d/6d, probability.SuccessResult, 0.0000000001d);
+    }
+    
+    [Test]
+    public void RerollSuccessHits5()
+    {
+        var probability = new Probability(12, 5, new RerollDto { RerollSuccessChecked = true });
+        
+        Assert.AreEqual(4d * 2d/6d, probability.SuccessResult, 0.0000000001d);
+    }
+    
+    [Test]
+    public void RerollSuccessHits2()
+    {
+        var probability = new Probability(12, 2, new RerollDto { RerollSuccessChecked = true });
+        
+        Assert.AreEqual(10d * 5d/6d, probability.SuccessResult);
+    }
 }
