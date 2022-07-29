@@ -2,11 +2,11 @@
 
 @if (Reroll.Reroll1SChecked)
 {
-  <span>, -@RerollCount.ToString("F2") RR1</span>
+  <span>, @RerollCount.ToString("F2") RR1</span>
 }
 else if (Reroll.RerollFailsChecked)
 {
-  <span>, -@RerollCount.ToString("F2") RRF</span>
+  <span>, @RerollCount.ToString("F2") RRF</span>
 }
 else if (Reroll.RerollSuccessChecked)
 {
