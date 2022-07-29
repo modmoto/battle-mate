@@ -2,25 +2,22 @@
 
 @if (Prob.BattleFocusChecked && (Prob.PoisonChecked || Prob.Poison5Checked))
 {
-  <span>@Prob.ExpectedHits.SuccessResultBase.ToString("F2") hits (BF: @Prob.ExpectedHits.Additional.ToString("F2"), P: @Prob.ExpectedWounds.Additional.ToString("F2"))</span>
+  <span>@Prob.ExpectedHits.SuccessResult.ToString("F2") hits @Prob.ExpectedHits.Additional.ToString("F2") BF, @Prob.ExpectedWounds.Additional.ToString("F2") P</span>
 }
 else if (Prob.PoisonChecked || Prob.Poison5Checked)
 {
-  <span>@((Prob.ExpectedHits.SuccessResultBase - Prob.ExpectedWounds.Additional).ToString("F2")) hits (P: @Prob.ExpectedWounds.Additional.ToString("F2"))</span>
+  <span>@((Prob.ExpectedHits.SuccessResult - Prob.ExpectedWounds.Additional).ToString("F2")) hits, @Prob.ExpectedWounds.Additional.ToString("F2") P</span>
 }
 else if (Prob.BattleFocusChecked)
 {
-  <span>@Prob.ExpectedHits.SuccessResultBase.ToString("F2") hits (BF: @Prob.ExpectedHits.Additional.ToString("F2"))</span>
+  <span>@Prob.ExpectedHits.SuccessResult.ToString("F2") hits, @Prob.ExpectedHits.Additional.ToString("F2") BF</span>
 }
 else
 {
-  <span>@Prob.ExpectedHits.SuccessResultBase.ToString("F2") hits</span>
+  <span>@Prob.ExpectedHits.SuccessResult.ToString("F2") hits</span>
 }
 
-@if (Prob.RerollsHit.IsChecked)
-{
-  <span> + @Prob.ExpectedHits.RerollCount RR</span>
-}
+<RerollResult Reroll="Prob.RerollsHit" RerollCount="Prob.ExpectedHits.RerollCount"></RerollResult>
 
 @code {
     [Parameter]

@@ -1,15 +1,12 @@
 ﻿@using battle_mate.Pages.BattleResult
 
-<span>@Prob.ExpectedArmorSaves.FailedResultBase.ToString("F2") failed armor saves</span>
+<span>@Prob.ExpectedArmorSaves.FailedResult.ToString("F2") failed armor saves</span>
 @if (Prob.LethalStrikeChecked)
 {
-    <span>(LS: @Prob.ExpectedArmorSaves.AdditionalFails.ToString("F2"))</span>
+    <span>, +@Prob.ExpectedArmorSaves.AdditionalFails.ToString("F2") LS</span>
 }
 
-@if (Prob.RerollsArmorSaves.IsChecked)
-{
-  <span> -@Prob.ExpectedArmorSaves.RerollCount RR</span>
-}
+<RerollResultNegative Reroll="Prob.RerollsArmorSaves" RerollCount="Prob.ExpectedArmorSaves.RerollCount"></RerollResultNegative>
 
 @code {
     [Parameter]

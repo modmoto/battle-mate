@@ -1,0 +1,21 @@
+﻿@using battle_mate.Pages.BattleResult
+
+@if (Reroll.Reroll1SChecked)
+{
+  <span>, +@RerollCount.ToString("F2") RR1</span>
+}
+else if (Reroll.RerollFailsChecked)
+{
+  <span>, +@RerollCount.ToString("F2") RRF</span>
+}
+else if (Reroll.RerollSuccessChecked)
+{
+  <span>, -@RerollCount.ToString("F2") RRS</span>
+}
+
+@code {
+    [Parameter]
+    public RerollDto Reroll { get; set; }
+    [Parameter]
+    public double RerollCount { get; set; }
+}

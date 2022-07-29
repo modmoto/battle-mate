@@ -57,8 +57,7 @@ public class Probability
         }
     }
 
-    public double SuccessResultBase => Additional + StartResult * ((7 - Target) / 6d);
+    private double SuccessResultBase => Additional + StartResult * ((7 - Target) / 6d);
     public double SuccessResult => SuccessResultBase + RerollCount;
     public double FailedResult => StartResult - SuccessResult + AdditionalFails;
-    public double FailedResultBase => StartResult - SuccessResultBase + AdditionalFails;
 }

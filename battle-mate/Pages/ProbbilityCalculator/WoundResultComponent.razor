@@ -2,17 +2,14 @@
 
 @if (Prob.PoisonChecked || Prob.Poison5Checked)
 {
-  <span>@((Prob.ExpectedWounds.SuccessResultBase - Prob.ExpectedWounds.Additional).ToString("F2")) + @Prob.ExpectedWounds.Additional.ToString("F2")P  wounds</span>
+  <span>@((Prob.ExpectedWounds.SuccessResult - Prob.ExpectedWounds.Additional).ToString("F2")) +@Prob.ExpectedWounds.Additional.ToString("F2") P</span>
 }
 else
 {
-  <span>@Prob.ExpectedWounds.SuccessResultBase.ToString("F2") wounds</span>
+  <span>@Prob.ExpectedWounds.SuccessResult.ToString("F2") wounds</span>
 }
 
-@if (Prob.RerollsWound.IsChecked)
-{
-  <span> +@Prob.ExpectedWounds.RerollCount RR</span>
-}
+<RerollResult Reroll="Prob.RerollsWound" RerollCount="Prob.ExpectedWounds.RerollCount"></RerollResult>
 
 @code {
     [Parameter]
