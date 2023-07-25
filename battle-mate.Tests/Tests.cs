@@ -1,3 +1,4 @@
+using battle_mate.Pages.BattleResult;
 using NUnit.Framework;
 
 namespace battle_mate.Tests;
@@ -160,6 +161,27 @@ public class Tests
         Assert.AreEqual(5, armorSave.SucessfullRolls);
         Assert.AreEqual(4, armorSave.FailedRolls);
         Assert.AreEqual(7, armorSave.RawResults.Count);
+    }
+
+    [TestCase(1, 1)]
+    [TestCase(2, 1)]
+    [TestCase(5, 3)]
+    [TestCase(9, 5)]
+    [TestCase(10, 5)]
+    [TestCase(11, 6)]
+    [TestCase(12, 7)]
+    [TestCase(13, 8)]
+    [TestCase(20, 15)]
+    public void TestVerminSwarmWounds(int vsWounds, int expectedPoints)
+    {
+        var combatResultState = new CombatResultState();
+
+        combatResultState.HasVerminSwarmPoints = true;
+        combatResultState.VerminSwarmWoundsLeft = vsWounds;
+        combatResultState.VerminSwarmWoundsRight = vsWounds;
+        
+        Assert.AreEqual(expectedPoints, combatResultState.VerminSwarmWoundsLeftActual);
+        Assert.AreEqual(expectedPoints, combatResultState.VerminSwarmWoundsRightActual);
     }
 
     [Test]

@@ -17,7 +17,16 @@ public class CombatResultState
         PossibleFlankValues[FlankIndexLeft].Points +
         PossibleRearValues[RearIndexLeft].Points;
 
-    public int VerminSwarmWoundsLeftActual => HasVerminSwarmPoints ? (VerminSwarmWoundsLeft + 1) / 2 : 0;
+    public int VerminSwarmWoundsLeftActual => CalculateVsPoints(VerminSwarmWoundsLeft);
+
+    private int CalculateVsPoints(int verminSwarmWounds)
+    {
+        if (!HasVerminSwarmPoints) return 0;
+        return verminSwarmWounds >= 10
+            ? 5 + verminSwarmWounds - 10
+            : (verminSwarmWounds + 1) / 2;
+    }
+
     public int AdditionalPointsLeftActual => HasAdditionalPoints ? AdditionalPointsLeft : 0;
     public int PointsDifferenceLeft => PointsLeft - PointsRight > 0 ? 0 : PointsLeft - PointsRight;
 
@@ -32,7 +41,7 @@ public class CombatResultState
         PossibleFlankValues[FlankIndexRight].Points +
         PossibleRearValues[RearIndexRight].Points;
 
-    public int VerminSwarmWoundsRightActual => HasVerminSwarmPoints ? (VerminSwarmWoundsRight + 1) / 2 : 0;
+    public int VerminSwarmWoundsRightActual => CalculateVsPoints(VerminSwarmWoundsRight);
     public int AdditionalPointsRightActual => HasAdditionalPoints ? AdditionalPointsRight : 0;
     public int PointsDifferenceRight => PointsRight - PointsLeft > 0 ? 0 : PointsRight - PointsLeft;
 
