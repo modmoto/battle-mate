@@ -3,7 +3,7 @@ See the live website here
 
 https://battle-mate.com/
 
-## Installation
+## Offline Installation
 
 It has offline capabilities, so you can install it on your phone and use it on the table.
 
